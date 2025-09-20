@@ -17,7 +17,7 @@ type MainMenuItem = MenuItem & {
 };
 
 export const menuItems: MainMenuItem[] = [
-    { title: "Home", id: "home", order: 0, link: "#" },
+    { title: "Home", id: "home", order: 0, link: "/" },
     {
         title: "Games",
         description: "Find all games offered on the platform here",
@@ -49,7 +49,7 @@ export const menuItems: MainMenuItem[] = [
                 title: "Score tracker",
                 description: `Track a score for any game with multiple users. Live!`,
                 id: "scoreTracker",
-                link: "#",
+                link: "/apps/scoretracker",
             },
         ],
     },
