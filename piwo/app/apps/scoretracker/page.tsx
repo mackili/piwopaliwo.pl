@@ -1,10 +1,10 @@
 "use client";
-import { ScoreTrackerGame } from "@/components/scoretracker/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import {
-    newScoreTrackerGameForm,
+    ScoreTrackerGame,
+    ScoreTrackerGameSchema,
     enterScoreTrackerGameForm,
 } from "@/components/scoretracker/types";
 import * as z from "zod";
@@ -20,31 +20,38 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { SupabaseError } from "@/utils/supabase/types";
 
-const NEW_GAME_API = { url: "/api/apps/scoretracker/game", method: "POST" };
+const NEW_GAME_API = { url: "/api/apps/scoretracker/game/new", method: "POST" };
 const GAME_LINK = (gameId: string | number | undefined) => {
-    return `/apps/scoretracker/${gameId}`;
+    const baseUrl = "/apps/scoretracker";
+    if (!gameId) {
+        return baseUrl;
+    }
+    return `${baseUrl}/${gameId}`;
 };
 
 export default function ScoreTrackerHome() {
     const router = useRouter();
     const [isLoading, setLoading] = useState(false);
 
-    async function handleNewTracker(
-        values: z.infer<typeof newScoreTrackerGameForm>
-    ) {
+    async function handleNewTracker(data: ScoreTrackerGame) {
         setLoading(true);
-        const res = await fetch(NEW_GAME_API.url, {
-            method: NEW_GAME_API.method,
-            body: JSON.stringify(values),
-        });
-        const gameData = (await res.json()) as ScoreTrackerGame;
+        const res = (await (
+            await fetch(NEW_GAME_API.url, {
+                method: NEW_GAME_API.method,
+                body: JSON.stringify(data),
+            })
+        ).json()) as ScoreTrackerGame[] | SupabaseError | null;
+        if (res && Array.isArray(res) && res.length === 1) {
+            const gameData = ScoreTrackerGameSchema.parse(res[0]);
+            router.push(GAME_LINK(gameData.id));
+        }
         setLoading(false);
-        router.push(GAME_LINK(gameData.code));
     }
-    const newTrackerForm = useForm<z.infer<typeof newScoreTrackerGameForm>>({
+    const newTrackerForm = useForm<ScoreTrackerGame>({
         reValidateMode: "onChange",
-        resolver: zodResolver(newScoreTrackerGameForm),
+        resolver: zodResolver(ScoreTrackerGameSchema),
         defaultValues: {
             name: "",
         },
@@ -54,20 +61,14 @@ export default function ScoreTrackerHome() {
         values: z.infer<typeof enterScoreTrackerGameForm>
     ) {
         setLoading(true);
-        const res = await fetch(NEW_GAME_API.url, {
-            method: NEW_GAME_API.method,
-            body: JSON.stringify(values),
-        });
-        const gameData = (await res.json()) as ScoreTrackerGame;
         setLoading(false);
-        router.push(GAME_LINK(gameData.code));
+        router.push(GAME_LINK(values.id));
     }
     const joinTrackerForm = useForm<z.infer<typeof enterScoreTrackerGameForm>>({
         reValidateMode: "onChange",
         resolver: zodResolver(enterScoreTrackerGameForm),
         defaultValues: {
             id: "",
-            name: "",
         },
     });
 
@@ -85,24 +86,27 @@ export default function ScoreTrackerHome() {
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Name</FormLabel>
+                                    <FormLabel>Name of game tracked</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="John" {...field} />
+                                        <Input
+                                            placeholder="Ping-Pong"
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormDescription>
-                                        This is your public display name.
+                                        This is your friendly name for the game
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             type="submit"
                             className="w-full"
                             disabled={isLoading}
                         >
-                            Create Game
+                            Create New Game
                         </Button>
                     </form>
                 </Form>
@@ -127,22 +131,6 @@ export default function ScoreTrackerHome() {
                                 <FormDescription>
                                     This is the code of the game you want to
                                     join.
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={joinTrackerForm.control}
-                        name="name"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Name</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="John" {...field} />
-                                </FormControl>
-                                <FormDescription>
-                                    This is your public display name.
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>

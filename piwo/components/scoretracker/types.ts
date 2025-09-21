@@ -5,12 +5,42 @@ interface ScoreTrackerPlayer {
     score?: number | void;
 }
 
-export const newScoreTrackerGameForm = z.object({
-    name: z.string().max(80).min(2),
+export const ScoreTrackerGameSchema = z.object({
+    id: z.uuidv4().optional(),
+    name: z.string(),
+    status: z.enum(["paused", "active", "finished"]).optional(),
+    createdAt: z.iso.datetime({ offset: true }).optional(),
+    finishedAt: z.iso.datetime({ offset: true }).nullish(),
+    ownerId: z.uuidv4().optional(),
 });
 
-export const enterScoreTrackerGameForm = newScoreTrackerGameForm.extend({
-    id: z.union([z.string().min(6), z.int().min(6)]),
+export type ScoreTrackerGame = z.infer<typeof ScoreTrackerGameSchema>;
+
+export const UserInfoSchema = z.object({
+    userId: z.uuidv4().optional(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+});
+
+export type UserInfo = z.infer<typeof UserInfoSchema>;
+
+export const UserScoreSchema = z.object({
+    gameId: z.uuidv4(),
+    userId: z.uuidv4(),
+    createdAt: z.iso.datetime({ offset: true }).optional(),
+    updatedAt: z.iso.datetime({ offset: true }).optional(),
+    history: z.array(z.int32()).optional(),
+    UserInfo: UserInfoSchema.nullish(),
+});
+
+export type UserScore = z.infer<typeof UserScoreSchema>;
+
+export const newScoreTrackerGameForm = z.object({
+    firstName: z.string().max(80).min(2),
+});
+
+export const enterScoreTrackerGameForm = z.object({
+    id: z.string(),
 });
 
 export type ScoreTrackerPlayerRequest = ScoreTrackerPlayer;
@@ -18,8 +48,3 @@ export type ScoreTrackerPlayerRequest = ScoreTrackerPlayer;
 export interface ScoreTrackerPlayerResponse extends ScoreTrackerPlayer {
     id: string | number;
 }
-
-export type ScoreTrackerGame = {
-    code: string;
-    players?: ScoreTrackerPlayerResponse[];
-};

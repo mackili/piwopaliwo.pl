@@ -35,7 +35,7 @@ export default function NavBar() {
     return (
         <div
             className={`fixed top-0 left-0 z-1000 w-full flex px-8 border-b-2 shadow-xs border-sidebar-border flex-row flex-wrap items-center justify-between gap-8 transition-all antialiased backdrop-blur-xs ${
-                isVisible ? "py-8 bg-sidebar/90" : "py-2 bg-sidebar/50"
+                isVisible ? "sm:py-8 py-2 bg-sidebar/90" : "py-2 bg-sidebar/50"
             }`}
         >
             <div
