@@ -14,6 +14,9 @@ import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import Logo from "../public/beer.svg";
+import Piwo from "./piwo";
 
 const listItemCSS =
     "flex flex-col flex-wrap gap-1 w-full justify-start justify-items-start rounded-md p-2 outline-hidden select-none hover-effect";
@@ -21,8 +24,10 @@ const listItemCSS =
 export default function NavBar() {
     const [isVisible, setVisible] = useState(true);
     const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [hasMounted, setHasMounted] = useState(false);
     const pathname = usePathname();
     useEffect(() => {
+        setHasMounted(true);
         let lastScrollY = window.scrollY;
         const controlNavbar = () => {
             const currentScrollY = window.scrollY;
@@ -35,20 +40,22 @@ export default function NavBar() {
     return (
         <div
             className={`fixed top-0 left-0 z-1000 w-full flex px-8 border-b-2 shadow-xs border-sidebar-border flex-row flex-wrap items-center justify-between gap-8 transition-all antialiased backdrop-blur-xs ${
-                isVisible ? "sm:py-8 py-2 bg-sidebar/90" : "py-2 bg-sidebar/50"
+                hasMounted && isVisible
+                    ? "sm:py-8 py-2 bg-sidebar/90"
+                    : "py-2 bg-sidebar/50"
             }`}
         >
             <div
                 id="organization-info"
                 className={`flex flex-row flex-nowrap gap-8 h-16 items-center-safe transition-all ${
-                    isVisible ? "" : "scale-60"
-                }`}
+                    hasMounted && isVisible ? "" : "scale-60"
+                }  origin-left`}
             >
                 <div
                     id="organization-logo"
-                    className="bg-accent inline w-16 h-full"
+                    className="inline w-16 h-full transition-all hover:scale-120 hover:rotate-15 hover:perspective-dramatic hover:translate-x-2 hover:-translate-y-2"
                 >
-                    placeholder
+                    <Piwo width={64} height={64} />
                 </div>
                 <div className="flex">
                     <h1>{organization.name}</h1>

@@ -1,0 +1,84 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" width="300" height="300" viewBox="-30 -2 304 304" xmlns="http://www.w3.org/2000/svg" fill="white">
+    <style>
+        :root {
+            color-scheme: light dark;
+            --beer1: #eeba00;
+            --beer2: #ffc800;
+            --beer3: #ffd22e;
+            --foam1: #dedede;
+            --foam2: #eeeeee;
+            --foam3: #ffffff;
+            --bubble1: #ffe586;
+        }
+
+        .shadow {
+            filter: drop-shadow(0 35px 35px light-dark(rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.25)));
+        }
+    </style>
+    <g id='glass'>
+        <defs>
+            <mask id="cutout-handle">
+                <!-- First rectangle: visible area -->
+                <rect width="70" x="180" y="60" height="150" rx="20" ry="20" fill="white" />
+                <!-- Second rectangle: cutout area (black = transparent in mask) -->
+                <rect width="60" x="180" y="70" height="130" rx="10" ry="10" fill="black" />
+                <rect width="20" x="180" y="60" height="150" fill="black" />
+            </mask>
+            <mask id="cutout-glass">
+                <!-- First rectangle: visible area -->
+                <rect width="70" x="180" y="60" height="150" rx="20" ry="20" fill="white" />
+                <!-- Second rectangle: cutout area (black = transparent in mask) -->
+                <rect width="20" x="180" y="60" height="150" fill="black" />
+            </mask>
+        </defs>
+        <!-- Apply the mask to the first rectangle -->
+        <rect class="shadow" width="70" x="180" y="60" height="150" opacity="0.7" fill="white" rx="20" ry="20"
+            mask="url(#cutout-handle)" />
+        <rect class="shadow" width="70" x="180" y="60" height="150" rx="20" ry="20" fill="none" stroke="black"
+            stroke-width="4" mask="url(#cutout-glass)" />
+        <rect class="shadow" width="60" x="180" y="70" height="130" rx="10" ry="10" fill="none" stroke="black"
+            stroke-width="2" mask="url(#cutout-glass)" />
+        <rect class="shadow" width="200" x="0" y="0" height="300" opacity="0.7" fill="white" rx="15" ry="20" />
+        <rect width="180" height="290" x="10" y="1" fill="var(--beer1)" rx="10" ry="15" />
+        <rect width="170" height="290" x="10" y="1" fill="var(--beer2)" rx="10" ry="15" />
+        <rect width="150" height="290" x="10" y="1" fill="var(--beer3)" rx="10" ry="15" />
+        <rect width="180" height="80" x="10" y="1" fill="var(--foam1)" />
+        <rect width="170" height="80" x="10" y="1" fill="var(--foam2)" />
+        <rect width="150" height="80" x="10" y="1" fill="var(--foam3)" opacity="0.8" />
+        <rect width="200" x="0" y="0" height="300" opacity="1" fill="none" rx="15" ry="20" stroke="black"
+            stroke-width="2" />
+    </g>
+    <g id='bubbles'>
+        <circle cx="130" cy="130" r="10" fill="var(--bubble1)" />
+        <circle cx="120" cy="190" r="15" fill="var(--bubble1)" />
+        <circle cx="70" cy="220" r="12" fill="var(--bubble1)" />
+        <circle cx="60" cy="160" r="14" fill="var(--bubble1)" />
+        <circle cx="90" cy="260" r="8" fill="var(--bubble1)" />
+        <circle cx="85" cy="100" r="9" fill="var(--bubble1)" />
+    </g>
+    <script type="text/javascript">
+        <![CDATA[
+        const bubbles = Array.from(document.querySelectorAll('g#bubbles circle')).map(circle => ({
+            el: circle,
+            startY: parseFloat(circle.getAttribute('cy')),
+            minY: 80 + Math.random() * 30,
+            speed: 0.2 + Math.random() * 0.15
+        }));
+
+        function animateBubbles() {
+            bubbles.forEach(bubble => {
+                let cy = parseFloat(bubble.el.getAttribute('cy'));
+                cy -= bubble.speed;
+                if (cy < bubble.minY) cy = bubble.startY;
+                bubble.el.setAttribute('cy', cy);
+            });
+            requestAnimationFrame(animateBubbles);
+        }
+
+        if (typeof window !== 'undefined') {
+            window.addEventListener('DOMContentLoaded', animateBubbles);
+        }
+        ]]>
+    </script>
+</svg>

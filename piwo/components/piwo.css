@@ -1,0 +1,15 @@
+:root {
+    color-scheme: light dark;
+    --beer1: #eeba00;
+    --beer2: #ffc800;
+    --beer3: #ffd22e;
+    --foam1: #dedede;
+    --foam2: #eeeeee;
+    --foam3: #ffffff;
+    --bubble1: #ffe586;
+}
+
+.shadow {
+    /* Drop shadow for light/dark mode */
+    filter: drop-shadow(0 15px 15px rgba(0, 0, 0, 0.25));
+}
