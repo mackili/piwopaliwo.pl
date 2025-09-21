@@ -8,7 +8,7 @@ export default function ScoreNumber({
     return (
         <div
             className={twMerge(
-                "flex items-center-safe justify-center-safe w-full h-full rounded-full bg-accent-foreground opacity-80 hover:opacity-90 transition-all text-accent font-extrabold text-6xl",
+                "flex items-center-safe justify-center-safe w-full h-full rounded-full bg-accent-foreground opacity-80 hover:opacity-90 transition-all text-accent font-extrabold text-6xl aspect-square",
                 className
             )}
             {...props}

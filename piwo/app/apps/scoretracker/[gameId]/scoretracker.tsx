@@ -4,6 +4,10 @@ import { UserScore } from "@/components/scoretracker/types";
 import { useState, useEffect } from "react";
 import ScoreButton from "./score-button";
 import ScoreBoard from "./scoreboard";
+import {
+    RealtimePostgresInsertPayload,
+    RealtimePostgresUpdatePayload,
+} from "@supabase/supabase-js";
 
 export default function ScoreTracker({
     gameId,
@@ -18,14 +22,15 @@ export default function ScoreTracker({
     const [userScore, setUserScore] = useState<UserScore | undefined>(
         undefined
     );
-    const playerCount = liveScores.length;
     const supabase = createClient();
 
     useEffect(() => {
-        console.log(userId);
         setUserScore(liveScores.find((score) => score.userId === userId));
-        console.log(liveScores.find((score) => score.userId === userId));
-        const updateLiveScores = (payload) => {
+        const updateLiveScores = (
+            payload:
+                | RealtimePostgresInsertPayload<UserScore>
+                | RealtimePostgresUpdatePayload<UserScore>
+        ) => {
             const scoreUpdate = payload.new as UserScore | null;
             if (!scoreUpdate) {
                 return;
@@ -48,7 +53,6 @@ export default function ScoreTracker({
                     return [...liveScores, scoreUpdate];
                 }
             })();
-            console.log(scoreUpdate);
             setScores(scoresUpdated);
         };
         const channel = supabase
@@ -80,11 +84,11 @@ export default function ScoreTracker({
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [supabase, liveScores, setScores, gameId]);
+    }, [supabase, liveScores, setScores, gameId, userId]);
 
     // useEffect(() => {}, [userScore]);
     return (
-        <div className="flex justify-center-safe flex-row sm:flex-col gap-8 w-full h-screen items-center-safe">
+        <div className="flex justify-center-safe flex-row sm:flex-col px-8 py-8 gap-8 w-full h-screen items-center-safe">
             <ScoreBoard userId={userId} liveScores={liveScores} />
             <div className="grid sm:grid-cols-2 gap-16 sm:gap-16 sm:grid-flow-row max-w-128">
                 <ScoreButton
