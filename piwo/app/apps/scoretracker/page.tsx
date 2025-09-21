@@ -73,7 +73,7 @@ export default function ScoreTrackerHome() {
     });
 
     return (
-        <div className="max-w-md mx-auto py-10 flex flex-col gap-6 h-screen justify-center-safe">
+        <div className="max-w-md mx-auto py-10 px-4 sm:px-0 flex flex-col gap-6 h-screen justify-center-safe">
             <h1>Score Tracker</h1>
             <div className="flex flex-col gap-2">
                 <Form {...newTrackerForm}>

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Computer, Moon, Sun } from "lucide-react";
+import { Beer, CircleQuestionMark, Computer, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ const themeIcons = {
     light: Sun,
     dark: Moon,
     system: Computer,
+    beer: Beer,
 };
 
 function toTitleCase(str: string) {
@@ -27,7 +28,6 @@ function toTitleCase(str: string) {
 
 export function ThemeToggle() {
     const { themes, setTheme, theme } = useTheme();
-    console.log([themes, theme]);
 
     return (
         <DropdownMenu>
@@ -35,7 +35,7 @@ export function ThemeToggle() {
                 <Button
                     variant="outline"
                     size="icon"
-                    className="absolute bottom-4 right-4"
+                    className="fixed bottom-4 right-4"
                 >
                     <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
                     <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
@@ -44,7 +44,9 @@ export function ThemeToggle() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 {themes.map((theme, index) => {
-                    const Icon = themeIcons[theme as keyof typeof themeIcons];
+                    const Icon =
+                        themeIcons[theme as keyof typeof themeIcons] ||
+                        CircleQuestionMark;
                     return (
                         <DropdownMenuItem
                             key={index}
