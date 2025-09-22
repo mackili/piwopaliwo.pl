@@ -8,12 +8,13 @@ const passwordSchema = z
     .refine((password) => /[a-z]/.test(password))
     .refine((password) => /[0-9]/.test(password))
     .refine((password) => /[!@#$%^&*]/.test(password));
-
-export const UserSchema = z.object({
+export const UserMetadataSchema = z.object({
     username: z.string().min(5).optional(),
     email: z.email(),
     firstName: z.string().min(2).optional(),
     lastName: z.string().min(2).optional(),
+});
+export const UserSchema = UserMetadataSchema.safeExtend({
     password: passwordSchema,
 });
 

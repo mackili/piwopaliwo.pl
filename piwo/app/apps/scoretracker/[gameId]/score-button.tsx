@@ -37,6 +37,10 @@ export default function ScoreButton({
         }
     };
     const handleClick = () => {
+        if ("vibrate" in navigator) {
+            // vibration API supported
+            navigator.vibrate(200);
+        }
         setButtonStatus("inactive");
         if (!userScore || !userScore.history) {
             console.error("No userScore or userScore.history");

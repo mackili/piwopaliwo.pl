@@ -29,8 +29,17 @@ export async function signup(formData: User) {
     // type-casting here for convenience
     // in practice, you should validate your inputs
     const data = UserSchema.parse(formData);
+    const signUpData = {
+        ...data,
+        options: {
+            data: {
+                firstName: data.firstName,
+                lastName: data.lastName,
+            },
+        },
+    };
 
-    const { error } = await supabase.auth.signUp(data);
+    const { error } = await supabase.auth.signUp(signUpData);
 
     if (error) {
         redirect("/auth/error");

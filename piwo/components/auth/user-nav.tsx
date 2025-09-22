@@ -1,0 +1,113 @@
+"use client";
+
+import { LogOut, Settings } from "lucide-react";
+import { AuthError } from "@supabase/supabase-js";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuItem,
+    DropdownMenuGroup,
+    DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
+import { UserResponse } from "@supabase/supabase-js";
+import { CurrentUserAvatar } from "../current-user-avatar";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import * as AvatarPrimitive from "@radix-ui/react-avatar";
+import { Button } from "../ui/button";
+
+export default function UserNav({
+    className,
+}: React.ComponentProps<typeof AvatarPrimitive.Root>) {
+    const avatar = "https://github.com/shadcn.png";
+    const router = useRouter();
+    const supabase = createClient();
+    const [user, setUser] = useState<UserResponse>();
+    const [logoutError, setLogoutError] = useState<AuthError | undefined>();
+    const getUser = () => {
+        supabase.auth
+            .getUser()
+            .then((userData) => setUser(userData))
+            .then((userData) => console.log(userData))
+            .catch((error) => console.error(error));
+    };
+    useEffect(() => {
+        getUser();
+    }, []);
+
+    useEffect(() => {}, [user, user?.data.user]);
+
+    const logOut = async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            setLogoutError(error);
+            return;
+        }
+        getUser();
+        router.refresh();
+    };
+
+    return (
+        <>
+            <Link
+                href="/auth/login"
+                className={!user?.data.user ? "cursor-pointer" : "hidden"}
+            >
+                <Button variant="secondary">Log In</Button>
+            </Link>
+            <DropdownMenu>
+                <DropdownMenuTrigger
+                    className={user?.data.user ? "cursor-pointer" : "hidden"}
+                >
+                    <CurrentUserAvatar className={className} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg z-200"
+                    side={"bottom"}
+                    align="end"
+                    sideOffset={4}
+                >
+                    <DropdownMenuLabel className="p-0 font-normal">
+                        <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                            <CurrentUserAvatar className="h-8 w-8 rounded-lg" />
+                            <div className="grid flex-1 text-left text-sm leading-tight">
+                                <span className="truncate font-medium">
+                                    {`${user?.data.user?.user_metadata.firstName} ${user?.data.user?.user_metadata.lastName}`}
+                                </span>
+                                <span className="truncate text-xs">
+                                    {user?.data.user?.email}
+                                </span>
+                            </div>
+                        </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                            <Link
+                                href="/settings"
+                                className="flex flex-row gap-2 items-center w-full cursor-pointer"
+                            >
+                                <Settings /> Settings
+                            </Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                            <button
+                                className="flex flex-row gap-2 items-center w-full cursor-pointer"
+                                onClick={logOut}
+                            >
+                                <LogOut /> Log Out
+                            </button>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </>
+    );
+}

@@ -3,6 +3,7 @@ import { organization } from "@/public/statics";
 import { useEffect, useState } from "react";
 import Piwo from "./piwo";
 import NavigationMenuPP from "./ui/nav-menu-items";
+import UserNav from "./auth/user-nav";
 
 export default function NavBar() {
     const [isVisible, setVisible] = useState(true);
@@ -34,10 +35,10 @@ export default function NavBar() {
     }, [navTriggered]);
     return (
         <div
-            className={`fixed top-0 left-0 z-1000 w-full flex px-8 border-b-2 shadow-xs border-sidebar-border flex-row flex-wrap items-center justify-between gap-8 transition-all antialiased backdrop-blur-xs ${
+            className={`fixed top-0 left-0 z-100 w-full flex px-8 border-b-2 shadow-xs border-sidebar-border flex-row flex-nowrap items-center justify-between gap-8 transition-all antialiased backdrop-blur-xs ${
                 hasMounted && isVisible
                     ? "sm:py-8 py-2 bg-sidebar/90"
-                    : "py-2 bg-sidebar/50"
+                    : "sm:py-2 bg-sidebar/50"
             }`}
         >
             <div
@@ -69,14 +70,14 @@ export default function NavBar() {
                     </h2>
                 </div>
             </div>
-            <div
-                id="navbar"
-                className={`h-full flex md:min-w-[400px] lg:min-w-[500px] transition-all ${
-                    isVisible ? "" : "scale-90"
-                }`}
-            >
-                {/* <DropdownMenu /> */}
-                <div id="user" className="flex h-full"></div>
+            <div className="z-200">
+                <UserNav
+                    className={`transition-all font-bold drop-shadow-sm p-1 hover:scale-105 ${
+                        isVisible === true
+                            ? "sm:w-16 sm:h-16 sm:text-xl text-base w-14 h-14"
+                            : "w-10 h-10 text-sm"
+                    }`}
+                />
             </div>
         </div>
     );
