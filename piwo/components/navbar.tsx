@@ -7,17 +7,31 @@ import NavigationMenuPP from "./ui/nav-menu-items";
 export default function NavBar() {
     const [isVisible, setVisible] = useState(true);
     const [hasMounted, setHasMounted] = useState(false);
+    const [navTriggered, setNavTriggered] = useState(false);
+    const [navOpen, setNavOpen] = useState(false);
+
     useEffect(() => {
         setHasMounted(true);
         let lastScrollY = window.scrollY;
         const controlNavbar = () => {
             const currentScrollY = window.scrollY;
-            setVisible(!(currentScrollY > lastScrollY && currentScrollY > 100));
+            const visible = !(
+                currentScrollY > lastScrollY && currentScrollY > 100
+            );
+            setVisible(visible);
+            if (!visible && navOpen === true) {
+                console.log(false);
+                setNavTriggered(false);
+            }
             lastScrollY = currentScrollY;
         };
         window.addEventListener("scroll", controlNavbar);
         return () => window.removeEventListener("scroll", controlNavbar);
-    }, []);
+    }, [navOpen]);
+
+    useEffect(() => {
+        setNavOpen(navTriggered);
+    }, [navTriggered]);
     return (
         <div
             className={`fixed top-0 left-0 z-1000 w-full flex px-8 border-b-2 shadow-xs border-sidebar-border flex-row flex-wrap items-center justify-between gap-8 transition-all antialiased backdrop-blur-xs ${
@@ -32,11 +46,22 @@ export default function NavBar() {
                     hasMounted && isVisible ? "" : "scale-60"
                 }  origin-left`}
             >
-                <div
-                    id="organization-logo"
-                    className="inline w-16 h-full transition-all hover:scale-120 hover:rotate-15 hover:perspective-dramatic hover:translate-x-2 hover:-translate-y-2"
-                >
-                    <Piwo width={64} height={64} />
+                <div id="organization-logo" className={`relative inline`}>
+                    <button
+                        className={`h-16 w-16 transition-all hover:scale-110 hover:rotate-5 hover:perspective-dramatic hover:translate-x-2 hover:-translate-y-2 ${
+                            navOpen &&
+                            "scale-105 rotate-10 translate-x-2 sm:-translate-y-2 perspective-dramatic"
+                        } ${isVisible && "cursor-pointer"}`}
+                        onClick={() => setNavTriggered(!navTriggered)}
+                        disabled={!isVisible}
+                    >
+                        <Piwo width={64} height={64} />
+                    </button>
+                    <NavigationMenuPP
+                        className={`mt-4 ${
+                            navOpen === true ? "scale-100" : "scale-0"
+                        }`}
+                    />
                 </div>
                 <div className="flex">
                     <h2 className="text-xl! sm:text-3xl!">
@@ -50,7 +75,7 @@ export default function NavBar() {
                     isVisible ? "" : "scale-90"
                 }`}
             >
-                <NavigationMenuPP />
+                {/* <DropdownMenu /> */}
                 <div id="user" className="flex h-full"></div>
             </div>
         </div>
