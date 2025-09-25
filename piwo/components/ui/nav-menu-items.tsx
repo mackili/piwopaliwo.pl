@@ -20,6 +20,7 @@ interface MenuItem {
     description?: string;
     id: string;
     order?: number;
+
     link: string;
 }
 
@@ -27,15 +28,17 @@ type AuxiliaryMenuItem = MenuItem;
 
 type MainMenuItem = MenuItem & {
     children?: AuxiliaryMenuItem[];
+    status: "active" | "disabled";
 };
 
 const menuItems: MainMenuItem[] = [
-    { id: "home", order: 0, link: "/" },
+    { id: "home", order: 0, link: "/", status: "active" },
     {
         description: "Find all games offered on the platform here",
         id: "games",
         order: 10,
         link: "#",
+        status: "disabled",
         children: [
             {
                 description: `PiwoPaliwo's version of the famous economic game`,
@@ -53,6 +56,7 @@ const menuItems: MainMenuItem[] = [
         id: "apps",
         order: 20,
         link: "#",
+        status: "active",
         children: [
             {
                 description: `Track a score for any game with multiple users. Live!`,
@@ -82,7 +86,9 @@ export default function NavigationMenuPP({
                         <NavigationMenuItem key={index}>
                             {item.children && item.children.length > 0 ? (
                                 <>
-                                    <NavigationMenuTrigger>
+                                    <NavigationMenuTrigger
+                                        disabled={item.status === "disabled"}
+                                    >
                                         {
                                             // @ts-expect-error structured with the translation
                                             t(`NavMenu.${item.id}`)

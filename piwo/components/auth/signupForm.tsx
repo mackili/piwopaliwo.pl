@@ -98,7 +98,7 @@ export default function SignUpPage() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Sign Up</Button>
+                <Button type="submit">Zarejestruj się</Button>
             </form>
         </Form>
     );

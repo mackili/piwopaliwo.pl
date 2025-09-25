@@ -15,6 +15,7 @@ type MainMenuItem = MenuItem & {
 export default {
     settings: "Ustawienia",
     logOut: "Wyloguj się",
+    logIn: "Zaloguj się",
     "hello.world": "Hello world!",
     beer: "Piwo",
     dark: "Ciemny",
@@ -39,4 +40,5 @@ export default {
         joinExistingGame: "Dołącz do istniejącej gry",
     },
     or: "lub",
+    register: "Zarejestruj się",
 } as const;

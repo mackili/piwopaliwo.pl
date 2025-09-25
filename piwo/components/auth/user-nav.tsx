@@ -19,12 +19,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
-import { useI18n } from "@/locales/client";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 
 export default function UserNav({
     className,
 }: React.ComponentProps<typeof AvatarPrimitive.Root>) {
     const t = useI18n();
+    const locale = useCurrentLocale();
+    const [isLocaleSet, setLocaleSet] = useState(false);
     const router = useRouter();
     const supabase = createClient();
     const [user, setUser] = useState<UserResponse>();
@@ -38,6 +40,7 @@ export default function UserNav({
     };
     useEffect(() => {
         getUser();
+        setLocaleSet(true);
     }, []);
 
     useEffect(() => {}, [user, user?.data.user]);
@@ -55,10 +58,10 @@ export default function UserNav({
     return (
         <>
             <Link
-                href="/auth/login"
+                href={`/${locale}/auth/login`}
                 className={!user?.data.user ? "cursor-pointer" : "hidden"}
             >
-                <Button variant="secondary">Log In</Button>
+                <Button variant="secondary">{t("logIn")}</Button>
             </Link>
             <DropdownMenu>
                 <DropdownMenuTrigger
@@ -89,7 +92,7 @@ export default function UserNav({
                     <DropdownMenuGroup>
                         <DropdownMenuItem>
                             <Link
-                                href="/settings"
+                                href={`/${locale}/settings`}
                                 className="flex flex-row gap-2 items-center w-full cursor-pointer"
                             >
                                 <Settings /> {t("settings")}
