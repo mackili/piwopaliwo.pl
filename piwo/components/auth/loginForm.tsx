@@ -47,7 +47,7 @@ export default function LoginPage() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>Hasło</FormLabel>
                             <FormControl>
                                 <Input
                                     type="password"
@@ -60,7 +60,7 @@ export default function LoginPage() {
                     )}
                 />
                 <Button type="submit" variant="secondary">
-                    Login
+                    Zaloguj się
                 </Button>
             </form>
         </Form>

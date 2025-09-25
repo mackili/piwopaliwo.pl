@@ -64,7 +64,7 @@ export default function NavBar() {
                         }`}
                     />
                 </div>
-                <div className="flex">
+                <div className="flex select-none">
                     <h2 className="text-xl! sm:text-3xl!">
                         {organization.name}
                     </h2>

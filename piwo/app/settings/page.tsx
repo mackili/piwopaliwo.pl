@@ -78,7 +78,7 @@ export default function Settings() {
                         name="firstName"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>First Name</FormLabel>
+                                <FormLabel>Imię</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Name" {...field} />
                                 </FormControl>
@@ -90,7 +90,7 @@ export default function Settings() {
                         name="lastName"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Last Name</FormLabel>
+                                <FormLabel>Nazwisko</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Last Name" {...field} />
                                 </FormControl>
@@ -109,7 +109,7 @@ export default function Settings() {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Update</Button>
+                    <Button type="submit">Zaktualizuj dane</Button>
                 </form>
             </Form>
         </div>

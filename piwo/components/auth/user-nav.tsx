@@ -91,7 +91,7 @@ export default function UserNav({
                                 href="/settings"
                                 className="flex flex-row gap-2 items-center w-full cursor-pointer"
                             >
-                                <Settings /> Settings
+                                <Settings /> Ustawienia
                             </Link>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
@@ -102,7 +102,7 @@ export default function UserNav({
                                 className="flex flex-row gap-2 items-center w-full cursor-pointer"
                                 onClick={logOut}
                             >
-                                <LogOut /> Log Out
+                                <LogOut /> Wyloguj się
                             </button>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>

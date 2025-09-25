@@ -35,7 +35,7 @@ export default function SignUpPage() {
                     name="firstName"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>First Name</FormLabel>
+                            <FormLabel>Imię</FormLabel>
                             <FormControl>
                                 <Input
                                     type="text"
@@ -52,7 +52,7 @@ export default function SignUpPage() {
                     name="lastName"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Last Name</FormLabel>
+                            <FormLabel>Nazwisko</FormLabel>
                             <FormControl>
                                 <Input
                                     type="text"
@@ -86,7 +86,7 @@ export default function SignUpPage() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>Hasło</FormLabel>
                             <FormControl>
                                 <Input
                                     type="password"
