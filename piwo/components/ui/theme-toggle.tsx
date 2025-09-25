@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Beer, CircleQuestionMark, Computer, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-
+import { useI18n } from "@/locales/client";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -11,13 +11,6 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const themeIcons = {
-    light: Sun,
-    dark: Moon,
-    system: Computer,
-    beer: Beer,
-};
 
 function toTitleCase(str: string) {
     return str.replace(
@@ -27,6 +20,19 @@ function toTitleCase(str: string) {
 }
 
 export function ThemeToggle() {
+    const t = useI18n();
+    const themeIcons = {
+        light: Sun,
+        dark: Moon,
+        system: Computer,
+        beer: Beer,
+    };
+    const themeLabels = {
+        light: t("light"),
+        dark: t("dark"),
+        system: t("system"),
+        beer: t("beer"),
+    };
     const { themes, setTheme, theme } = useTheme();
     const [hasMounted, setHasMounted] = React.useState(false);
 
@@ -51,7 +57,7 @@ export function ThemeToggle() {
                     ) : (
                         <Computer className="w-4 h-4" />
                     )}
-                    <span className="sr-only">Toggle theme</span>
+                    <span className="sr-only">{t("toggleTheme")}</span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -59,6 +65,8 @@ export function ThemeToggle() {
                     const Icon =
                         themeIcons[theme as keyof typeof themeIcons] ||
                         CircleQuestionMark;
+                    const label =
+                        themeLabels[theme as keyof typeof themeLabels];
                     return (
                         <DropdownMenuItem
                             key={index}
@@ -66,7 +74,7 @@ export function ThemeToggle() {
                             className="flex items-center gap-2"
                         >
                             <Icon className="w-4 h-4" />
-                            {toTitleCase(theme)}
+                            {toTitleCase(label)}
                         </DropdownMenuItem>
                     );
                 })}

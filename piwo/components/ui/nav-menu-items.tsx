@@ -1,5 +1,4 @@
 "use client";
-import { menuItems } from "@/public/statics";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -12,13 +11,63 @@ import {
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 
 const listItemCSS =
     "flex flex-col flex-wrap gap-1 w-full justify-start justify-items-start rounded-md p-2 outline-hidden select-none hover-effect";
+interface MenuItem {
+    title?: string;
+    description?: string;
+    id: string;
+    order?: number;
+    link: string;
+}
+
+type AuxiliaryMenuItem = MenuItem;
+
+type MainMenuItem = MenuItem & {
+    children?: AuxiliaryMenuItem[];
+};
+
+const menuItems: MainMenuItem[] = [
+    { id: "home", order: 0, link: "/" },
+    {
+        description: "Find all games offered on the platform here",
+        id: "games",
+        order: 10,
+        link: "#",
+        children: [
+            {
+                description: `PiwoPaliwo's version of the famous economic game`,
+                id: "piwopol",
+                link: "#",
+            },
+            {
+                description: `PiwoPaliwo's version of the famous economic game`,
+                id: "piwopol",
+                link: "#",
+            },
+        ],
+    },
+    {
+        id: "apps",
+        order: 20,
+        link: "#",
+        children: [
+            {
+                description: `Track a score for any game with multiple users. Live!`,
+                id: "scoreTracker",
+                link: "/apps/scoretracker",
+            },
+        ],
+    },
+];
 
 export default function NavigationMenuPP({
     ...props
 }: React.ComponentProps<"div">) {
+    const locale = useCurrentLocale();
+    const t = useI18n();
     return (
         <div
             {...props}
@@ -34,13 +83,16 @@ export default function NavigationMenuPP({
                             {item.children && item.children.length > 0 ? (
                                 <>
                                     <NavigationMenuTrigger>
-                                        {item.title}
+                                        {
+                                            // @ts-expect-error structured with the translation
+                                            t(`NavMenu.${item.id}`)
+                                        }
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr] p-2 overflow-scroll">
                                             <li className="h-full">
                                                 <Link
-                                                    href={item.link}
+                                                    href={`/${locale}${item.link}`}
                                                     className={twMerge(
                                                         listItemCSS,
                                                         "h-full"
@@ -55,18 +107,17 @@ export default function NavigationMenuPP({
                                                     (childItem, index) => (
                                                         <Link
                                                             key={index}
-                                                            href={
-                                                                childItem.link
-                                                            }
+                                                            href={`/${locale}${childItem.link}`}
                                                             className={twMerge(
                                                                 listItemCSS
                                                             )}
                                                         >
                                                             <div className="flex flex-col flex-wrap gap-1">
                                                                 <h4 className="!text-base">
-                                                                    {
-                                                                        childItem.title
-                                                                    }
+                                                                    {t(
+                                                                        // @ts-expect-error structured with the translation
+                                                                        `NavMenu.${childItem.id}`
+                                                                    )}
                                                                 </h4>
                                                                 {childItem.description && (
                                                                     <p className="text-sm">
@@ -88,7 +139,12 @@ export default function NavigationMenuPP({
                                     asChild
                                     className={navigationMenuTriggerStyle()}
                                 >
-                                    <Link href={item.link}>{item.title}</Link>
+                                    <Link href={`/${locale}${item.link}`}>
+                                        {
+                                            // @ts-expect-error structured with the translation
+                                            t(`NavMenu.${item.id}`)
+                                        }
+                                    </Link>
                                 </NavigationMenuLink>
                             )}
                         </NavigationMenuItem>

@@ -19,11 +19,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
+import { useI18n } from "@/locales/client";
 
 export default function UserNav({
     className,
 }: React.ComponentProps<typeof AvatarPrimitive.Root>) {
-    const avatar = "https://github.com/shadcn.png";
+    const t = useI18n();
     const router = useRouter();
     const supabase = createClient();
     const [user, setUser] = useState<UserResponse>();
@@ -91,7 +92,7 @@ export default function UserNav({
                                 href="/settings"
                                 className="flex flex-row gap-2 items-center w-full cursor-pointer"
                             >
-                                <Settings /> Ustawienia
+                                <Settings /> {t("settings")}
                             </Link>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
@@ -102,7 +103,7 @@ export default function UserNav({
                                 className="flex flex-row gap-2 items-center w-full cursor-pointer"
                                 onClick={logOut}
                             >
-                                <LogOut /> Wyloguj się
+                                <LogOut /> {t("logOut")}
                             </button>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>

@@ -1,9 +1,8 @@
-import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lato, Outfit } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/navbar";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+// import NavBar from "@/components/navbar";
+// import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -42,16 +41,7 @@ export default function RootLayout({
             <body
                 className={`${outfit.className} ${geistMono.variable} antialiased`}
             >
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <NavBar />
-                    {children}
-                    <ThemeToggle />
-                </ThemeProvider>
+                {children}
             </body>
         </html>
     );

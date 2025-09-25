@@ -1,0 +1,42 @@
+interface MenuItem {
+    title: string;
+    description?: string;
+    id: string;
+    order?: number;
+    link: string;
+}
+
+type AuxiliaryMenuItem = MenuItem;
+
+type MainMenuItem = MenuItem & {
+    children?: AuxiliaryMenuItem[];
+};
+
+export default {
+    settings: "Ustawienia",
+    logOut: "Wyloguj się",
+    "hello.world": "Hello world!",
+    beer: "Piwo",
+    dark: "Ciemny",
+    light: "Jasny",
+    system: "System",
+    toggleTheme: "Zmień styl",
+    NavMenu: {
+        home: "Strona główna",
+        games: "Gry",
+        piwopol: "Piwopol",
+        apps: "Aplikacje",
+        scoreTracker: "Licznik punktów",
+    },
+    ScoreTracker: {
+        title: "Licznik punktów",
+        nameOfGame: "Nazwa gry",
+        nameOfGameDesc:
+            "Wybrana przez Ciebie nazwa gry, której wynik chcesz śledzić",
+        createNewGame: "Utwórz nową grę",
+        gameCode: "Kod gry",
+        gameCodeDesc: "Wprowadź kod gry, do której chcesz dołączyć",
+        joinExistingGame: "Dołącz do istniejącej gry",
+    },
+    or: "lub",
+} as const;

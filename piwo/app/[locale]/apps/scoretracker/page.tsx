@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { SupabaseError } from "@/utils/supabase/types";
+import { useI18n } from "@/locales/client";
 
 const NEW_GAME_API = { url: "/api/apps/scoretracker/game/new", method: "POST" };
 const GAME_LINK = (gameId: string | number | undefined) => {
@@ -34,6 +35,7 @@ const GAME_LINK = (gameId: string | number | undefined) => {
 export default function ScoreTrackerHome() {
     const router = useRouter();
     const [isLoading, setLoading] = useState(false);
+    const t = useI18n();
 
     async function handleNewTracker(data: ScoreTrackerGame) {
         setLoading(true);
@@ -74,7 +76,7 @@ export default function ScoreTrackerHome() {
 
     return (
         <div className="max-w-md mx-auto py-10 px-4 sm:px-0 flex flex-col gap-6 h-screen justify-center-safe">
-            <h1>Score Tracker</h1>
+            <h1>{t("ScoreTracker.title")}</h1>
             <div className="flex flex-col gap-2">
                 <Form {...newTrackerForm}>
                     <form
@@ -86,7 +88,9 @@ export default function ScoreTrackerHome() {
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Name of game tracked</FormLabel>
+                                    <FormLabel>
+                                        {t("ScoreTracker.nameOfGame")}
+                                    </FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder="Ping-Pong"
@@ -94,7 +98,7 @@ export default function ScoreTrackerHome() {
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        This is your friendly name for the game
+                                        {t("ScoreTracker.nameOfGameDesc")}
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -106,13 +110,13 @@ export default function ScoreTrackerHome() {
                             className="w-full"
                             disabled={isLoading}
                         >
-                            Create New Game
+                            {t("ScoreTracker.createNewGame")}
                         </Button>
                     </form>
                 </Form>
             </div>
             <div className="flex justify-center-safe rounded bg-accent shadow-sm">
-                <h4>OR</h4>
+                <h4>{t("or")}</h4>
             </div>
             <Form {...joinTrackerForm}>
                 <form
@@ -124,13 +128,14 @@ export default function ScoreTrackerHome() {
                         name="id"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Game Code</FormLabel>
+                                <FormLabel>
+                                    {t("ScoreTracker.gameCode")}
+                                </FormLabel>
                                 <FormControl>
                                     <Input placeholder="AB4C8F" {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    This is the code of the game you want to
-                                    join.
+                                    {t("ScoreTracker.gameCodeDesc")}
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
@@ -142,7 +147,7 @@ export default function ScoreTrackerHome() {
                         className="w-full"
                         disabled={isLoading}
                     >
-                        Join Game
+                        {t("ScoreTracker.joinExistingGame")}
                     </Button>
                 </form>
             </Form>

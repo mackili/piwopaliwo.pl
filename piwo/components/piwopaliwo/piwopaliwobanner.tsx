@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from "react";
 const entries: DictionaryEntryType[] = [
     {
         title: "piwo",
-        type: "rzeczownik nijaki",
+        type: "rzeczownik; rodz. nijaki",
         description:
             "pienisty napój, zwykle o małej zawartości alkoholu, otrzymywany przez fermentację ze słodu jęczmiennego, chmielu, drożdży i wody; też: porcja tego napoju",
         variations: ["piwko", "piwsko"],
@@ -16,12 +16,12 @@ const entries: DictionaryEntryType[] = [
     },
     {
         title: "paliwo",
-        type: "rzeczownik nijaki",
+        type: "rzeczownik; rodz. nijaki",
         description:
             "substancja wykorzystywana jako źródło energii, służącej do napędzania różnych urządzeń",
         variations: ["paliwko", "paliwsko"],
         source: {
-            name: "Wielki słownik języka polskiego",
+            name: "Wielki słownik języka polskiego | PAN",
             link: "https://wsjp.pl/haslo/podglad/6597/paliwo",
         },
     },
