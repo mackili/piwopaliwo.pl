@@ -23,7 +23,6 @@ export default async function TeamMemberTile({
     teamMember: PiwoPaliwoTeamMember;
 }) {
     const locale = (await getCurrentLocale()) || "pl";
-    console.log(teamMember);
     return (
         <div className="aspect-square flex w-full h-full relative transition-all ease-in-out bg-accent overflow-hidden">
             <div className="z-0">

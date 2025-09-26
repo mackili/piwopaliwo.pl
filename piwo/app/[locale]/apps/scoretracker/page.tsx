@@ -1,156 +1,16 @@
-"use client";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import {
-    ScoreTrackerGame,
-    ScoreTrackerGameSchema,
-    enterScoreTrackerGameForm,
-} from "@/components/scoretracker/types";
-import * as z from "zod";
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { SupabaseError } from "@/utils/supabase/types";
-import { useI18n } from "@/locales/client";
+"use server";
+import ScoredGamesList from "./games-list";
+import JoinTrackerForm from "./join-form";
 
-const NEW_GAME_API = { url: "/api/apps/scoretracker/game/new", method: "POST" };
-const GAME_LINK = (gameId: string | number | undefined) => {
-    const baseUrl = "/apps/scoretracker";
-    if (!gameId) {
-        return baseUrl;
-    }
-    return `${baseUrl}/${gameId}`;
-};
-
-export default function ScoreTrackerHome() {
-    const router = useRouter();
-    const [isLoading, setLoading] = useState(false);
-    const t = useI18n();
-
-    async function handleNewTracker(data: ScoreTrackerGame) {
-        setLoading(true);
-        const res = (await (
-            await fetch(NEW_GAME_API.url, {
-                method: NEW_GAME_API.method,
-                body: JSON.stringify(data),
-            })
-        ).json()) as ScoreTrackerGame[] | SupabaseError | null;
-        if (res && Array.isArray(res) && res.length === 1) {
-            const gameData = ScoreTrackerGameSchema.parse(res[0]);
-            router.push(GAME_LINK(gameData.id));
-        }
-        setLoading(false);
-    }
-    const newTrackerForm = useForm<ScoreTrackerGame>({
-        reValidateMode: "onChange",
-        resolver: zodResolver(ScoreTrackerGameSchema),
-        defaultValues: {
-            name: "",
-        },
-    });
-
-    async function handleJoinTracker(
-        values: z.infer<typeof enterScoreTrackerGameForm>
-    ) {
-        setLoading(true);
-        setLoading(false);
-        router.push(GAME_LINK(values.id));
-    }
-    const joinTrackerForm = useForm<z.infer<typeof enterScoreTrackerGameForm>>({
-        reValidateMode: "onChange",
-        resolver: zodResolver(enterScoreTrackerGameForm),
-        defaultValues: {
-            id: "",
-        },
-    });
-
+export default async function Page() {
     return (
-        <div className="max-w-md mx-auto py-10 px-4 sm:px-0 flex flex-col gap-6 h-screen justify-center-safe">
-            <h1>{t("ScoreTracker.title")}</h1>
-            <div className="flex flex-col gap-2">
-                <Form {...newTrackerForm}>
-                    <form
-                        className="flex flex-col gap-4 mt-8"
-                        onSubmit={newTrackerForm.handleSubmit(handleNewTracker)}
-                    >
-                        <FormField
-                            control={newTrackerForm.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        {t("ScoreTracker.nameOfGame")}
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Ping-Pong"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        {t("ScoreTracker.nameOfGameDesc")}
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button
-                            variant="secondary"
-                            type="submit"
-                            className="w-full"
-                            disabled={isLoading}
-                        >
-                            {t("ScoreTracker.createNewGame")}
-                        </Button>
-                    </form>
-                </Form>
+        <div className="w-screen grid grid-cols-1 md:grid-cols-3 py-10 px-4 gap-4">
+            <div className="max-w-md mx-auto flex flex-col gap-6 h-screen justify-center-safe md:col-start-2">
+                <JoinTrackerForm />
             </div>
-            <div className="flex justify-center-safe rounded bg-accent shadow-sm">
-                <h4>{t("or")}</h4>
+            <div className="md:col-start-3 justify-center-safe flex flex-col gap-8 h-screen">
+                <ScoredGamesList />
             </div>
-            <Form {...joinTrackerForm}>
-                <form
-                    className="flex flex-col gap-4 mt-8"
-                    onSubmit={joinTrackerForm.handleSubmit(handleJoinTracker)}
-                >
-                    <FormField
-                        control={joinTrackerForm.control}
-                        name="id"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>
-                                    {t("ScoreTracker.gameCode")}
-                                </FormLabel>
-                                <FormControl>
-                                    <Input placeholder="AB4C8F" {...field} />
-                                </FormControl>
-                                <FormDescription>
-                                    {t("ScoreTracker.gameCodeDesc")}
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button
-                        variant="default"
-                        type="submit"
-                        className="w-full"
-                        disabled={isLoading}
-                    >
-                        {t("ScoreTracker.joinExistingGame")}
-                    </Button>
-                </form>
-            </Form>
         </div>
     );
 }

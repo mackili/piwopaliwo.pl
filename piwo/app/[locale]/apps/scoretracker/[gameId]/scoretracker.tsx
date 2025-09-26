@@ -49,7 +49,6 @@ export default function ScoreTracker({
                             : { ...score }
                     );
                 } else {
-                    console.log(scoreUpdate);
                     return [...liveScores, scoreUpdate];
                 }
             })();

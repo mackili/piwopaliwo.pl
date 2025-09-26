@@ -21,7 +21,6 @@ export default function NavBar() {
             );
             setVisible(visible);
             if (!visible && navOpen === true) {
-                console.log(false);
                 setNavTriggered(false);
             }
             lastScrollY = currentScrollY;
