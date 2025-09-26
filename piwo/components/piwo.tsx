@@ -10,7 +10,7 @@ export default function Piwo({
     height: number;
 }) {
     const svgRef = useRef<SVGSVGElement>(null);
-    const animationRef = useRef<number>();
+    const animationRef = useRef<number>(null);
 
     useEffect(() => {
         const svg = svgRef.current;

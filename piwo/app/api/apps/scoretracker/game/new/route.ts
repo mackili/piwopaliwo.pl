@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
         (await req.json()) as ScoreTrackerGame
     );
     const supabase = await createClient();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, error } = await supabase.auth.getUser();
     newGame.ownerId = data.user?.id;
     const response = await supabase.from("GameScore").upsert(newGame).select();

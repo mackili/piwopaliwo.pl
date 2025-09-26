@@ -12,12 +12,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
-import {
-    UserIdentity,
-    UserResponse,
-    UserAttributes,
-    UserMetadata,
-} from "@supabase/supabase-js";
+import { UserResponse, UserAttributes } from "@supabase/supabase-js";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CurrentUserAvatar } from "@/components/current-user-avatar";

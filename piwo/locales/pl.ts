@@ -1,17 +1,3 @@
-interface MenuItem {
-    title: string;
-    description?: string;
-    id: string;
-    order?: number;
-    link: string;
-}
-
-type AuxiliaryMenuItem = MenuItem;
-
-type MainMenuItem = MenuItem & {
-    children?: AuxiliaryMenuItem[];
-};
-
 export default {
     settings: "Ustawienia",
     logOut: "Wyloguj się",
@@ -41,4 +27,5 @@ export default {
     },
     or: "lub",
     register: "Zarejestruj się",
+    team: "Skład",
 } as const;

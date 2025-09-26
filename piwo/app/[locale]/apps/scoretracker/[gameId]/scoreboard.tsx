@@ -1,6 +1,5 @@
 import { UserScore } from "@/components/scoretracker/types";
 import ScoreNumber from "./score-display";
-import { useState, useEffect } from "react";
 
 export default function ScoreBoard({
     liveScores,

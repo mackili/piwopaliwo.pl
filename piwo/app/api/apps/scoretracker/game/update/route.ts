@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { SupabaseResponseSchema } from "@/utils/supabase/types";
 import { createClient, supabaseToNextResponse } from "@/utils/supabase/server";
 import { UserScoreSchema } from "@/components/scoretracker/types";
 

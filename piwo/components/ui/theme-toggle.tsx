@@ -45,7 +45,7 @@ export function ThemeToggle() {
                 <Button
                     variant="outline"
                     size="icon"
-                    className="fixed bottom-4 right-4"
+                    className="fixed bottom-4 right-4 z-100"
                 >
                     {hasMounted ? (
                         (() => {

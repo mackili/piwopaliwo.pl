@@ -1,8 +1,3 @@
-import { Noto_Serif } from "next/font/google";
-
-const notoSerifBold = Noto_Serif({
-    weight: ["200", "400", "500", "600", "900", "800"],
-});
 export type DictionaryEntryType = {
     title: string;
     type: string;
@@ -20,7 +15,7 @@ export default function DictionaryEntry({
 }) {
     return (
         <div
-            className={`${notoSerifBold.className} flex shrink-0 items-center-safe justify-start snap-center snap-always flex-col max-w-sm sm:max-w-2xl h-full gap-4`}
+            className={`font-serif flex shrink-0 items-center-safe justify-start snap-center snap-always flex-col max-w-sm sm:max-w-2xl h-full gap-4`}
         >
             <p className="w-full text-start font-[600] text-7xl sm:text-9xl py-4">
                 <span>{entry.title}</span>

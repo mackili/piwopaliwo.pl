@@ -68,8 +68,9 @@ export default function ScoreButton({
     };
     return (
         <Button
-            onClick={handleClick}
+            onClick={handleClick || clickHandler}
             disabled={buttonStatus === "inactive"}
+            variant={variant}
             {...props}
         >
             {buttonText()}

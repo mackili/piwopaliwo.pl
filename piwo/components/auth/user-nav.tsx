@@ -26,10 +26,12 @@ export default function UserNav({
 }: React.ComponentProps<typeof AvatarPrimitive.Root>) {
     const t = useI18n();
     const locale = useCurrentLocale();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isLocaleSet, setLocaleSet] = useState(false);
     const router = useRouter();
     const supabase = createClient();
     const [user, setUser] = useState<UserResponse>();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [logoutError, setLogoutError] = useState<AuthError | undefined>();
     const getUser = () => {
         supabase.auth
@@ -41,6 +43,7 @@ export default function UserNav({
     useEffect(() => {
         getUser();
         setLocaleSet(true);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {}, [user, user?.data.user]);
