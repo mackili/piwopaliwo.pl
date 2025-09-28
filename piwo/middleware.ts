@@ -3,7 +3,7 @@ import { updateSession } from "@/utils/supabase/middleware";
 import { createI18nMiddleware } from "next-international/middleware";
 
 const I18nMiddleware = createI18nMiddleware({
-    locales: ["pl"],
+    locales: ["pl", "en"],
     defaultLocale: "pl",
 });
 

@@ -1,4 +1,5 @@
 "use client";
+import { useCurrentLocale } from "@/locales/client";
 import DictionaryEntry, { DictionaryEntryType } from "./dictionary-entry";
 import { useRef, useState, useEffect } from "react";
 
@@ -13,6 +14,7 @@ const entries: DictionaryEntryType[] = [
             name: "Słownik Języka Polskiego | PWN",
             link: "https://sjp.pwn.pl/slowniki/piwo.html",
         },
+        locale: "pl",
     },
     {
         title: "paliwo",
@@ -24,15 +26,52 @@ const entries: DictionaryEntryType[] = [
             name: "Wielki słownik języka polskiego | PAN",
             link: "https://wsjp.pl/haslo/podglad/6597/paliwo",
         },
+        locale: "pl",
+    },
+    {
+        title: "beer",
+        type: "noun",
+        description:
+            "a slightly bitter, alcoholic drink made from grain, or a serving of this drink in a glass or other container",
+        source: {
+            name: "Cambridge Dictionary",
+            link: "https://dictionary.cambridge.org/dictionary/english/beer",
+        },
+        locale: "en",
+        pronunciation: "/bɪər/",
+    },
+    {
+        title: "fuel",
+        type: "noun",
+        description:
+            "a substance that is used to provide heat or power, usually by being burned",
+        source: {
+            name: "Cambridge Dictionary",
+            link: "https://dictionary.cambridge.org/dictionary/english/fuel",
+        },
+        locale: "en",
+        pronunciation: "/ˈfjuː.əl/",
     },
 ];
 
 // const repeatedEntries = [...entries, ...entries, ...entries];
 const repeatedEntries = [...entries, ...entries];
+function filterLocaleEntries(locale: string) {
+    const localeEntries = repeatedEntries.filter(
+        (entry) => entry.locale && entry.locale === locale
+    );
+    if (localeEntries.length === 0) {
+        return repeatedEntries.filter(
+            (entry) => entry.locale && entry.locale === "pl"
+        );
+    }
+    return localeEntries;
+}
 
 export default function PiwoPaliwoBanner() {
     const trackRef = useRef<HTMLDivElement>(null);
     const [setWidth, setSetWidth] = useState(0);
+    const locale = useCurrentLocale();
 
     useEffect(() => {
         if (trackRef.current) {
@@ -58,7 +97,7 @@ export default function PiwoPaliwoBanner() {
                         : undefined,
                 }}
             >
-                {repeatedEntries.map((entry, key) => (
+                {filterLocaleEntries(locale).map((entry, key) => (
                     <div key={key} className="flex-shrink-0 px-24">
                         <DictionaryEntry entry={entry} />
                     </div>

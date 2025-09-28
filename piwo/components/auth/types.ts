@@ -1,21 +1,38 @@
 import * as z from "zod";
 
-const passwordSchema = z
+export const passwordRequirements = [
+    { pattern: /[A-Z]/, message: "PasswordRequirements.capitalLetter" },
+    { pattern: /[a-z]/, message: "PasswordRequirements.smallLetter" },
+    { pattern: /[0-9]/, message: "PasswordRequirements.number" },
+    { pattern: /[!@#$%^&*]/, message: "PasswordRequirements.specialChar" },
+    { pattern: /\S{8,24}/, message: "PasswordRequirements.length" },
+];
+
+export const passwordSchema = z
     .string()
     .min(8)
     .max(24)
-    .refine((password) => /[A-Z]/.test(password))
-    .refine((password) => /[a-z]/.test(password))
-    .refine((password) => /[0-9]/.test(password))
-    .refine((password) => /[!@#$%^&*]/.test(password));
+    .refine((password) =>
+        passwordRequirements.every((req) => req.pattern.test(password))
+    );
+
 export const UserMetadataSchema = z.object({
     username: z.string().min(5).optional(),
     email: z.email(),
     firstName: z.string().min(2).optional(),
     lastName: z.string().min(2).optional(),
 });
+
+export const UserInfoSchema = z.object({
+    userId: z.uuidv4(),
+    firstName: z.string().min(2).optional(),
+    lastName: z.string().min(2).optional(),
+});
+
 export const UserSchema = UserMetadataSchema.safeExtend({
     password: passwordSchema,
 });
 
+export type UserMetadata = z.infer<typeof UserMetadataSchema>;
+export type UserInfo = z.infer<typeof UserInfoSchema>;
 export type User = z.infer<typeof UserSchema>;
