@@ -18,10 +18,10 @@ export async function login(formData: User) {
     const { error } = await supabase.auth.signInWithPassword(data);
 
     if (error) {
-        redirect(`${locale}/auth/error`);
+        redirect(`/${locale}/auth/error`);
     }
 
-    revalidatePath("/", "layout");
+    revalidatePath(`/${locale}`, "layout");
     redirect(`/${locale}`);
 }
 
@@ -42,12 +42,17 @@ export async function signup(formData: User) {
         },
     };
 
-    const { error } = await supabase.auth.signUp(signUpData);
+    const signupResponse = await supabase.auth.signUp(signUpData);
 
-    if (error) {
+    if (signupResponse.error) {
         redirect(`/${locale}/auth/error`);
     }
+    const userInfoResponse = await supabase.from("UserInfo").insert({
+        userId: signupResponse.data.user?.id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+    });
 
-    revalidatePath("/", "layout");
+    revalidatePath(`/${locale}`, "layout");
     redirect(`/${locale}`);
 }
