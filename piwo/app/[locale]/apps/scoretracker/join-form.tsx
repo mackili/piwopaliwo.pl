@@ -18,23 +18,27 @@ import {
 } from "@/components/scoretracker/types";
 import * as z from "zod";
 import { Input } from "@/components/ui/input";
-import { useI18n } from "@/locales/client";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { SupabaseError } from "@/utils/supabase/types";
 const NEW_GAME_API = { url: "/api/apps/scoretracker/game/new", method: "POST" };
-const GAME_LINK = (gameId: string | number | undefined) => {
-    const baseUrl = "/apps/scoretracker";
+const GAME_LINK = (
+    gameId: string | number | undefined,
+    locale: string = "pl"
+) => {
+    const baseUrl = "apps/scoretracker";
     if (!gameId) {
         return baseUrl;
     }
-    return `${baseUrl}/${gameId}`;
+    return `/${locale}/${baseUrl}/${gameId}`;
 };
 
 export default function JoinTrackerForm() {
     const router = useRouter();
     const [isLoading, setLoading] = useState(false);
     const t = useI18n();
+    const locale = useCurrentLocale();
 
     async function handleNewTracker(data: ScoreTrackerGame) {
         setLoading(true);
@@ -46,7 +50,7 @@ export default function JoinTrackerForm() {
         ).json()) as ScoreTrackerGame[] | SupabaseError | null;
         if (res && Array.isArray(res) && res.length === 1) {
             const gameData = ScoreTrackerGameSchema.parse(res[0]);
-            router.push(GAME_LINK(gameData.id));
+            router.push(GAME_LINK(gameData.id, locale));
         }
         setLoading(false);
     }
