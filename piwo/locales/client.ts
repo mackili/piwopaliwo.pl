@@ -9,6 +9,6 @@ export const {
     useCurrentLocale,
     I18nProviderClient,
 } = createI18nClient({
-    // en: () => import("./en"),
+    en: () => import("./en"),
     pl: () => import("./pl"),
 });

@@ -41,6 +41,7 @@ export default {
         newPassword: "Nowe hasło",
         repeatPassword: "Powtórz nowe hasło",
         changePassword: "Zmień hasło",
+        updateData: "Zaktualizuj dane",
     },
     password: "hasło",
     PasswordRequirements: {

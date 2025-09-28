@@ -4,6 +4,7 @@ import "../globals.css";
 import NavBar from "@/components/navbar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { I18nProviderClient } from "../../locales/client";
+import { LocaleToggle } from "@/components/ui/locale-toggle";
 
 export const metadata: Metadata = {
     title: "Piwo-Paliwo 2.0",
@@ -32,6 +33,7 @@ export default async function RootLayout({
                     Piwo Paliwo 2.0 {new Date().getFullYear()}
                 </footer>
                 <ThemeToggle />
+                <LocaleToggle />
             </ThemeProvider>
         </I18nProviderClient>
     );

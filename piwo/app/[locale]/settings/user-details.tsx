@@ -14,9 +14,11 @@ import { createClient } from "@/lib/supabase/client";
 import { UserResponse, UserAttributes } from "@supabase/supabase-js";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/locales/client";
 
 export default function UserDetails({ user }: { user: UserResponse }) {
     const supabase = createClient();
+    const t = useI18n();
 
     const userForm = useForm<z.infer<typeof UserMetadataSchema>>({
         resolver: zodResolver(UserMetadataSchema),
@@ -46,7 +48,7 @@ export default function UserDetails({ user }: { user: UserResponse }) {
                     name="firstName"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Imię</FormLabel>
+                            <FormLabel>{t("Settings.firstName")}</FormLabel>
                             <FormControl>
                                 <Input placeholder="Name" {...field} />
                             </FormControl>
@@ -58,14 +60,14 @@ export default function UserDetails({ user }: { user: UserResponse }) {
                     name="lastName"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nazwisko</FormLabel>
+                            <FormLabel>{t("Settings.lastName")}</FormLabel>
                             <FormControl>
                                 <Input placeholder="Last Name" {...field} />
                             </FormControl>
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Zaktualizuj dane</Button>
+                <Button type="submit">{t("Settings.updateData")}</Button>
             </form>
         </Form>
     );
