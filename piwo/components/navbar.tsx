@@ -34,7 +34,7 @@ export default function NavBar() {
     }, [navTriggered]);
     return (
         <div
-            className={`fixed top-0 left-0 z-100 w-full flex px-8 border-b-2 shadow-xs border-sidebar-border flex-row flex-nowrap items-center justify-between gap-4 transition-all antialiased backdrop-blur-xs ${
+            className={`fixed top-0 left-0 z-100 w-full max-w-screen flex px-8 border-b-2 shadow-xs border-sidebar-border flex-row flex-nowrap items-center justify-between gap-4 transition-all antialiased backdrop-blur-xs ${
                 hasMounted && isVisible
                     ? "sm:py-8 py-2 bg-sidebar/50"
                     : "sm:py-2 bg-sidebar/30"
