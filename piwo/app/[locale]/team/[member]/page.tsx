@@ -4,6 +4,10 @@ import { SupabaseError } from "@/utils/supabase/types";
 import Image from "next/image";
 import TeamMemberFacts from "../team-member-facts";
 import { purifiedPost } from "@/components/purified-post";
+import { Button } from "@/components/ui/button";
+import { PencilIcon } from "lucide-react";
+import { getCurrentLocale, getI18n } from "@/locales/server";
+import Link from "next/link";
 
 export default async function Page({
     params,
@@ -12,6 +16,8 @@ export default async function Page({
 }) {
     const { member } = await params;
     const supabase = await createClient();
+    const t = await getI18n();
+    const locale = await getCurrentLocale();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, error } = (await supabase
         .from("piwo_paliwo_member")
@@ -47,6 +53,19 @@ export default async function Page({
                         <div className="flex flex-col gap-2 sm:flex-row sm:justify-between flex-wrap">
                             <TeamMemberFacts teamMember={data} />
                         </div>
+                        {data.user_id ===
+                            (await supabase.auth.getUser()).data.user?.id && (
+                            <Link
+                                href={`/${locale}/team/${member}/edit`}
+                                className="w-full"
+                            >
+                                <Button variant="outline" className="w-full">
+                                    <span className="flex flex-row gap-2 items-center-safe">
+                                        <PencilIcon /> {`${t("edit")} BIO`}
+                                    </span>
+                                </Button>
+                            </Link>
+                        )}
                         {data?.bio && (
                             <div
                                 className="w-full pt-10 text-justify text-pretty text-base/6 font-light tracking-wide flex gap-4 flex-col"
