@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { PencilIcon } from "lucide-react";
 import { getCurrentLocale, getI18n } from "@/locales/server";
 import Link from "next/link";
-import TextDocumentRenderer from "@/components/texteditor/renderer";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
 
 export default async function Page({
@@ -71,11 +70,6 @@ export default async function Page({
                         )}
                         {data?.bio && data?.bio_document && (
                             <div className="w-full pt-10 text-justify text-pretty text-base/6 font-light tracking-wide flex gap-4 flex-col">
-                                {/* <TextDocumentRenderer
-                                    textDocument={data.bio_document}
-                                    showAuthor={false}
-                                    showTitle={false}
-                                /> */}
                                 <MDXRemote
                                     source={data.bio_document?.markdown || ""}
                                 />

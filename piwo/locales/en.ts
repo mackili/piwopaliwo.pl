@@ -53,5 +53,7 @@ export default {
     },
     TextEditor: {
         title: "Title",
+        showPreview: "Show preview",
+        preview: "Preview",
     },
 } as const;
