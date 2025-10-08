@@ -23,8 +23,8 @@ const DocumentSectionBaseSchema = z.object({
     id: z.uuid(),
     type: DocumentSectionTypeEnum,
     order: z.number(),
-    className: z.string().optional(),
-    parent: z.uuid().optional(),
+    className: z.string().nullish(),
+    parent: z.uuid().nullish(),
     children: z.array(z.uuid()),
 });
 export type DocumentSectionBase = z.infer<typeof DocumentSectionBaseSchema>;
@@ -37,7 +37,7 @@ export const ImageSectionSchema = DocumentSectionBaseSchema.extend({
         caption: z.array(SpanSectionSchema).optional(),
     }),
 });
-export type ImageSection = z.infer<typeof ImageSectionSchema>;
+export type ImageSectionType = z.infer<typeof ImageSectionSchema>;
 
 export const HeaderSectionSchema = DocumentSectionBaseSchema.extend({
     type: z.literal("header"),
@@ -107,13 +107,17 @@ export const TextDocumentSectionSchema = z.discriminatedUnion("type", [
 ]);
 export type TextDocumentSection = z.infer<typeof TextDocumentSectionSchema>;
 
+export const DocumentStatusEnum = z.enum(["draft", "published", "unpublished"]);
+export type DocumentStatusEnumType = z.infer<typeof DocumentStatusEnum>;
+
 export const TextDocumentSchema = z.object({
     id: z.uuidv4(),
     title: z.string().nullish(),
     author: z.uuidv4(),
-    status: z.enum(["draft", "published", "unpublished"]),
+    status: DocumentStatusEnum,
     created_at: z.iso.datetime({ offset: true }).optional(),
     sections: z.array(TextDocumentSectionSchema).optional(),
     access: z.enum(["open", "restricted"]),
+    markdown: z.string().nullish(),
 });
 export type TextDocument = z.infer<typeof TextDocumentSchema>;

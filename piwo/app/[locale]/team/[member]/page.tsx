@@ -3,11 +3,12 @@ import { PiwoPaliwoTeamMember } from "../team-member-tile";
 import { SupabaseError } from "@/utils/supabase/types";
 import Image from "next/image";
 import TeamMemberFacts from "../team-member-facts";
-import { purifiedPost } from "@/components/purified-post";
 import { Button } from "@/components/ui/button";
 import { PencilIcon } from "lucide-react";
 import { getCurrentLocale, getI18n } from "@/locales/server";
 import Link from "next/link";
+import TextDocumentRenderer from "@/components/texteditor/renderer";
+import { MDXRemote } from "next-mdx-remote-client/rsc";
 
 export default async function Page({
     params,
@@ -21,14 +22,16 @@ export default async function Page({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, error } = (await supabase
         .from("piwo_paliwo_member")
-        .select()
+        .select(
+            "*, bio_document:TextDocument!piwo_paliwo_member_bio_fkey(*,sections:TextDocumentSection(*))"
+        )
         .filter("id", "eq", `${member}`)
         .limit(1)
         .single()) as {
         data: PiwoPaliwoTeamMember | null;
         error: SupabaseError | null;
     };
-    const htmlBio = { __html: purifiedPost({ content: data?.bio }) };
+    console.log(data);
     return (
         <section className="relative overflow-ellipsis sm:overflow-visible">
             {data && (
@@ -56,7 +59,7 @@ export default async function Page({
                         {data.user_id ===
                             (await supabase.auth.getUser()).data.user?.id && (
                             <Link
-                                href={`/${locale}/team/${member}/edit`}
+                                href={`/${locale}/team/${member}/edit?id=${data?.bio}`}
                                 className="w-full"
                             >
                                 <Button variant="outline" className="w-full">
@@ -66,11 +69,17 @@ export default async function Page({
                                 </Button>
                             </Link>
                         )}
-                        {data?.bio && (
-                            <div
-                                className="w-full pt-10 text-justify text-pretty text-base/6 font-light tracking-wide flex gap-4 flex-col"
-                                dangerouslySetInnerHTML={htmlBio}
-                            ></div>
+                        {data?.bio && data?.bio_document && (
+                            <div className="w-full pt-10 text-justify text-pretty text-base/6 font-light tracking-wide flex gap-4 flex-col">
+                                {/* <TextDocumentRenderer
+                                    textDocument={data.bio_document}
+                                    showAuthor={false}
+                                    showTitle={false}
+                                /> */}
+                                <MDXRemote
+                                    source={data.bio_document?.markdown || ""}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>
