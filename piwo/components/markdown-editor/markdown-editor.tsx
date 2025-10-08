@@ -5,7 +5,7 @@ import CodeEditor from "./code-editor";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextDocument, TextDocumentSchema } from "../texteditor/types";
+import { TextDocument, TextDocumentSchema } from "../markdown-editor/types";
 import { twMerge } from "tailwind-merge";
 import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";

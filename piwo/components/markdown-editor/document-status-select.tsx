@@ -7,7 +7,7 @@ import {
     SelectValue,
 } from "../ui/select";
 import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
-import { DocumentStatusEnum } from "../texteditor/types";
+import { DocumentStatusEnum } from "../markdown-editor/types";
 import type { ControllerProps, FieldPath, FieldValues } from "react-hook-form";
 
 export default function DocumentStatusSelect<

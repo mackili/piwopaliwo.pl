@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { PiwoPaliwoTeamMember } from "../../team-member-tile";
 import { SupabaseError } from "@/utils/supabase/types";
 import MarkdownEditor from "@/components/markdown-editor/markdown-editor";
-import { TextDocument } from "@/components/texteditor/types";
+import { TextDocument } from "@/components/markdown-editor/types";
 
 export default async function Page({
     params,

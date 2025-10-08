@@ -1,6 +1,6 @@
 "use client";
 import { createClient } from "@/utils/supabase/client";
-import { TextDocument, TextDocumentSchema } from "../texteditor/types";
+import { TextDocument, TextDocumentSchema } from "../markdown-editor/types";
 import isEqual from "lodash.isequal";
 import { PostgrestError } from "@supabase/supabase-js";
 import { ZodError } from "zod";

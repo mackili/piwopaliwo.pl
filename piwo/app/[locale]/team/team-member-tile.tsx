@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import * as z from "zod";
 import TeamMemberFacts from "./team-member-facts";
-import { TextDocumentSchema } from "@/components/texteditor/types";
+import { TextDocumentSchema } from "@/components/markdown-editor/types";
 export const PiwoPaliwoTeamMemberSchema = z.object({
     id: z.uuidv4(),
     user_id: z.uuidv4(),
