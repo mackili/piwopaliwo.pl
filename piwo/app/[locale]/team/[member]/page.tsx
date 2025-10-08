@@ -28,9 +28,7 @@ export default async function Page({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, error } = (await supabase
         .from("piwo_paliwo_member")
-        .select(
-            "*, bio_document:TextDocument!piwo_paliwo_member_bio_fkey(*,sections:TextDocumentSection(*))"
-        )
+        .select("*, bio_document:TextDocument!piwo_paliwo_member_bio_fkey(*)")
         .filter("id", "eq", `${member}`)
         .limit(1)
         .single()) as {
@@ -39,7 +37,7 @@ export default async function Page({
     };
     return (
         <section className="relative overflow-ellipsis sm:overflow-visible">
-            {data && (
+            {data ? (
                 <div className="flex flex-col sm:grid sm:grid-cols-11 relative left-0 top-0 w-full items-start justify-start sm:justify-end-safe sm:gap-8">
                     <div className="w-screen sm:w-full min-w-[350px] sm:col-span-5 aspect-square -left-5 sm:-top-42! sm:left-10 -top-24 relative">
                         {data?.image_url && (
@@ -84,6 +82,8 @@ export default async function Page({
                         )}
                     </div>
                 </div>
+            ) : (
+                <code className="text-red-600">{`Error ${error?.code}: ${error?.message}`}</code>
             )}
         </section>
     );
