@@ -3,7 +3,18 @@ import { PiwoPaliwoTeamMember } from "../team-member-tile";
 import { SupabaseError } from "@/utils/supabase/types";
 import Image from "next/image";
 import TeamMemberFacts from "../team-member-facts";
-import { purifiedPost } from "@/components/purified-post";
+import { Button } from "@/components/ui/button";
+import { PencilIcon } from "lucide-react";
+import { getCurrentLocale, getI18n } from "@/locales/server";
+import Link from "next/link";
+import { MDXRemote, MDXRemoteOptions } from "next-mdx-remote-client/rsc";
+import remarkEmoji from "remark-emoji";
+
+const options: MDXRemoteOptions = {
+    mdxOptions: {
+        remarkPlugins: [remarkEmoji],
+    },
+};
 
 export default async function Page({
     params,
@@ -12,17 +23,20 @@ export default async function Page({
 }) {
     const { member } = await params;
     const supabase = await createClient();
+    const t = await getI18n();
+    const locale = await getCurrentLocale();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, error } = (await supabase
         .from("piwo_paliwo_member")
-        .select()
+        .select(
+            "*, bio_document:TextDocument!piwo_paliwo_member_bio_fkey(*,sections:TextDocumentSection(*))"
+        )
         .filter("id", "eq", `${member}`)
         .limit(1)
         .single()) as {
         data: PiwoPaliwoTeamMember | null;
         error: SupabaseError | null;
     };
-    const htmlBio = { __html: purifiedPost({ content: data?.bio }) };
     return (
         <section className="relative overflow-ellipsis sm:overflow-visible">
             {data && (
@@ -47,11 +61,26 @@ export default async function Page({
                         <div className="flex flex-col gap-2 sm:flex-row sm:justify-between flex-wrap">
                             <TeamMemberFacts teamMember={data} />
                         </div>
-                        {data?.bio && (
-                            <div
-                                className="w-full pt-10 text-justify text-pretty text-base/6 font-light tracking-wide flex gap-4 flex-col"
-                                dangerouslySetInnerHTML={htmlBio}
-                            ></div>
+                        {data.user_id ===
+                            (await supabase.auth.getUser()).data.user?.id && (
+                            <Link
+                                href={`/${locale}/team/${member}/edit?id=${data?.bio}`}
+                                className="w-full"
+                            >
+                                <Button variant="outline" className="w-full">
+                                    <span className="flex flex-row gap-2 items-center-safe">
+                                        <PencilIcon /> {`${t("edit")} BIO`}
+                                    </span>
+                                </Button>
+                            </Link>
+                        )}
+                        {data?.bio && data?.bio_document && (
+                            <div className="w-full pt-10  text-pretty text-base/6 font-light tracking-wide flex gap-4 flex-col">
+                                <MDXRemote
+                                    source={data.bio_document?.markdown || ""}
+                                    options={options}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>

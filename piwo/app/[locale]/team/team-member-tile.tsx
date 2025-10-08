@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import * as z from "zod";
 import TeamMemberFacts from "./team-member-facts";
+import { TextDocumentSchema } from "@/components/markdown-editor/types";
 export const PiwoPaliwoTeamMemberSchema = z.object({
     id: z.uuidv4(),
     user_id: z.uuidv4(),
@@ -10,9 +11,10 @@ export const PiwoPaliwoTeamMemberSchema = z.object({
     nickname: z.string().nullish(),
     fav_beer: z.string().nullish(),
     education: z.array(z.string()).nullish(),
-    bio: z.string().nullish(),
+    bio: z.uuid().nullish(),
     location: z.string().nullish(),
     image_url: z.url().nullish(),
+    bio_document: TextDocumentSchema.nullish(),
 });
 
 export type PiwoPaliwoTeamMember = z.infer<typeof PiwoPaliwoTeamMemberSchema>;

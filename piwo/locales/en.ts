@@ -7,6 +7,7 @@ export default {
     light: "Light",
     system: "System",
     toggleTheme: "Toggle theme",
+    edit: "Edit",
     NavMenu: {
         home: "Home",
         games: "Games",
@@ -49,5 +50,10 @@ export default {
         specialChar: "Special character",
         length: "Between 8 and 24 characters",
         matchRepeat: "Repeated password does not match",
+    },
+    TextEditor: {
+        title: "Title",
+        showPreview: "Show preview",
+        preview: "Preview",
     },
 } as const;

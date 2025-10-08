@@ -1,7 +1,7 @@
 "use client";
 import { UserResponse } from "@supabase/supabase-js";
 import ChangePasswordForm from "./change-password";
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function UserSecurity({ user }: { user: UserResponse }) {
     return (
         <div className="w-full h-full flex gap-6 my-6">

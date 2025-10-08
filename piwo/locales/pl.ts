@@ -2,12 +2,12 @@ export default {
     settings: "Ustawienia",
     logOut: "Wyloguj się",
     logIn: "Zaloguj się",
-    "hello.world": "Hello world!",
     beer: "Piwo",
     dark: "Ciemny",
     light: "Jasny",
     system: "System",
     toggleTheme: "Zmień styl",
+    edit: "Edytuj",
     NavMenu: {
         home: "Strona główna",
         games: "Gry",
@@ -51,5 +51,10 @@ export default {
         specialChar: "Znak specjany",
         length: "Pomiędzy 8 a 24 znaki",
         matchRepeat: "Powtórzone hasło musi być zgodne z nowym hasłem",
+    },
+    TextEditor: {
+        title: "Tytuł",
+        showPreview: "Pokaż podgląd",
+        preview: "Podgląd",
     },
 } as const;
