@@ -7,7 +7,14 @@ import { Button } from "@/components/ui/button";
 import { PencilIcon } from "lucide-react";
 import { getCurrentLocale, getI18n } from "@/locales/server";
 import Link from "next/link";
-import { MDXRemote } from "next-mdx-remote-client/rsc";
+import { MDXRemote, MDXRemoteOptions } from "next-mdx-remote-client/rsc";
+import remarkEmoji from "remark-emoji";
+
+const options: MDXRemoteOptions = {
+    mdxOptions: {
+        remarkPlugins: [remarkEmoji],
+    },
+};
 
 export default async function Page({
     params,
@@ -72,6 +79,7 @@ export default async function Page({
                             <div className="w-full pt-10 text-justify text-pretty text-base/6 font-light tracking-wide flex gap-4 flex-col">
                                 <MDXRemote
                                     source={data.bio_document?.markdown || ""}
+                                    options={options}
                                 />
                             </div>
                         )}
