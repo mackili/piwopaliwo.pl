@@ -1,6 +1,7 @@
 "use client";
 import { Marked } from "marked";
 import { twMerge } from "tailwind-merge";
+import { emojify } from "node-emoji";
 
 export default function MarkdownPreview({
     markdown,
@@ -10,7 +11,9 @@ export default function MarkdownPreview({
     markdown: string | null | undefined;
 } & React.ComponentProps<"div">) {
     const marked = new Marked();
-    const html = marked.parse(markdown || "", { async: false });
+    const emojiMarkdown = emojify(markdown || "");
+    // const html = marked.parse(markdown || "", { async: false });
+    const html = marked.parse(emojiMarkdown || "", { async: false });
     return (
         <div
             className={twMerge(
