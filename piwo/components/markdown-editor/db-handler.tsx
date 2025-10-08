@@ -4,7 +4,6 @@ import { TextDocument, TextDocumentSchema } from "../texteditor/types";
 import isEqual from "lodash.isequal";
 import { PostgrestError } from "@supabase/supabase-js";
 import { ZodError } from "zod";
-import { error } from "console";
 
 const supabase = createClient();
 const TEXT_DOCUMENT_SELECT = "*";

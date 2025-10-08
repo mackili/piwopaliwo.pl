@@ -1,13 +1,7 @@
 "use client";
 import { createClient } from "@/utils/supabase/client";
-import {
-    TextDocument,
-    TextDocumentSchema,
-    TextDocumentSection,
-    TextDocumentSectionSchema,
-} from "./types";
+import { TextDocument, TextDocumentSchema, TextDocumentSection } from "./types";
 import isEqual from "lodash.isequal";
-import { error } from "console";
 
 const supabase = createClient();
 const TEXT_DOCUMENT_SELECT = "*";
@@ -25,16 +19,6 @@ export async function readTextDocument({ documentId }: { documentId: string }) {
         return { data: null, error };
     }
     try {
-        // Map parent to children sections
-        // data.sections =
-        //     (data.sections as TextDocumentSection[]).map((section) => ({
-        //         ...section,
-        //         children: (data.sections as TextDocumentSection[])
-        //             .filter(
-        //                 (filterSection) => filterSection?.parent === section.id
-        //             )
-        //             ?.map((filtered) => filtered.id),
-        //     })) || [];
         data.sections = await mapChildrenToParentSections(data?.sections || []);
         const parseResult = await TextDocumentSchema.safeParseAsync(data);
         if (parseResult.success) {
@@ -103,6 +87,7 @@ export async function upsertTextDocumentSections({
     if (sections.length === 0) {
         return { data: null, error: null };
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const sanitizedSections = sections.map(({ children, ...rest }) => rest);
     const { data, error } = await supabase
         .from("TextDocumentSection")

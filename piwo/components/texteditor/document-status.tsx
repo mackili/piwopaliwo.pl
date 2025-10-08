@@ -1,11 +1,4 @@
 import { Controller, Control } from "react-hook-form";
-import {
-    Select,
-    SelectContent,
-    SelectTrigger,
-    SelectItem,
-    SelectValue,
-} from "../ui/select";
 import { DocumentStatusEnum, TextDocument } from "./types";
 import {
     DropdownMenu,

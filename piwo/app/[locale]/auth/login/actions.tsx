@@ -1,8 +1,6 @@
 "use server";
-
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
 import { createClient } from "@/utils/supabase/server";
 import { User, UserSchema } from "@/components/auth/types";
 import { getCurrentLocale } from "@/locales/server";
@@ -47,6 +45,7 @@ export async function signup(formData: User) {
     if (signupResponse.error) {
         redirect(`/${locale}/auth/error`);
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const userInfoResponse = await supabase.from("UserInfo").insert({
         userId: signupResponse.data.user?.id,
         firstName: data.firstName,

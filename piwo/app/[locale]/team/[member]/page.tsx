@@ -37,7 +37,6 @@ export default async function Page({
         data: PiwoPaliwoTeamMember | null;
         error: SupabaseError | null;
     };
-    console.log(data);
     return (
         <section className="relative overflow-ellipsis sm:overflow-visible">
             {data && (
@@ -76,7 +75,7 @@ export default async function Page({
                             </Link>
                         )}
                         {data?.bio && data?.bio_document && (
-                            <div className="w-full pt-10 text-justify text-pretty text-base/6 font-light tracking-wide flex gap-4 flex-col">
+                            <div className="w-full pt-10  text-pretty text-base/6 font-light tracking-wide flex gap-4 flex-col">
                                 <MDXRemote
                                     source={data.bio_document?.markdown || ""}
                                     options={options}

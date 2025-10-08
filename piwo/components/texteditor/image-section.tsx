@@ -8,7 +8,11 @@ export default function ImageSection({
 }: {
     control: Control<TextDocument>;
     name: FieldPath<TextDocument>;
-    value: { url: string; fallback: string; caption?: any };
+    value: {
+        url: string;
+        fallback: string;
+        caption?: string | undefined | null;
+    };
 }) {
     return (
         <div className="w-full flex flex-col gap-2">
@@ -17,6 +21,7 @@ export default function ImageSection({
                 name={`${name}.url` as FieldPath<TextDocument>}
                 defaultValue={value.url}
                 render={({ field }) => (
+                    // @ts-expect-error expect
                     <input
                         className="w-full p-2"
                         type="text"
@@ -30,6 +35,7 @@ export default function ImageSection({
                 name={`${name}.fallback` as FieldPath<TextDocument>}
                 defaultValue={value.fallback}
                 render={({ field }) => (
+                    // @ts-expect-error expect
                     <input
                         className="w-full p-2"
                         type="text"
@@ -39,6 +45,7 @@ export default function ImageSection({
                 )}
             />
             {value.url && (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                     src={value.url}
                     alt={value.fallback}
