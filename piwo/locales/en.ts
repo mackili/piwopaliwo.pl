@@ -57,4 +57,7 @@ export default {
         showPreview: "Show preview",
         preview: "Preview",
     },
+    Blog: {
+        published: "Published on",
+    },
 } as const;

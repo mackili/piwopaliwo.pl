@@ -1,0 +1,34 @@
+import {
+    TextDocument,
+    TextDocumentSchema,
+} from "@/components/markdown-editor/types";
+import { createClient } from "@/lib/supabase/server";
+import { PostgrestError } from "@supabase/supabase-js";
+import z from "zod";
+
+export async function fetchArticle(articleId: string) {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+        .from("TextDocument")
+        .select(
+            "id,title,author,status,created_at,access,markdown,authorData:UserInfo!TextDocument_author_fkey1(*)"
+        )
+        .eq("id", articleId)
+        .eq("status", "published")
+        .limit(1)
+        .single();
+    let documentData: TextDocument | null = null;
+    let parseError: z.ZodError | PostgrestError | null = null;
+
+    if (data) {
+        const parseResult = await TextDocumentSchema.safeParseAsync(data);
+        if (parseResult.success) {
+            documentData = parseResult.data;
+        } else {
+            parseError = parseResult.error;
+        }
+    } else {
+        parseError = error;
+    }
+    return { documentData, parseError };
+}

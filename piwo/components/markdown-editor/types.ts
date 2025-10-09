@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { UserInfoSchema } from "../scoretracker/types";
 
 export const DocumentSectionTypeEnum = z.enum([
     "image",
@@ -119,5 +120,8 @@ export const TextDocumentSchema = z.object({
     sections: z.array(TextDocumentSectionSchema).optional(),
     access: z.enum(["open", "restricted"]),
     markdown: z.string().nullish(),
+    authorData: UserInfoSchema.nullish(),
+    thumbnail_url: z.url().nullish(),
+    banner_url: z.url().nullish(),
 });
 export type TextDocument = z.infer<typeof TextDocumentSchema>;
