@@ -41,6 +41,7 @@ export default {
         repeatPassword: "Repeat password",
         changePassword: "Change password",
         updateData: "Update data",
+        avatarTooBig: "Selected photo exceeds accepted size limit (2MB)",
     },
     password: "password",
     PasswordRequirements: {

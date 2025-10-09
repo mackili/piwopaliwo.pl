@@ -1,22 +1,29 @@
 import { createClient } from "@/lib/supabase/client";
+import { User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 
-export const useCurrentUserName = () => {
-    const [name, setName] = useState<string | null>(null);
+export const useCurrentUserName = (user?: User | null) => {
+    const [name, setName] = useState<string | null>(
+        user?.user_metadata?.firstName && user?.user_metadata?.lastName
+            ? `${user?.user_metadata?.firstName} ${user?.user_metadata?.lastName}`
+            : null
+    );
 
     useEffect(() => {
-        const fetchProfileName = async () => {
-            const { data, error } = await createClient().auth.getSession();
-            if (error) {
-                console.error(error);
-            }
-            setName(
-                `${data.session?.user.user_metadata?.firstName} ${data.session?.user.user_metadata?.lastName}`
-            );
-        };
+        if (!name || name.length === 0) {
+            const fetchProfileName = async () => {
+                const { data, error } = await createClient().auth.getSession();
+                if (error) {
+                    console.error(error);
+                }
+                setName(
+                    `${data.session?.user.user_metadata?.firstName} ${data.session?.user.user_metadata?.lastName}`
+                );
+            };
 
-        fetchProfileName();
-    }, []);
+            fetchProfileName();
+        }
+    }, [name]);
 
     return name || "?";
 };

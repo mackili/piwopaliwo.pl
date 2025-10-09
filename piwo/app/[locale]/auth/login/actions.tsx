@@ -45,12 +45,6 @@ export async function signup(formData: User) {
     if (signupResponse.error) {
         redirect(`/${locale}/auth/error`);
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const userInfoResponse = await supabase.from("UserInfo").insert({
-        userId: signupResponse.data.user?.id,
-        firstName: data.firstName,
-        lastName: data.lastName,
-    });
 
     revalidatePath(`/${locale}`, "layout");
     redirect(`/${locale}`);
