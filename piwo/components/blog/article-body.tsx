@@ -94,10 +94,10 @@ export default function BlogArticleBody({
     article: TextDocument;
 }) {
     return (
-        <section className="flex justify-center-safe">
+        <section className="flex justify-center-safe sm:py-8">
             <article
                 className={twMerge(
-                    "prose prose-zinc dark:prose-invert prose-beer beer:prose-beer max-w-[1000px]",
+                    "prose prose-zinc dark:prose-invert prose-beer beer:prose-beer max-w-[1200px] w-full",
                     "md:prose-lg! prose-sm!"
                     // PROSE_STYLING.join(",")
                 )}

@@ -9,7 +9,7 @@ export default async function BlogArticle({
     article: TextDocument;
 }) {
     return (
-        <div>
+        <div className="grid grid-cols-1 gap-16">
             <BlogArticleHeader article={article} />
             <BlogArticleBanner article={article} />
             <BlogArticleBody article={article} />

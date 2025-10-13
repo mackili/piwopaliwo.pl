@@ -12,10 +12,10 @@ export default async function BlogArticleHeader({
     const locale = await getCurrentLocale();
     const t = await getI18n();
     return (
-        <section className={twMerge("mb-8", className)}>
+        <section className={twMerge(className)}>
             <header
                 className={twMerge(
-                    "pb-8",
+                    "pb-8 text-5xl! sm:text-8xl!",
                     article.status === "draft" && "opacity-60"
                 )}
             >

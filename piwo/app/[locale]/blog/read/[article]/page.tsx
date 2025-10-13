@@ -30,7 +30,9 @@ export default async function Page({
         <section className="mx-4 sm:mx-8 md:mx-32 lg:mx-40">
             {isAuthorUser && user?.data?.user?.id === documentData.author && (
                 <Link href={`/${locale}/blog/write?id=${documentData.id}`}>
-                    <Button variant="outline">{t("Blog.edit")}</Button>
+                    <Button variant="outline" className="mb-8">
+                        {t("Blog.edit")}
+                    </Button>
                 </Link>
             )}
             <BlogArticle article={documentData} />
