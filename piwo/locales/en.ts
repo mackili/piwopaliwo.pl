@@ -61,5 +61,8 @@ export default {
         published: "Published on",
         newArticle: "New post",
         edit: "Edit post",
+        access: "Dostępność",
+        thumbnail: "Thumbnail image",
+        banner: "Banner image",
     },
 } as const;

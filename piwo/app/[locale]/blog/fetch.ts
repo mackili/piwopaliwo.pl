@@ -15,6 +15,7 @@ export async function fetchArticles() {
         )
         .eq("document_type", "blog")
         .limit(10);
+    console.log(data);
     let documentData: TextDocument[] | null = null;
     let parseError: z.ZodError | PostgrestError | null = null;
 

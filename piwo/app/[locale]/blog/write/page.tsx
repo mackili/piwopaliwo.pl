@@ -47,6 +47,7 @@ export default async function Page({
     if (!documentData) {
         return <div className="text-gray-600">Article not found.</div>;
     }
+    delete documentData?.authorData;
     return (
         <section className="mx-4 sm:mx-8 md:mx-32 lg:mx-40">
             <MarkdownEditor textDocument={documentData} />
