@@ -123,5 +123,6 @@ export const TextDocumentSchema = z.object({
     authorData: UserInfoSchema.nullish(),
     thumbnail_url: z.url().nullish(),
     banner_url: z.url().nullish(),
+    document_type: z.string().nullish(),
 });
 export type TextDocument = z.infer<typeof TextDocumentSchema>;

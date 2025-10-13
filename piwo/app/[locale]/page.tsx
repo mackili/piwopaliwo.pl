@@ -1,5 +1,6 @@
 import PiwoPaliwoBanner from "@/components/piwopaliwo/piwopaliwobanner";
 import TeamSection from "./team/page";
+import BlogSection from "./blog/page";
 
 export default async function Home() {
     return (
@@ -9,10 +10,16 @@ export default async function Home() {
                     <PiwoPaliwoBanner />
                 </section>
                 <section
-                    className="min-h-screen items-start flex snap-start shrink-0 px-8 sm:px-10"
+                    className="min-h-screen items-start flex snap-start shrink-0 px-8 sm:px-10 mb-16"
                     id="team"
                 >
                     <TeamSection />
+                </section>
+                <section
+                    className="min-h-screen items-start flex snap-start shrink-0 px-8 sm:px-10"
+                    id="team"
+                >
+                    <BlogSection />
                 </section>
             </main>
         </>

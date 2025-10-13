@@ -34,7 +34,7 @@ export default async function TeamMemberTile({
             </div>
             <Link href={`/${locale}/team/${teamMember.id}`}>
                 <div className="w-full h-full absolute flex items-end hover:bg-background/20 transition-all ease-in-out select-none z-20 hover:scale-105 origin-bottom-left">
-                    <div className="p-5 grid gap-2">
+                    <div className="p-5 grid gap-2 text-accent dark:text-primary">
                         <p className="font-serif font-bold text-5xl pb-2 flex flex-row gap-2 items-baseline">
                             {teamMember.first_name}
                             {teamMember.nickname && (

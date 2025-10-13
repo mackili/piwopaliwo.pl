@@ -1,16 +1,18 @@
+import { twMerge } from "tailwind-merge";
 import { TextDocument } from "../markdown-editor/types";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getCurrentLocale, getI18n } from "@/locales/server";
 
 export default async function BlogArticleHeader({
     article,
+    className,
 }: {
     article: TextDocument;
-}) {
+} & React.ComponentProps<"section">) {
     const locale = await getCurrentLocale();
     const t = await getI18n();
     return (
-        <section className="mb-8">
+        <section className={twMerge("mb-8", className)}>
             <header className="pb-8">{article.title}</header>
             <div className="flex flex-row items-center-safe justify-between">
                 <div className="flex flex-row gap-4 items-center-safe">
