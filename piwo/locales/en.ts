@@ -41,6 +41,7 @@ export default {
         repeatPassword: "Repeat password",
         changePassword: "Change password",
         updateData: "Update data",
+        avatarTooBig: "Selected photo exceeds accepted size limit (2MB)",
     },
     password: "password",
     PasswordRequirements: {
@@ -55,5 +56,13 @@ export default {
         title: "Title",
         showPreview: "Show preview",
         preview: "Preview",
+    },
+    Blog: {
+        published: "Published on",
+        newArticle: "New post",
+        edit: "Edit post",
+        access: "Dostępność",
+        thumbnail: "Thumbnail image",
+        banner: "Banner image",
     },
 } as const;

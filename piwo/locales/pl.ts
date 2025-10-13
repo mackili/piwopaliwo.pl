@@ -42,6 +42,7 @@ export default {
         repeatPassword: "Powtórz nowe hasło",
         changePassword: "Zmień hasło",
         updateData: "Zaktualizuj dane",
+        avatarTooBig: "Wybrane zdjęcie przekracza dopuszczalny rozmiar (2MB)",
     },
     password: "hasło",
     PasswordRequirements: {
@@ -56,5 +57,13 @@ export default {
         title: "Tytuł",
         showPreview: "Pokaż podgląd",
         preview: "Podgląd",
+    },
+    Blog: {
+        published: "Opublikowano",
+        newArticle: "Nowy post",
+        edit: "Edytuj post",
+        access: "Dostępność",
+        thumbnail: "Obraz miniaturki",
+        banner: "Obraz baneru",
     },
 } as const;

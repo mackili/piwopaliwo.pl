@@ -20,6 +20,7 @@ export const UserInfoSchema = z.object({
     userId: z.uuidv4().optional(),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
+    avatarUrl: z.url().nullish(),
 });
 
 export type UserInfo = z.infer<typeof UserInfoSchema>;

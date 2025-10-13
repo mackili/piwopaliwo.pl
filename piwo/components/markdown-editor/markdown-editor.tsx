@@ -15,7 +15,10 @@ import MarkdownPreview from "./markdown-preview";
 import DocumentStatusSelect from "./document-status-select";
 import DocumentTitle from "./document-title";
 import SaveIcon, { SaveStatusEnum } from "./save-icon";
-import { upsertHandler } from "./db-handler";
+import { readTextDocument, upsertHandler } from "./db-handler";
+import DocumentVisibilitySelect from "./document-visibility-select";
+import UpsertImage from "../ui/upsert-image";
+import Image from "next/image";
 
 export default function MarkdownEditor({
     textDocument,
@@ -38,16 +41,34 @@ export default function MarkdownEditor({
         resolver: zodResolver(TextDocumentSchema),
         defaultValues: {
             ...textDocument,
+            banner_url: textDocument?.banner_url || null,
+            document_type: textDocument?.document_type || "",
+            thumbnail_url: textDocument?.thumbnail_url || null,
+            title: textDocument?.title || "",
             status: textDocument?.status || "draft",
             author: textDocument?.author,
             id: textDocument?.id || textDocumentId || uuid(),
         },
     });
+    // FETCHING BY ID
+    useEffect(() => {
+        if (!textDocument && textDocumentId) {
+            const fetcher = async () => {
+                const { data } = await readTextDocument({
+                    documentId: textDocumentId,
+                });
+                if (data) {
+                    // textDocument = data;
+                    form.reset(data);
+                }
+            };
+            fetcher();
+        }
+    });
     // AUTOSAVING
     useEffect(() => {
         const interval = setInterval(async () => {
             setSaveStatus("pending");
-            console.log([form.getValues(), savedTextDocument.current]);
             const { data, error } = await upsertHandler({
                 newDocument: form.getValues(),
                 oldDocument: savedTextDocument.current,
@@ -82,6 +103,62 @@ export default function MarkdownEditor({
                 </div>
                 <SaveIcon saveStatus={saveStatus} />
             </div>
+            {textDocument?.id && (
+                <div className="grid sm:grid-cols-2 my-4">
+                    <div className="flex justify-end items-center gap-2 flex-col">
+                        <div className="group h-32 md:h-48 aspect-3/2 rounded-md">
+                            {textDocument?.banner_url && (
+                                <div className="flex h-32 md:h-48 aspect-3/2 absolute">
+                                    <Image
+                                        src={textDocument.banner_url}
+                                        alt=""
+                                        className="rounded-md w-full h-full object-cover"
+                                        fill
+                                        priority
+                                    />
+                                </div>
+                            )}
+                            <UpsertImage
+                                bucketName="public_images"
+                                folderPath="blog/posts"
+                                elementId={textDocument.id}
+                                fileName="banner"
+                                className="h-32 md:h-48 aspect-3/2 w-auto rounded-md"
+                                onSuccess={(url) =>
+                                    form.setValue("banner_url", url)
+                                }
+                            />
+                        </div>
+                        <Label>{t("Blog.banner")}</Label>
+                    </div>
+                    <div className="flex justify-end items-center gap-2 flex-col">
+                        <div className="group h-32 md:h-48 aspect-2/3 rounded-md">
+                            {textDocument?.thumbnail_url && (
+                                <div className="flex h-32 md:h-48 aspect-2/3 absolute">
+                                    <Image
+                                        src={textDocument.thumbnail_url}
+                                        alt=""
+                                        className="rounded-md w-full h-full object-cover"
+                                        fill
+                                        priority
+                                    />
+                                </div>
+                            )}
+                            <UpsertImage
+                                bucketName="public_images"
+                                folderPath="blog/posts"
+                                elementId={textDocument.id}
+                                fileName="thumbnail"
+                                className="h-32 md:h-48 aspect-2/3 w-auto rounded-md"
+                                onSuccess={(url) =>
+                                    form.setValue("thumbnail_url", url)
+                                }
+                            />
+                        </div>
+                        <Label>{t("Blog.thumbnail")}</Label>
+                    </div>
+                </div>
+            )}
             <Form {...form}>
                 <form onChange={() => setSaveStatus("unsaved")}>
                     <div className="flex gap-4 flex-col sm:flex-row py-4">
@@ -89,6 +166,10 @@ export default function MarkdownEditor({
                         <DocumentStatusSelect
                             control={form.control}
                             name="status"
+                        />
+                        <DocumentVisibilitySelect
+                            control={form.control}
+                            name="access"
                         />
                     </div>
                     <div

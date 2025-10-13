@@ -7,7 +7,7 @@ import {
     FormItem,
     FormControl,
 } from "@/components/ui/form";
-import { UserMetadataSchema } from "@/components/auth/types";
+import { UserInfoSchema } from "@/components/auth/types";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/lib/supabase/client";
@@ -20,15 +20,16 @@ export default function UserDetails({ user }: { user: UserResponse }) {
     const supabase = createClient();
     const t = useI18n();
 
-    const userForm = useForm<z.infer<typeof UserMetadataSchema>>({
-        resolver: zodResolver(UserMetadataSchema),
+    const userForm = useForm<z.infer<typeof UserInfoSchema>>({
+        resolver: zodResolver(UserInfoSchema),
         defaultValues: {
             firstName: user.data.user?.user_metadata?.firstName || "",
             lastName: user.data.user?.user_metadata?.lastName || "",
+            userId: user.data.user?.id,
         },
     });
 
-    const handleSubmit = (formData: z.infer<typeof UserMetadataSchema>) => {
+    const handleSubmit = (formData: z.infer<typeof UserInfoSchema>) => {
         const newData: UserAttributes = {
             data: {
                 firstName: formData.firstName,

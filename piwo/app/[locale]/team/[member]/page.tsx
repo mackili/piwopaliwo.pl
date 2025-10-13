@@ -25,7 +25,6 @@ export default async function Page({
     const supabase = await createClient();
     const t = await getI18n();
     const locale = await getCurrentLocale();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, error } = (await supabase
         .from("piwo_paliwo_member")
         .select("*, bio_document:TextDocument!piwo_paliwo_member_bio_fkey(*)")

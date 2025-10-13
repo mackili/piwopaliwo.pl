@@ -51,9 +51,11 @@ async function compareDocumentVersions({
 }
 
 async function upsertTextDocument({ document }: { document: TextDocument }) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { authorData, ...documentWithoutAuthorData } = document;
     const { data, error } = await supabase
         .from("TextDocument")
-        .upsert(document)
+        .upsert({ ...documentWithoutAuthorData })
         .select()
         .limit(1)
         .single();
