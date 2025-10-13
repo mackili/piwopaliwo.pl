@@ -109,6 +109,7 @@ export const TextDocumentSectionSchema = z.discriminatedUnion("type", [
 export type TextDocumentSection = z.infer<typeof TextDocumentSectionSchema>;
 
 export const DocumentStatusEnum = z.enum(["draft", "published", "unpublished"]);
+
 export type DocumentStatusEnumType = z.infer<typeof DocumentStatusEnum>;
 
 export const TextDocumentSchema = z.object({

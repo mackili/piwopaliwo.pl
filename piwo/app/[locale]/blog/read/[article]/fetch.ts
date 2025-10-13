@@ -14,7 +14,6 @@ export async function fetchArticle(articleId: string) {
             "id,title,author,status,created_at,access,markdown,authorData:UserInfo!TextDocument_author_fkey1(*)"
         )
         .eq("id", articleId)
-        .eq("status", "published")
         .limit(1)
         .single();
     let documentData: TextDocument | null = null;

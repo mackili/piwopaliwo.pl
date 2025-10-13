@@ -15,7 +15,7 @@ import MarkdownPreview from "./markdown-preview";
 import DocumentStatusSelect from "./document-status-select";
 import DocumentTitle from "./document-title";
 import SaveIcon, { SaveStatusEnum } from "./save-icon";
-import { upsertHandler } from "./db-handler";
+import { readTextDocument, upsertHandler } from "./db-handler";
 
 export default function MarkdownEditor({
     textDocument,
@@ -38,21 +38,37 @@ export default function MarkdownEditor({
         resolver: zodResolver(TextDocumentSchema),
         defaultValues: {
             ...textDocument,
+            title: textDocument?.title || "",
             status: textDocument?.status || "draft",
             author: textDocument?.author,
             id: textDocument?.id || textDocumentId || uuid(),
         },
     });
+    // FETCHING BY ID
+    useEffect(() => {
+        if (!textDocument && textDocumentId) {
+            const fetcher = async () => {
+                const { data } = await readTextDocument({
+                    documentId: textDocumentId,
+                });
+                if (data) {
+                    // textDocument = data;
+                    form.reset(data);
+                }
+            };
+            fetcher();
+        }
+    });
     // AUTOSAVING
     useEffect(() => {
         const interval = setInterval(async () => {
             setSaveStatus("pending");
-            console.log([form.getValues(), savedTextDocument.current]);
             const { data, error } = await upsertHandler({
                 newDocument: form.getValues(),
                 oldDocument: savedTextDocument.current,
             });
             if (error) {
+                console.error(error);
                 setSaveStatus("error");
             }
             if (data) {

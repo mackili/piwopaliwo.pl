@@ -13,7 +13,20 @@ export default async function BlogArticleHeader({
     const t = await getI18n();
     return (
         <section className={twMerge("mb-8", className)}>
-            <header className="pb-8">{article.title}</header>
+            <header
+                className={twMerge(
+                    "pb-8",
+                    article.status === "draft" && "opacity-60"
+                )}
+            >
+                {`${article.title}`}
+                {article.status === "draft" && (
+                    <span className="text-2xl">
+                        {" "}
+                        [{`${article.status.toLocaleUpperCase()}`}]
+                    </span>
+                )}
+            </header>
             <div className="flex flex-row items-center-safe justify-between">
                 <div className="flex flex-row gap-4 items-center-safe">
                     <Avatar className="w-12 h-12">

@@ -59,5 +59,7 @@ export default {
     },
     Blog: {
         published: "Published on",
+        newArticle: "New post",
+        edit: "Edit post",
     },
 } as const;

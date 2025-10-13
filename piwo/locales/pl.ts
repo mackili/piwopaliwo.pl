@@ -60,5 +60,7 @@ export default {
     },
     Blog: {
         published: "Opublikowano",
+        newArticle: "Nowy post",
+        edit: "Edytuj post",
     },
 } as const;

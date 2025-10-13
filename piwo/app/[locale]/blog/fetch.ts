@@ -13,7 +13,6 @@ export async function fetchArticles() {
         .select(
             "id,title,author,status,created_at,access,authorData:UserInfo!TextDocument_author_fkey1(*)"
         )
-        .eq("status", "published")
         .eq("document_type", "blog")
         .limit(10);
     let documentData: TextDocument[] | null = null;
@@ -32,4 +31,20 @@ export async function fetchArticles() {
         parseError = error;
     }
     return { documentData, parseError };
+}
+
+export async function getAuthorUser() {
+    const supabase = await createClient();
+    const user = await supabase.auth.getUser();
+    if (user && user.data) {
+        const { data } = await supabase
+            .from("piwo_paliwo_member")
+            .select("id")
+            .eq("user_id", user.data.user?.id)
+            .limit(1);
+        if (data && data.length === 1) {
+            return { isAuthorUser: true, user: user };
+        }
+    }
+    return { isAuthorUser: false, user: user || null };
 }
