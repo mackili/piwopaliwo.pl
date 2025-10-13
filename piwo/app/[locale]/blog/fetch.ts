@@ -11,7 +11,7 @@ export async function fetchArticles() {
     const { data, error } = await supabase
         .from("TextDocument")
         .select(
-            "id,title,author,status,created_at,access,authorData:UserInfo!TextDocument_author_fkey1(*)"
+            "id,title,author,status,created_at,access,thumbnail_url,banner_url,authorData:UserInfo!TextDocument_author_fkey1(*)"
         )
         .eq("document_type", "blog")
         .limit(10);

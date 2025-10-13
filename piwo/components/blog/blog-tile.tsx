@@ -15,11 +15,16 @@ export default function BlogTile({
                 className
             )}
         >
-            {article.thumbnail_url ? (
-                <Image
-                    src={article.thumbnail_url}
-                    alt={article.title || article.id}
-                />
+            {article?.thumbnail_url ? (
+                <div className="flex w-full aspect-2/3 relative">
+                    <Image
+                        src={article.thumbnail_url}
+                        alt={article.title || article.id}
+                        className="w-full h-full object-cover"
+                        fill
+                        priority
+                    />
+                </div>
             ) : (
                 <div className="w-full aspect-2/3 border-2 border-secondary bg-repeat bg-accent/20 flex items-center-safe justify-center-safe">
                     <code className="p-2 rounded-lg bg-accent/80 select-none">
