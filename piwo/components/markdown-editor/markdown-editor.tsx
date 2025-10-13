@@ -19,7 +19,6 @@ import { readTextDocument, upsertHandler } from "./db-handler";
 import DocumentVisibilitySelect from "./document-visibility-select";
 import UpsertImage from "../ui/upsert-image";
 import Image from "next/image";
-import { ur } from "zod/v4/locales";
 
 export default function MarkdownEditor({
     textDocument,
