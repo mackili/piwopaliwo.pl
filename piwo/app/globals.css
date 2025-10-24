@@ -150,7 +150,7 @@
 }
 
 @utility prose-beer {
-    --tw-prose-body: var(--card);
+    --tw-prose-body: var(--foreground);
     --tw-prose-headings: var(--foreground);
     --tw-prose-lead: var(--secondary);
     --tw-prose-links: var(--primary);
