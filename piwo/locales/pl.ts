@@ -18,6 +18,8 @@ export default {
         scoreTracker: "Licznik punktów",
         scoreTracker_description:
             "Śledź swoje punkty w dowolnej grze z innymi użytkownikami. Na żywo!",
+        beerCounter: "Licznik piw",
+        beerCounter_description: "Śledź swoje spożycie złotego trunku",
     },
     ScoreTracker: {
         title: "Licznik punktów",
@@ -31,6 +33,12 @@ export default {
         listOfRecentGames: "Lista ostatnio śledzonych gier",
         gameStatus: "Status gry",
         gameId: "Id gry",
+    },
+    BeerCounter: {
+        newBeer: "Dodaj Piwko",
+        newBeerDescription: "Zarejestruj Piwko wlane do brzuszka",
+        saveBeer: "Zapisz Piwko",
+        cancel: "Anuluj",
     },
     or: "lub",
     register: "Zarejestruj się",

@@ -62,6 +62,11 @@ const menuItems: MainMenuItem[] = [
                 id: "scoreTracker",
                 link: "/apps/scoretracker",
             },
+            {
+                description: "NavMenu.beerCounter_description",
+                id: "beerCounter",
+                link: "/apps/beercounter",
+            },
         ],
     },
 ];
