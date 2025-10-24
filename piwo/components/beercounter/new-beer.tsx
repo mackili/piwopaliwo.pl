@@ -10,14 +10,20 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import BeerForm from "./beer-form";
+import { User } from "@supabase/supabase-js";
 import { useI18n } from "@/locales/client";
+import { useState } from "react";
 
-export default function NewBeer() {
+export default function NewBeer({ user }: { user: User }) {
     const t = useI18n();
+    const [isOpen, setOpen] = useState<boolean>(false);
     return (
-        <Dialog>
+        <Dialog open={isOpen}>
             <DialogTrigger asChild>
-                <Button>{t("BeerCounter.newBeer")}</Button>
+                <Button onClick={() => setOpen(true)}>
+                    {t("BeerCounter.newBeer")}
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -26,14 +32,16 @@ export default function NewBeer() {
                         {t("BeerCounter.newBeerDescription")}
                     </DialogDescription>
                 </DialogHeader>
-                <div></div>
+                <BeerForm userData={user} onSubmit={setOpen} />
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button variant="ghost">
                             {t("BeerCounter.cancel")}
                         </Button>
                     </DialogClose>
-                    <Button type="submit">{t("BeerCounter.saveBeer")}</Button>
+                    <Button type="submit" form="new-beer-form">
+                        {t("BeerCounter.saveBeer")}
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

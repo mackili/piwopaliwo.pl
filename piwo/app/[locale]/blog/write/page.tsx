@@ -13,7 +13,6 @@ export default async function Page({
     searchParams: Promise<{ id: string | null | undefined }>;
 }) {
     const { id } = await searchParams;
-    console.log(id);
     const supabase = await createClient();
     const user = await supabase.auth.getUser();
     const locale = await getCurrentLocale();
@@ -29,7 +28,6 @@ export default async function Page({
             }).data
         );
         if (error) {
-            console.error(error);
             redirect(`/${locale}/blog`);
         } else {
             redirect(`/${locale}/blog/write?id=${newDocumentId}`);
