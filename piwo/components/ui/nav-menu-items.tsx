@@ -46,7 +46,6 @@ const menuItems: MainMenuItem[] = [
                 link: "#",
             },
             {
-                description: `PiwoPaliwo's version of the famous economic game`,
                 id: "piwopol",
                 link: "#",
             },
@@ -59,7 +58,7 @@ const menuItems: MainMenuItem[] = [
         status: "active",
         children: [
             {
-                description: `Track a score for any game with multiple users. Live!`,
+                description: "NavMenu.scoreTracker_description",
                 id: "scoreTracker",
                 link: "/apps/scoretracker",
             },
@@ -95,7 +94,7 @@ export default function NavigationMenuPP({
                                         }
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent>
-                                        <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr] p-2 overflow-scroll">
+                                        <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr] p-2 overflow-y-auto overflow-x-clip">
                                             <li className="h-full">
                                                 <Link
                                                     href={`/${locale}${item.link}`}
@@ -104,8 +103,18 @@ export default function NavigationMenuPP({
                                                         "h-full"
                                                     )}
                                                 >
-                                                    <h4>{item.title}</h4>
-                                                    <p>{item?.description}</p>
+                                                    <h4>
+                                                        {t(
+                                                            // @ts-expect-error structured with the translation
+                                                            `NavMenu.${item.id}`
+                                                        )}
+                                                    </h4>
+                                                    <p>
+                                                        {t(
+                                                            // @ts-expect-error structured with the translation
+                                                            `NavMenu.${item.id}_description`
+                                                        ) || ""}
+                                                    </p>
                                                 </Link>
                                             </li>
                                             <li className="flex flex-col gap-2">
@@ -127,9 +136,10 @@ export default function NavigationMenuPP({
                                                                 </h4>
                                                                 {childItem.description && (
                                                                     <p className="text-sm">
-                                                                        {
+                                                                        {t(
+                                                                            // @ts-expect-error structured with the translation
                                                                             childItem.description
-                                                                        }
+                                                                        )}
                                                                     </p>
                                                                 )}
                                                             </div>

@@ -13,7 +13,11 @@ export default {
         games: "Gry",
         piwopol: "Piwopol",
         apps: "Aplikacje",
+        apps_description:
+            "Aplikacje, które przygotowaliśmy dla naszych użytkowników",
         scoreTracker: "Licznik punktów",
+        scoreTracker_description:
+            "Śledź swoje punkty w dowolnej grze z innymi użytkownikami. Na żywo!",
     },
     ScoreTracker: {
         title: "Licznik punktów",
