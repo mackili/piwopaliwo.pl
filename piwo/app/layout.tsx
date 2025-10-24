@@ -1,3 +1,4 @@
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import {
     // Geist,
@@ -52,6 +53,7 @@ export default function RootLayout({
                 className={`${outfit.variable} ${geistMono.variable} ${notoSerif.variable} ${notoSans.variable} antialiased font-sans`}
             >
                 {children}
+                <SpeedInsights />
             </body>
         </html>
     );

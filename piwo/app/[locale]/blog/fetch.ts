@@ -14,8 +14,8 @@ export async function fetchArticles() {
             "id,title,author,status,created_at,access,thumbnail_url,banner_url,authorData:UserInfo!TextDocument_author_fkey1(*)"
         )
         .eq("document_type", "blog")
+        .order("created_at", { ascending: false })
         .limit(10);
-    console.log(data);
     let documentData: TextDocument[] | null = null;
     let parseError: z.ZodError | PostgrestError | null = null;
 

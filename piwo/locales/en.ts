@@ -13,7 +13,10 @@ export default {
         games: "Games",
         piwopol: "Piwopoly",
         apps: "Apps",
+        apps_description: "Apps we've prepared for our users",
         scoreTracker: "Score tracker",
+        scoreTracker_description:
+            "Track a score for any game with multiple users. Live!",
     },
     ScoreTracker: {
         title: "Score tracker",
