@@ -19,7 +19,7 @@ export default function NewBeer({ user }: { user: User }) {
     const t = useI18n();
     const [isOpen, setOpen] = useState<boolean>(false);
     return (
-        <Dialog open={isOpen}>
+        <Dialog open={isOpen} onOpenChange={() => isOpen && setOpen(false)}>
             <DialogTrigger asChild>
                 <Button onClick={() => setOpen(true)}>
                     {t("BeerCounter.newBeer")}
@@ -35,7 +35,7 @@ export default function NewBeer({ user }: { user: User }) {
                 <BeerForm userData={user} onSubmit={setOpen} />
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button variant="ghost">
+                        <Button variant="ghost" onClick={() => setOpen(false)}>
                             {t("BeerCounter.cancel")}
                         </Button>
                     </DialogClose>

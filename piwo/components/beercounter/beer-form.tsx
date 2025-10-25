@@ -22,6 +22,7 @@ import { twMerge } from "tailwind-merge";
 import { CircleDashed } from "lucide-react";
 import registerBeer from "./register-beer";
 import { ZodError } from "zod";
+import Beer from "./piwo";
 
 export default function BeerForm({
     userData,
@@ -68,7 +69,21 @@ export default function BeerForm({
             >
                 <div className="grid grid-cols-3 gap-4">
                     <div className="col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        <div className="sm:col-span-2"></div>
+                        <div className="sm:col-span-2 flex items-center-safe flex-col gap-4">
+                            <Beer
+                                className="h-full aspect-2/3"
+                                milliliters={form.watch("quantity")}
+                            />
+                            <p className="font-serif font-light text-sm">
+                                {
+                                    beerSizes.find(
+                                        (size) =>
+                                            size.value ===
+                                            form.getValues("quantity")
+                                    )?.name
+                                }
+                            </p>
+                        </div>
                         <FormField
                             control={form.control}
                             name="quantity"

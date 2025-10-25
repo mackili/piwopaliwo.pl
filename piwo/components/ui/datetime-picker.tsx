@@ -88,6 +88,7 @@ export function DateTimePicker({
                             onSelect={(date) => {
                                 setDate(date);
                                 setOpen(false);
+                                field.onChange(combineDateTime(date, time));
                             }}
                         />
                     </PopoverContent>
@@ -100,7 +101,10 @@ export function DateTimePicker({
                     step="1"
                     className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                     value={time}
-                    onChange={(e) => setTime(e.target.value)}
+                    onChange={(e) => {
+                        setTime(e.target.value);
+                        field.onChange(combineDateTime(date, e.target.value));
+                    }}
                     disabled={useAutomaticDate}
                 />
             </div>
