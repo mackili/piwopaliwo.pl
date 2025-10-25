@@ -26,6 +26,10 @@ export default {
         newBeerDescription: "Add a new beer to your belly",
         saveBeer: "Save Beer",
         cancel: "Cancel",
+        drinkType: "Drink Type",
+        drankAt: "Drank at",
+        autoDate: "Automatic date",
+        manualDate: "Manual date",
     },
     ScoreTracker: {
         title: "Score tracker",

@@ -23,6 +23,7 @@ import { CircleDashed } from "lucide-react";
 import registerBeer from "./register-beer";
 import { ZodError } from "zod";
 import Beer from "./piwo";
+import { useI18n } from "@/locales/client";
 
 export default function BeerForm({
     userData,
@@ -33,6 +34,7 @@ export default function BeerForm({
     beer?: ConsumedDrink;
     onSubmit: (open: boolean) => void;
 }) {
+    const t = useI18n();
     const [isAutomaticDate, setAutomaticDate] = useState<boolean>(true);
     const [isLoading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<ZodError | PostgrestError | null>(null);
@@ -63,18 +65,22 @@ export default function BeerForm({
                 id="new-beer-form"
                 onSubmit={handleSubmit}
                 className={twMerge(
-                    "relative flex items-center-safe justify-center-safe",
+                    "relative flex items-center-safe justify-center-safe w-full",
                     isLoading && "pointer-events-none opacity-50"
                 )}
             >
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-4 w-full">
                     <div className="col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
                         <div className="sm:col-span-2 flex items-center-safe flex-col gap-4">
                             <Beer
+                                id="beer-display"
                                 className="h-full aspect-2/3"
                                 milliliters={form.watch("quantity")}
                             />
-                            <p className="font-serif font-light text-sm">
+                            <Label
+                                className="font-serif"
+                                htmlFor="beer-display"
+                            >
                                 {
                                     beerSizes.find(
                                         (size) =>
@@ -82,7 +88,7 @@ export default function BeerForm({
                                             form.getValues("quantity")
                                     )?.name
                                 }
-                            </p>
+                            </Label>
                         </div>
                         <FormField
                             control={form.control}
@@ -101,12 +107,12 @@ export default function BeerForm({
                                                             ? "secondary"
                                                             : "ghost"
                                                     }
-                                                    className={
+                                                    className={`${
                                                         field.value ===
                                                         size.value
                                                             ? "scale-105 shadow-lg bg-primary/10"
                                                             : ""
-                                                    }
+                                                    } w-full`}
                                                     size="sm"
                                                     key={index}
                                                     onClick={() =>
@@ -131,7 +137,9 @@ export default function BeerForm({
                             name="drink_type"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Drink Type</FormLabel>
+                                    <FormLabel>
+                                        {t("BeerCounter.drinkType")}
+                                    </FormLabel>
                                     <FormControl>
                                         <Select {...field}>
                                             <SelectTrigger className="w-full">
@@ -139,7 +147,7 @@ export default function BeerForm({
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="beer">
-                                                    Beer
+                                                    {t("beer")}
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
@@ -152,7 +160,9 @@ export default function BeerForm({
                             name="drank_at"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Drank at</FormLabel>
+                                    <FormLabel>
+                                        {t("BeerCounter.drankAt")}
+                                    </FormLabel>
                                     <FormControl>
                                         <DateTimePicker
                                             className="flex-col gap-2"
@@ -174,8 +184,8 @@ export default function BeerForm({
                             />
                             <Label htmlFor="isAutomatic">
                                 {isAutomaticDate
-                                    ? "Automatic date"
-                                    : "Manual date"}
+                                    ? t("BeerCounter.autoDate")
+                                    : t("BeerCounter.manualDate")}
                             </Label>
                         </div>
                     </div>

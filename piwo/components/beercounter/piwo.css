@@ -7,7 +7,7 @@
         width: 100%;
         bottom: 0px;
         left: 0px;
-        background: linear-gradient(0deg, var(--beer2) 70%, var(--foam1) 30%);
+        background: linear-gradient(0deg, var(--beer2) 70%, var(--foam2) 30%);
     }
 }
 
