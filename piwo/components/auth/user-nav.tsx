@@ -37,7 +37,6 @@ export default function UserNav({
         supabase.auth
             .getUser()
             .then((userData) => setUser(userData))
-            .then((userData) => console.log(userData))
             .catch((error) => console.error(error));
     };
     useEffect(() => {

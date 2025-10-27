@@ -43,7 +43,6 @@ export default function ScoreButton({
         }
         setButtonStatus("inactive");
         if (!userScore || !userScore.history) {
-            console.error("No userScore or userScore.history");
             setButtonStatus("error");
             return;
         }

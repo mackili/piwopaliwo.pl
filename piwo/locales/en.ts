@@ -17,6 +17,19 @@ export default {
         scoreTracker: "Score tracker",
         scoreTracker_description:
             "Track a score for any game with multiple users. Live!",
+        beerCounter: "Beer Counter",
+        beerCounter_description:
+            "Track your consumption of the golden, liquid bread.",
+    },
+    BeerCounter: {
+        newBeer: "Add a Beer",
+        newBeerDescription: "Add a new beer to your belly",
+        saveBeer: "Save Beer",
+        cancel: "Cancel",
+        drinkType: "Drink Type",
+        drankAt: "Drank at",
+        autoDate: "Automatic date",
+        manualDate: "Manual date",
     },
     ScoreTracker: {
         title: "Score tracker",

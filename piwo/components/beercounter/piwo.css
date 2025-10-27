@@ -1,0 +1,26 @@
+#beer-content {
+    &::after {
+        content: "";
+        position: absolute;
+        height: var(--beer-height);
+        transition: height ease-in-out 150ms;
+        width: 100%;
+        bottom: 0px;
+        left: 0px;
+        background: linear-gradient(0deg, var(--beer2) 70%, var(--foam2) 30%);
+    }
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: rotate(1.5deg);
+    }
+    50% {
+        transform: rotate(-1.5deg);
+    }
+}
+
+.shake-element {
+    animation: shake 100ms infinite;
+}

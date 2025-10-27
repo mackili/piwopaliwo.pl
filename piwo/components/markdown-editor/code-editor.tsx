@@ -9,11 +9,8 @@ export default function CodeEditor({ className, ...field }: Props) {
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     function autoResize() {
         if (textareaRef.current) {
-            // console.log(textareaRef.current.style.height);
-            // console.log(textareaRef.current.scrollHeight);
             textareaRef.current.style.minHeight = "auto";
             textareaRef.current.style.minHeight = `${textareaRef.current.scrollHeight}px`;
-            // console.log(textareaRef.current.scrollHeight);
         }
     }
     return (
