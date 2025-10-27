@@ -21,7 +21,7 @@ export default function NewBeer({ user }: { user: User }) {
     return (
         <Dialog open={isOpen} onOpenChange={() => isOpen && setOpen(false)}>
             <DialogTrigger asChild>
-                <Button onClick={() => setOpen(true)}>
+                <Button size="lg" onClick={() => setOpen(true)}>
                     {t("BeerCounter.newBeer")}
                 </Button>
             </DialogTrigger>

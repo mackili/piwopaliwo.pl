@@ -24,7 +24,7 @@ export default async function Page({
     ).data?.map((score) => UserScoreSchema.parse(score));
 
     return (
-        <div className="max-w-xxl mx-auto flex flex-col justify-center-safe items-center-safe gap-6 h-screen pt-8 sm:pt-32">
+        <div className="max-w-xxl mx-auto flex flex-col items-center-safe gap-6">
             <ScoreTracker
                 gameId={gameId}
                 userId={data.user?.id}
