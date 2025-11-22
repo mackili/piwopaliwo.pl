@@ -19,7 +19,8 @@ export async function login(formData: User) {
         redirect(`/${locale}/auth/error`);
     }
 
-    revalidatePath(`/${locale}`, "layout");
+    // revalidatePath(`/${locale}`, "layout");
+    revalidatePath("/", "layout");
     redirect(`/${locale}`);
 }
 
@@ -46,6 +47,7 @@ export async function signup(formData: User) {
         redirect(`/${locale}/auth/error`);
     }
 
-    revalidatePath(`/${locale}`, "layout");
+    // revalidatePath(`/${locale}`, "layout");
+    revalidatePath("/", "layout");
     redirect(`/${locale}`);
 }

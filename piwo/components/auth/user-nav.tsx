@@ -37,11 +37,15 @@ export default function UserNav({
     const [user, setUser] = useState<UserResponse>();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [logoutError, setLogoutError] = useState<AuthError | undefined>();
-    const getUser = () => {
-        supabase.auth
-            .getUser()
-            .then((userData) => setUser(userData))
-            .catch((error) => console.error(error));
+    const getUser = async () => {
+        const userData = await supabase.auth.getUser();
+        setUser(userData);
+        if (userData.data?.user) {
+            setLoginState("loggedIn");
+        }
+        if (!userData.data?.user) {
+            setLoginState("noLogin");
+        }
     };
     useEffect(() => {
         getUser();
@@ -49,14 +53,7 @@ export default function UserNav({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        if (user && user?.data) {
-            setLoginState("loggedIn");
-        }
-        if (user && !user?.data) {
-            setLoginState("noLogin");
-        }
-    }, [user, user?.data.user]);
+    useEffect(() => {}, [user, user?.data.user]);
 
     const logOut = async () => {
         const { error } = await supabase.auth.signOut();
