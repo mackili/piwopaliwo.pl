@@ -20,12 +20,16 @@ import { useRouter } from "next/navigation";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
 import { useCurrentLocale, useI18n } from "@/locales/client";
+import LoadingSpinner from "../ui/loading-spinner";
 
 export default function UserNav({
     className,
 }: React.ComponentProps<typeof AvatarPrimitive.Root>) {
     const t = useI18n();
     const locale = useCurrentLocale();
+    const [loginState, setLoginState] = useState<
+        "unknown" | "loggedIn" | "noLogin"
+    >("unknown");
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isLocaleSet, setLocaleSet] = useState(false);
     const router = useRouter();
@@ -45,7 +49,14 @@ export default function UserNav({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {}, [user, user?.data.user]);
+    useEffect(() => {
+        if (user && user?.data) {
+            setLoginState("loggedIn");
+        }
+        if (user && !user?.data) {
+            setLoginState("noLogin");
+        }
+    }, [user, user?.data.user]);
 
     const logOut = async () => {
         const { error } = await supabase.auth.signOut();
@@ -59,9 +70,14 @@ export default function UserNav({
 
     return (
         <>
+            <LoadingSpinner
+                className={loginState === "unknown" ? className : "hidden"}
+            />
             <Link
                 href={`/${locale}/auth/login`}
-                className={!user?.data.user ? "cursor-pointer" : "hidden"}
+                className={
+                    loginState === "noLogin" ? "cursor-pointer" : "hidden"
+                }
             >
                 <Button variant="secondary">{t("logIn")}</Button>
             </Link>

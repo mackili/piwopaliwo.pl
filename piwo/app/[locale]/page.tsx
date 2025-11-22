@@ -1,6 +1,9 @@
 import PiwoPaliwoBanner from "@/components/piwopaliwo/piwopaliwobanner";
 import TeamSection from "./team/page";
 import BlogSection from "./blog/page";
+import { Suspense } from "react";
+import LoadingTeam from "./team/loading";
+import LoadingBlog from "./blog/loading";
 
 export default async function Home() {
     return (
@@ -13,13 +16,17 @@ export default async function Home() {
                     className="min-h-screen items-start flex snap-start shrink-0 px-8 sm:px-10 mb-16"
                     id="team"
                 >
-                    <TeamSection />
+                    <Suspense fallback={<LoadingTeam />}>
+                        <TeamSection />
+                    </Suspense>
                 </section>
                 <section
                     className="min-h-screen items-start flex snap-start shrink-0 px-8 sm:px-10"
                     id="team"
                 >
-                    <BlogSection />
+                    <Suspense fallback={<LoadingBlog />}>
+                        <BlogSection />
+                    </Suspense>
                 </section>
             </main>
         </>
