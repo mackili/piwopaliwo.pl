@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleDashedIcon, LogOut, Settings } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { AuthError } from "@supabase/supabase-js";
 import {
     DropdownMenu,
@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
 import { useCurrentLocale, useI18n } from "@/locales/client";
-import { twMerge } from "tailwind-merge";
+import LoadingSpinner from "../ui/loading-spinner";
 
 export default function UserNav({
     className,
@@ -70,16 +70,11 @@ export default function UserNav({
 
     return (
         <>
-            <CircleDashedIcon
-                className={
-                    loginState === "unknown"
-                        ? twMerge(className, "animate-spin")
-                        : "hidden"
-                }
+            <LoadingSpinner
+                className={loginState === "unknown" ? className : "hidden"}
             />
             <Link
                 href={`/${locale}/auth/login`}
-                // className={!user?.data.user ? "cursor-pointer" : "hidden"}
                 className={
                     loginState === "noLogin" ? "cursor-pointer" : "hidden"
                 }
