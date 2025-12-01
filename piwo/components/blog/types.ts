@@ -9,12 +9,24 @@ export const TextDocumentCommentSchema = z.object({
     time: z.iso.datetime({ offset: true }),
     text: z.string().nullish(),
     get responses() {
-        return z.array(TextDocumentCommentSchema);
+        return z.array(TextDocumentCommentSchema).optional();
     },
     responses_count: z.array(z.object({ count: z.int() })).nullish(),
+    author: z
+        .object({
+            firstName: z.string().nullable(),
+            lastName: z.string().nullable(),
+            avatarUrl: z.url().nullable(),
+        })
+        .optional(),
+    status: z.enum(["draft", "published", "editing"]).nullish(),
 });
 
 export type TextDocumentComment = z.infer<typeof TextDocumentCommentSchema>;
 
 export type TextDocumentCommentSupabaseResponse =
     SupabaseResponse<TextDocumentComment>;
+export type TextDocumentCommentSupabaseSingleResponse =
+    SupabaseResponse<TextDocumentComment> & {
+        data: TextDocumentComment;
+    };

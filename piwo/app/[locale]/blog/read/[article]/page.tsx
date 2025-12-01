@@ -4,7 +4,7 @@ import { getAuthorUser } from "../../fetch";
 import Link from "next/link";
 import { getCurrentLocale, getI18n } from "@/locales/server";
 import { Button } from "@/components/ui/button";
-import CommentSection from "./comments";
+import CommentSection from "./(comments)/comment-section";
 
 export default async function Page({
     params,
@@ -37,7 +37,7 @@ export default async function Page({
                 </Link>
             )}
             <BlogArticle article={documentData} />
-            <CommentSection articleId={article} />
+            <CommentSection articleId={article} user={user} />
         </section>
     );
 }
