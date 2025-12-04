@@ -4,6 +4,8 @@ import { getAuthorUser } from "../../fetch";
 import Link from "next/link";
 import { getCurrentLocale, getI18n } from "@/locales/server";
 import { Button } from "@/components/ui/button";
+import CommentSection from "./(comments)/comment-section";
+import ErrorMessage from "@/components/ui/error-message";
 
 export default async function Page({
     params,
@@ -15,18 +17,9 @@ export default async function Page({
     const { isAuthorUser, user } = await getAuthorUser();
     const locale = await getCurrentLocale();
     const t = await getI18n();
-    if (parseError) {
-        return (
-            <div className="text-red-600">
-                {parseError.message || "Error loading article."}
-            </div>
-        );
-    }
-
-    if (!documentData) {
-        return <div className="text-gray-600">Article not found.</div>;
-    }
-    return (
+    return parseError || !documentData ? (
+        <ErrorMessage error={parseError?.message || "Article not found."} />
+    ) : (
         <section className="mx-4 sm:mx-8 md:mx-32 lg:mx-40">
             {isAuthorUser && user?.data?.user?.id === documentData.author && (
                 <Link href={`/${locale}/blog/write?id=${documentData.id}`}>
@@ -36,6 +29,11 @@ export default async function Page({
                 </Link>
             )}
             <BlogArticle article={documentData} />
+            <CommentSection
+                articleId={article}
+                user={user}
+                className="min-h-100"
+            />
         </section>
     );
 }

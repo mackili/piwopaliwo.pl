@@ -80,5 +80,13 @@ export default {
         access: "Dostępność",
         thumbnail: "Thumbnail image",
         banner: "Banner image",
+        comments: "Comments",
+        replyToComment: "Reply to comment",
+        replies: "replies",
+        show: "Show",
+        hide: "Hide",
+        save: "Save",
+        mustLogin: "You must login to participate in comments",
+        displayPerPage: "Comments per page",
     },
 } as const;

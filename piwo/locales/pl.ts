@@ -81,5 +81,13 @@ export default {
         access: "Dostępność",
         thumbnail: "Obraz miniaturki",
         banner: "Obraz baneru",
+        comments: "Komentarze",
+        replyToComment: "Odpowiedz na komentarz",
+        replies: "odpowiedzi",
+        show: "Pokaż",
+        hide: "Ukryj",
+        save: "Zapisz",
+        mustLogin: "Aby wyświetlać i dodawać komentarze musisz się zalogować",
+        displayPerPage: "Komentarze per strona",
     },
 } as const;
