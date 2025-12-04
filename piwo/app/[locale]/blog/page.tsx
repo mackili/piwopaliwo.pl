@@ -1,10 +1,10 @@
 "use server";
-
 import BlogTile from "@/components/blog/blog-tile";
 import { fetchArticles, getAuthorUser } from "./fetch";
 import Link from "next/link";
 import { getCurrentLocale, getI18n } from "@/locales/server";
 import { Button } from "@/components/ui/button";
+import ErrorMessage from "@/components/ui/error-message";
 
 export default async function BlogSection() {
     const { documentData, parseError } = await fetchArticles();
@@ -46,9 +46,7 @@ export default async function BlogSection() {
                         )
                     )
                 ) : (
-                    <p className="text-2xl font-bold text-red-700">
-                        {parseError?.message}
-                    </p>
+                    <ErrorMessage error={parseError?.message || ""} />
                 )}
             </div>
         </div>

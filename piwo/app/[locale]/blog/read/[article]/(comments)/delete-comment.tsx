@@ -13,7 +13,7 @@ export default function DeleteComment({
 }: {
     data: TextDocumentComment;
     currentUser: User;
-    onDelete?: (commentId: string) => void;
+    onDelete?: (comment: TextDocumentComment) => void;
 }) {
     const [deleteStatus, setDeleteStatus] = useState<
         "error" | "pending" | null
@@ -23,12 +23,13 @@ export default function DeleteComment({
         if (data?.status !== "draft") {
             const res = await deleteComment(data.id);
             if (res.error) {
+                console.error(res.error);
                 setDeleteStatus("error");
                 return;
             }
         }
         if (onDelete) {
-            onDelete(data.id);
+            onDelete(data);
         }
     }
     return (

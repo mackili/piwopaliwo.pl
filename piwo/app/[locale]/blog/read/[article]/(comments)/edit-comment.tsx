@@ -13,21 +13,24 @@ import { saveComment } from "./fetch";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { v4 as uuid } from "uuid";
 import ErrorMessage from "@/components/ui/error-message";
+import { useI18n } from "@/locales/client";
 
 export default function EditComment({
     comment,
     currentUserId,
     textDocumentId,
     respondingToId = null,
-    onsave,
+    onSave,
 }: {
     comment?: TextDocumentComment | undefined;
     currentUserId: string;
     textDocumentId: string;
     respondingToId?: string | null;
-    onsave: (comment: TextDocumentComment) => void;
+    onSave?: (comment: TextDocumentComment) => void;
 }) {
+    const t = useI18n();
     async function performSave() {
+        const author = comment?.author;
         const { data, error } = await saveComment(form.getValues());
         if (error || !data) {
             form.setError("text", {
@@ -38,7 +41,8 @@ export default function EditComment({
             });
             return "error";
         }
-        onsave(data);
+        data.author = author;
+        if (onSave) onSave(data);
         return "success";
     }
     const [saveStatus, saveCommentAction, isPending] = useActionState<
@@ -82,7 +86,7 @@ export default function EditComment({
                     type="submit"
                     variant={saveStatus === "error" ? "destructive" : "default"}
                 >
-                    {isPending ? <LoadingSpinner /> : "Save"}
+                    {isPending ? <LoadingSpinner /> : t("Blog.save")}
                 </Button>
             </form>
         </Form>
