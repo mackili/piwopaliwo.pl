@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchComments } from "@/app/[locale]/blog/read/[article]/(comments)/fetch";
+import { fetchComments } from "@/app/[locale]/(with-navbar)/blog/read/[article]/(comments)/fetch";
 
 export async function GET(
     req: NextRequest,

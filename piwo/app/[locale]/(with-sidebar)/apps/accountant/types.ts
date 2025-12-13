@@ -1,0 +1,72 @@
+import * as z from "zod";
+import { UserInfoSchema } from "@/components/scoretracker/types";
+
+export const GroupMemberSchema = z.object({
+    id: z.uuid(),
+    nickname: z.string().min(1).max(15),
+    added_at: z.iso.datetime({ offset: true }).optional(),
+    user_id: z.uuid().nullable(),
+    group_id: z.uuid(),
+    assigned_at: z.iso.datetime({ offset: true }).nullish(),
+    removed_at: z.iso.datetime({ offset: true }).nullish(),
+    user: UserInfoSchema.nullish(),
+});
+
+export const GroupCurrencySchema = z.object({
+    iso: z.string().length(3),
+    primary: z.boolean(),
+    rate: z.number(),
+});
+
+export const GroupSchema = z.object({
+    id: z.uuid(),
+    name: z.string().max(100).min(2),
+    created_at: z.iso.datetime({ offset: true }).optional(),
+    archived_at: z.iso.datetime({ offset: true }).nullish(),
+    description: z.string().nullish(),
+    thumbnail_url: z.url().nullable(),
+    owner_id: z.uuid(),
+    owner: UserInfoSchema.optional(),
+    members: z.array(GroupMemberSchema).optional(),
+    currencies: z.array(GroupCurrencySchema).default([]),
+});
+
+export const TransactionSchema = z.object({
+    id: z.uuid(),
+    created_at: z.iso.datetime({ offset: true }).optional(),
+    paid_by_id: z.uuid(),
+    description: z.string().min(2),
+    currency_iso_code: z.string().length(3),
+    amount: z.number().nonnegative(),
+    group_id: z.uuid(),
+    paid_by: GroupMemberSchema.nullish(),
+});
+
+export const TransactionSplitSchema = z.object({
+    group_id: z.uuid(),
+    lender_id: z.uuid(),
+    transaction_id: z.uuid(),
+    created_at: z.iso.datetime({ offset: true }).optional(),
+    paid_by_id: z.uuid(),
+    description: z.string().nullable(),
+    currency_iso_code: z.string().length(3),
+    amount: z.number().min(0),
+});
+
+export const BalanceSchema = z.object({
+    borrower_id: z.uuid(),
+    lender_id: z.uuid(),
+    created_at: z.iso.datetime({ offset: true }).optional(),
+    currency_balance: z.record(z.string(), z.number().min(0)),
+});
+export const TotalSpentObjectSchema = z.object({
+    iso: z.string().length(3),
+    amount: z.number().nonnegative(),
+});
+export type Group = z.infer<typeof GroupSchema>;
+export type GroupMember = z.infer<typeof GroupMemberSchema>;
+export type Transaction = z.infer<typeof TransactionSchema>;
+export type GroupCurrency = z.infer<typeof GroupCurrencySchema>;
+export type TransactionSplit = z.infer<typeof TransactionSplitSchema>;
+export type Balance = z.infer<typeof BalanceSchema>;
+export type TotalSpentObject = z.infer<typeof TotalSpentObjectSchema>;

@@ -1,10 +1,12 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
-import "../globals.css";
-import NavBar from "@/components/navbar";
+import "@/app/globals.css";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { I18nProviderClient } from "../../locales/client";
+import { I18nProviderClient } from "@/locales/client";
 import { LocaleToggle } from "@/components/ui/locale-toggle";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "./sidebar";
+import { createClient } from "@/utils/supabase/server";
 
 export const metadata: Metadata = {
     title: "Piwo-Paliwo 2.0",
@@ -19,6 +21,8 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     const { locale } = await params;
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
     return (
         <I18nProviderClient locale={locale}>
             <ThemeProvider
@@ -27,11 +31,13 @@ export default async function RootLayout({
                 enableSystem
                 disableTransitionOnChange
             >
-                <NavBar />
-                {children}
-                <footer className="row-start-3 flex gap-[24px] pb-8 flex-wrap items-center justify-center">
-                    Piwo Paliwo 2.0 {new Date().getFullYear()}
-                </footer>
+                <SidebarProvider>
+                    <AppSidebar user={data?.user} />
+                    <main className="w-full">
+                        <SidebarTrigger />
+                        {children}
+                    </main>
+                </SidebarProvider>
                 <ThemeToggle />
                 <LocaleToggle />
             </ThemeProvider>

@@ -20,6 +20,9 @@ export default {
             "Śledź swoje punkty w dowolnej grze z innymi użytkownikami. Na żywo!",
         beerCounter: "Licznik piw",
         beerCounter_description: "Śledź swoje spożycie złotego trunku",
+        accountant: "Księgowy",
+        accountant_description:
+            "Aplikacja pomagająca podliczyć pieniądze wydane podczas wyjazdu",
     },
     ScoreTracker: {
         title: "Licznik punktów",

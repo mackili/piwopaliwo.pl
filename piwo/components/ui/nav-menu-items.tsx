@@ -31,7 +31,7 @@ type MainMenuItem = MenuItem & {
     status: "active" | "disabled";
 };
 
-const menuItems: MainMenuItem[] = [
+export const menuItems: MainMenuItem[] = [
     { id: "home", order: 0, link: "/", status: "active" },
     {
         description: "Find all games offered on the platform here",
@@ -57,6 +57,11 @@ const menuItems: MainMenuItem[] = [
         link: "#",
         status: "active",
         children: [
+            {
+                description: "NavMenu.accountant_description",
+                id: "accountant",
+                link: "/apps/accountant",
+            },
             {
                 description: "NavMenu.scoreTracker_description",
                 id: "scoreTracker",
