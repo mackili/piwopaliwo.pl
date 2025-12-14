@@ -7,6 +7,7 @@ import TotalSpent from "./total-spent";
 import GroupCurrenciesTable from "./currencies-table";
 import GroupTransactionTable from "./transactions-table";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
+import GroupReceivables from "./receivables";
 
 export default async function Page({
     params,
@@ -33,6 +34,7 @@ export default async function Page({
                     className="@4xl:col-span-2"
                 />
                 <TotalSpent group={data} className="@4xl:col-span-2" />
+                <GroupReceivables group={data} className="@4xl:col-span-3" />
                 <GroupTransactionTable
                     group={data}
                     className="@max-4xl:col-span-full @4xl:col-span-3"

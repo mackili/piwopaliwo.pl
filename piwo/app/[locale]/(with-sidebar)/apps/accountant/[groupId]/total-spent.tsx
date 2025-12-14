@@ -4,12 +4,11 @@ import { ComponentProps } from "react";
 import { createClient } from "@/utils/supabase/server";
 import { PostgrestError } from "@supabase/supabase-js";
 import TotalSpentChart from "./total-spent-chart";
-import ErrorMessage from "@/components/ui/error-message";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 
 const DB_TOTAL_SUM_FUNCTION_NAME = "acc_get_transaction_summary";
 
-function calculateGrandTotal(
+export function calculateGrandTotal(
     totals: TotalSpentObject[] | null,
     currencies: GroupCurrency[] | null | undefined
 ) {

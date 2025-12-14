@@ -70,29 +70,6 @@ export default function GroupCurrenciesTable({
                 </CardAction>
             </CardHeader>
             <CardContent>
-                {/* <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Currency</TableHead>
-                            <TableHead>Rate</TableHead>
-                            <TableHead className="w-6">Is Primary</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {(group?.currencies || []).map((currency) => (
-                            <TableRow key={currency.iso}>
-                                <TableCell>{currency.iso}</TableCell>
-                                <TableCell>{currency.rate}</TableCell>
-                                <TableCell>
-                                    <Checkbox
-                                        disabled
-                                        checked={currency.primary}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table> */}
                 <DataTable columns={columns} data={group?.currencies || []} />
             </CardContent>
         </Card>

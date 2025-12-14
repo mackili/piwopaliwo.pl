@@ -44,12 +44,9 @@ export const TransactionSchema = z.object({
 
 export const TransactionSplitSchema = z.object({
     group_id: z.uuid(),
-    lender_id: z.uuid(),
+    borrower_id: z.uuid(),
     transaction_id: z.uuid(),
     created_at: z.iso.datetime({ offset: true }).optional(),
-    paid_by_id: z.uuid(),
-    description: z.string().nullable(),
-    currency_iso_code: z.string().length(3),
     amount: z.number().min(0),
 });
 
@@ -59,10 +56,23 @@ export const BalanceSchema = z.object({
     created_at: z.iso.datetime({ offset: true }).optional(),
     currency_balance: z.record(z.string(), z.number().min(0)),
 });
+export const GroupBalanceSchema = z.object({
+    borrower_id: z.uuid(),
+    lender_id: z.uuid(),
+    group_id: z.uuid(),
+    created_at: z.iso.datetime({ offset: true }).optional(),
+    currency_balance: z.record(z.string(), z.number().min(0)),
+    borrower: GroupMemberSchema,
+    lender: GroupMemberSchema,
+});
 export const TotalSpentObjectSchema = z.object({
     iso: z.string().length(3),
     amount: z.number().nonnegative(),
 });
+export const TransactionWithSplitsSchema = TransactionSchema.extend({
+    splits: z.array(TransactionSplitSchema),
+});
+
 export type Group = z.infer<typeof GroupSchema>;
 export type GroupMember = z.infer<typeof GroupMemberSchema>;
 export type Transaction = z.infer<typeof TransactionSchema>;
@@ -70,3 +80,5 @@ export type GroupCurrency = z.infer<typeof GroupCurrencySchema>;
 export type TransactionSplit = z.infer<typeof TransactionSplitSchema>;
 export type Balance = z.infer<typeof BalanceSchema>;
 export type TotalSpentObject = z.infer<typeof TotalSpentObjectSchema>;
+export type TransactionWithSplits = z.infer<typeof TransactionWithSplitsSchema>;
+export type GroupBalance = z.infer<typeof GroupBalanceSchema>;
