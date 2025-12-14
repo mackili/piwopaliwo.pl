@@ -22,7 +22,7 @@ export default async function GroupCard({
 }: { group: Group } & ComponentProps<"div">) {
     const locale = await getCurrentLocale();
     return (
-        <Card className="w-full">
+        <Card className="w-full justify-around">
             <CardHeader>
                 <div className="aspect-3/1 w-full flex items-center justify-center">
                     {group?.thumbnail_url === null ? (
@@ -33,14 +33,15 @@ export default async function GroupCard({
                             alt={group.name}
                             height={100}
                             width={120}
-                            className="object-cover w-full h-full rounded-xl"
+                            className="object-cover w-full h-full rounded-sm lg:rounded-lg xl:rounded-xl"
                         />
                     )}
                 </div>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
-                <CardTitle>{group.name}</CardTitle>
-                {group?.description && <p>{group.description}</p>}
+                <CardTitle className="font-serif text-lg font-bold text-nowrap overflow-x-clip">
+                    {group.name}
+                </CardTitle>
             </CardContent>
             <CardFooter>
                 <Link

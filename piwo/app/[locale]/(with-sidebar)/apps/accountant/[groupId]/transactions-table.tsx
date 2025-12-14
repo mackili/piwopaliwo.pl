@@ -73,7 +73,7 @@ export default async function GroupTransactionTable({
                     )}
                 </CardAction>
             </CardHeader>
-            <CardContent>
+            <CardContent className="max-h-[400px] overflow-scroll">
                 {data && (
                     <TransactionsDisplay
                         transactions={data || []}

@@ -17,7 +17,7 @@ export default async function GroupsGrid() {
         )
         .filter("archived_at", "is", null);
     return data ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full p-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full">
             {data.map((group, index) => (
                 <Suspense key={index} fallback={<GroupCardSkeleton />}>
                     <GroupCard group={group} />

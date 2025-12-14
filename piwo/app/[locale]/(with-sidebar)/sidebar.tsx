@@ -10,14 +10,17 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarGroup,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
+    SidebarSeparator,
     useSidebar,
 } from "@/components/ui/sidebar";
-import NavigationMenuPP, { menuItems } from "@/components/ui/nav-menu-items";
+import { menuItems } from "@/components/ui/nav-menu-items";
 import { useCurrentLocale, useI18n } from "@/locales/client";
 import { CurrentUserAvatar } from "@/components/current-user-avatar";
 import { User } from "@supabase/supabase-js";
@@ -43,52 +46,74 @@ export function AppSidebar({ user }: { user: User | null }) {
         router.refresh();
     };
     return (
-        <Sidebar side="left" variant="floating" collapsible="icon">
-            <SidebarHeader>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <SidebarMenuButton size="lg">
-                            <div
-                                className={
-                                    open || openMobile ? "w-12 h-12" : "w-8 h-8"
-                                }
-                            >
-                                <Piwo
-                                    width={open || openMobile ? 48 : 32}
-                                    height={open || openMobile ? 48 : 32}
-                                />
-                            </div>
-                            <h4
-                                className={`${
-                                    open || openMobile
-                                        ? "scale-100 opacity-100"
-                                        : "hidden scale-0 opacity-0"
-                                } transition-all ease-in-out`}
-                            >
-                                Piwo Paliwo 2.0
-                            </h4>
-                        </SidebarMenuButton>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg relative inline"
-                        align="start"
-                        side={isMobile ? "bottom" : "right"}
-                        sideOffset={4}
+        <Sidebar
+            side="left"
+            variant="sidebar"
+            className="shadow-md antialiased backdrop-blur-md bg-background/50 bg-opacity-80 z-20"
+        >
+            <SidebarHeader className="my-4">
+                <SidebarMenuButton size="lg">
+                    <div
+                        className={open || openMobile ? "w-12 h-12" : "w-8 h-8"}
                     >
-                        <NavigationMenuPP className="absolute" />
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                        <Piwo
+                            width={open || openMobile ? 48 : 32}
+                            height={open || openMobile ? 48 : 32}
+                        />
+                    </div>
+                    <h4
+                        className={`${
+                            open || openMobile
+                                ? "scale-100 opacity-100"
+                                : "hidden scale-0 opacity-0"
+                        } transition-all ease-in-out`}
+                    >
+                        Piwo Paliwo 2.0
+                    </h4>
+                </SidebarMenuButton>
             </SidebarHeader>
-            <SidebarContent>
-                <SidebarGroup />
-                <SidebarGroup />
+            <SidebarContent className="p-2">
+                {menuItems
+                    .filter((menuItem) => menuItem.status === "active")
+                    .map((mainMenuItem, index) => (
+                        <SidebarMenuItem key={index}>
+                            <Link href={`/${locale}${mainMenuItem.link}`}>
+                                <SidebarMenuButton className="cursor-pointer">
+                                    <mainMenuItem.icon />
+                                    <span>
+                                        {
+                                            // @ts-expect-error structured with the translation
+                                            t(`NavMenu.${mainMenuItem.id}`)
+                                        }
+                                    </span>
+                                </SidebarMenuButton>
+                            </Link>
+                            {(mainMenuItem?.children || []).map(
+                                (childMenuItem, childIndex) => (
+                                    <SidebarMenuSub key={childIndex}>
+                                        <SidebarMenuSubItem>
+                                            <SidebarMenuSubButton
+                                                href={`/${locale}${childMenuItem.link}`}
+                                                className="cursor-pointer"
+                                            >
+                                                <childMenuItem.icon />
+                                                <span>
+                                                    {t(
+                                                        // @ts-expect-error invalid type setting
+                                                        `NavMenu.${childMenuItem.id}`
+                                                    )}
+                                                </span>
+                                            </SidebarMenuSubButton>
+                                        </SidebarMenuSubItem>
+                                    </SidebarMenuSub>
+                                )
+                            )}
+                        </SidebarMenuItem>
+                    ))}
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        {/* <div className="w-full h-16"> */}
-                        {/* <UserNav className="h-16 w-16" /> */}
-                        {/* </div> */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton

@@ -21,10 +21,11 @@ author: Maciej Kilijański
 -   [*] Edit group members
 -   [] Assign group member to a user
 -   [*] Edit group without changing a photo
--   [] Summarized receivables
+-   [*] Summarized receivables
 -   [] Translations
 -   [*] Users spent amount by info
 -   [] Transactions table pagination
+-   [*] Sidebar opener fix
 
 ## Entity Relationship Diagram
 

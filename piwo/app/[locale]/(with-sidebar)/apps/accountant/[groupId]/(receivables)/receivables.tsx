@@ -26,9 +26,11 @@ export default async function GroupReceivables({
         balancesPromise,
         currenciesPromise,
     ])) as [SupabaseResponse<GroupBalance>, PostgrestSingleResponse<Group>];
+    console.log("showing group", group);
     return (
         <GroupReceivablesCard
             group={group}
+            groupMembers={group?.members || []}
             balancesResponse={balances}
             currenciesResponse={currencies || []}
             {...props}

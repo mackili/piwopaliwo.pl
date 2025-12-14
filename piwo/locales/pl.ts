@@ -1,4 +1,4 @@
-export default {
+const translations = {
     settings: "Ustawienia",
     logOut: "Wyloguj się",
     logIn: "Zaloguj się",
@@ -10,6 +10,9 @@ export default {
     edit: "Edytuj",
     NavMenu: {
         home: "Strona główna",
+        home_description: "Strona główna",
+        blog: "Blog",
+        blog_description: "Główny kanał komunikacji ze światem",
         games: "Gry",
         piwopol: "Piwopol",
         apps: "Aplikacje",
@@ -94,3 +97,4 @@ export default {
         displayPerPage: "Komentarze per strona",
     },
 } as const;
+export default translations;

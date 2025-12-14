@@ -8,19 +8,21 @@ const I18nMiddleware = createI18nMiddleware({
 });
 
 export async function middleware(request: NextRequest) {
-    const i18nResponse = I18nMiddleware(request);
-    const sessionResponse = await updateSession(request);
     const { pathname } = request.nextUrl;
     // const publicPageRegex = /^\/[a-z]{2}(\/auth(\/(login|signup))?)?\/?$/;
-    const privatePageRege = /^\/[a-z]{2}(\/apps\a?|\/settings?)/;
+    const privatePageRegex = /^\/[a-z]{2}(\/apps\a?|\/settings?)/;
     // if (publicPageRegex.test(pathname)) {
     //     return i18nResponse;
     // } else {
     //     return sessionResponse;
     // }
-    if (privatePageRege.test(pathname)) {
+    if (privatePageRegex.test(pathname)) {
+        const sessionResponse = await updateSession(request);
+        sessionResponse.headers.set("x-current-path", request.nextUrl.pathname);
         return sessionResponse;
     } else {
+        const i18nResponse = I18nMiddleware(request);
+        i18nResponse.headers.set("x-current-path", request.nextUrl.pathname);
         return i18nResponse;
     }
 }

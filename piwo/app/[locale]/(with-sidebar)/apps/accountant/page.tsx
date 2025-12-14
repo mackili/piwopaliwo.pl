@@ -9,14 +9,14 @@ export default async function Accountant() {
     const supabase = await createClient();
     const { user } = (await supabase.auth.getUser()).data;
     return (
-        <>
+        <div className="p-4 flex flex-col gap-4">
             <section>
                 <Card>
                     <CardHeader>
                         <CardAction>
                             {user && <NewGroupButton user={user} />}
                         </CardAction>
-                        <h1>Accountant</h1>
+                        <h1 className="max-sm:text-3xl!">Accountant</h1>
                     </CardHeader>
                 </Card>
             </section>
@@ -25,6 +25,6 @@ export default async function Accountant() {
                     <GroupsGrid />
                 </Suspense>
             </section>
-        </>
+        </div>
     );
 }

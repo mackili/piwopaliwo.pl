@@ -4,9 +4,10 @@ import "@/app/globals.css";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { I18nProviderClient } from "@/locales/client";
 import { LocaleToggle } from "@/components/ui/locale-toggle";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./sidebar";
 import { createClient } from "@/utils/supabase/server";
+import { TopBar } from "./top-bar";
 
 export const metadata: Metadata = {
     title: "Piwo-Paliwo 2.0",
@@ -33,9 +34,11 @@ export default async function RootLayout({
             >
                 <SidebarProvider>
                     <AppSidebar user={data?.user} />
-                    <main className="w-full">
-                        <SidebarTrigger />
-                        {children}
+                    <main className="w-full h-screen flex flex-col">
+                        <TopBar />
+                        <section className="flex-1 w-full overflow-y-auto">
+                            {children}
+                        </section>
                     </main>
                 </SidebarProvider>
                 <ThemeToggle />

@@ -16,8 +16,8 @@ type AggregateBalance = {
 } & Record<string, number>;
 const MemberBalanceChart = memo(function MemberBalanceChart({
     data,
-    group,
-}: {
+}: // group,
+{
     data?: GroupMemberBalance[] | null | undefined;
     group: Group;
 }) {

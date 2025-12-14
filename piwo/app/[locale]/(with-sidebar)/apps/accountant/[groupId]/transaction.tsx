@@ -10,7 +10,7 @@ import TransactionForm from "../(components)/(actions)/transaction-form";
 
 export default function TransactionsDisplay({
     transactions,
-    group,
+    // group,
     groupMembers,
     ...props
 }: {

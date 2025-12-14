@@ -55,7 +55,12 @@ export default function GroupStatisticsChart<DataType>({
             <CardHeader>
                 <p>{chartTitle}</p>
                 <CardAction>
-                    <Button type="button" onClick={() => getData()}>
+                    <Button
+                        type="button"
+                        onClick={() => getData()}
+                        variant="outline"
+                        size="icon"
+                    >
                         <RefreshCcw
                             className={
                                 fetchState === "pending" ? "animate-spin" : ""

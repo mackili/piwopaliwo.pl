@@ -81,6 +81,13 @@ export const GroupMemberBalanceSchema = z.object({
     status: z.enum(["owes", "is_owed"]),
 });
 
+export const GroupDailyTransactionSummarySchema = z.object({
+    paid_by: GroupMemberSchema,
+    iso: z.string().length(3),
+    amount: z.number(),
+    date: z.iso.datetime({ offset: true }),
+});
+
 export type Group = z.infer<typeof GroupSchema>;
 export type GroupMember = z.infer<typeof GroupMemberSchema>;
 export type Transaction = z.infer<typeof TransactionSchema>;
@@ -91,3 +98,6 @@ export type TotalSpentObject = z.infer<typeof TotalSpentObjectSchema>;
 export type TransactionWithSplits = z.infer<typeof TransactionWithSplitsSchema>;
 export type GroupBalance = z.infer<typeof GroupBalanceSchema>;
 export type GroupMemberBalance = z.infer<typeof GroupMemberBalanceSchema>;
+export type GroupDailyTransactionSummary = z.infer<
+    typeof GroupDailyTransactionSummarySchema
+>;

@@ -17,16 +17,17 @@ export function GroupHead({
 }: { group: Group; user: User } & ComponentProps<"div">) {
     return (
         <Card {...props}>
-            <CardHeader>
-                <h1>{group.name}</h1>
-                <CardAction>
+            <CardHeader className="gap-4">
+                <h1 className="@max-sm:col-span-full max-sm:text-4xl!">
+                    {group.name}
+                </h1>
+                <CardAction className="@max-sm:col-span-full">
                     <EditGroupButton
                         group={group}
                         user={user}
                         variant={"outline"}
                     />
                 </CardAction>
-                {group.description && <p>{group.description}</p>}
             </CardHeader>
             <CardContent>
                 {group.thumbnail_url && (

@@ -133,7 +133,7 @@ export default function GroupForm({
                         </FormItem>
                     )}
                 />
-                <FormField
+                {/* <FormField
                     control={form.control}
                     name="description"
                     render={({ field, fieldState }) => (
@@ -147,7 +147,7 @@ export default function GroupForm({
                             )}
                         </FormItem>
                     )}
-                />
+                /> */}
                 <PostgrestErrorDisplay error={result} />
                 <DialogFooter>
                     <DialogClose asChild>
