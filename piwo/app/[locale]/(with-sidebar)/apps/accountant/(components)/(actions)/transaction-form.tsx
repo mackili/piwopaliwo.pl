@@ -201,7 +201,7 @@ export default function TransactionForm({
                                 name={field.name}
                                 value={field.value}
                                 onValueChange={field.onChange}
-                                users={groupMembers.map((member) => ({
+                                users={(groupMembers || []).map((member) => ({
                                     userId: member.id,
                                     firstName:
                                         member?.user?.firstName ||
@@ -243,21 +243,21 @@ export default function TransactionForm({
                                                     onValueChange={
                                                         controllerField.onChange
                                                     }
-                                                    users={groupMembers.map(
-                                                        (member) => ({
-                                                            userId: member.id,
-                                                            firstName:
-                                                                member?.user
-                                                                    ?.firstName ||
-                                                                member.nickname,
-                                                            lastName:
-                                                                member?.user
-                                                                    ?.lastName,
-                                                            avatarUrl:
-                                                                member?.user
-                                                                    ?.avatarUrl,
-                                                        })
-                                                    )}
+                                                    users={(
+                                                        groupMembers || []
+                                                    ).map((member) => ({
+                                                        userId: member.id,
+                                                        firstName:
+                                                            member?.user
+                                                                ?.firstName ||
+                                                            member.nickname,
+                                                        lastName:
+                                                            member?.user
+                                                                ?.lastName,
+                                                        avatarUrl:
+                                                            member?.user
+                                                                ?.avatarUrl,
+                                                    }))}
                                                     className="w-full"
                                                 />
                                                 {fieldState.invalid && (

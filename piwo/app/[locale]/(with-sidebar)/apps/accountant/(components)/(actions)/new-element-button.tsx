@@ -2,14 +2,15 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { useState, ElementType } from "react";
+import { useState, ElementType, ReactElement, ComponentProps } from "react";
 import { VariantProps } from "class-variance-authority";
 
 type NewElementButtonProps<FormProps> = {
     dialogTitle: string;
-    buttonLabel: string;
+    buttonLabel: string | ReactElement;
     FormComponent: ElementType;
     formProps: FormProps;
+    className?: ComponentProps<"button">["className"];
 };
 
 export default function NewElementButton<FormProps>({

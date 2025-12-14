@@ -16,6 +16,16 @@ author: Maciej Kilijański
 7. Users should be able to view their transaction history and group expenses.
 8. The system should handle concurrent transactions and ensure data consistency.
 
+## TODO
+
+-   [*] Edit group members
+-   [] Assign group member to a user
+-   [*] Edit group without changing a photo
+-   [] Summarized receivables
+-   [] Translations
+-   [*] Users spent amount by info
+-   [] Transactions table pagination
+
 ## Entity Relationship Diagram
 
 ```mermaid

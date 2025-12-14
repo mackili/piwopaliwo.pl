@@ -53,11 +53,28 @@ export default function GroupMembersTable({
             <CardContent className="flex flex-col gap-2 max-h-128">
                 {group?.members &&
                     group.members.map((member) => (
-                        <UserRow
+                        <NewElementButton
                             key={member.id}
-                            user={member?.user}
-                            userName={memberName({ member: member })}
+                            variant="ghost"
+                            size="lg"
+                            className="overflow-hidden hover:bg-accent dark:hover:bg-accent px-2 py-2 h-12"
+                            buttonLabel={
+                                <UserRow
+                                    user={member?.user}
+                                    userName={memberName({ member: member })}
+                                />
+                            }
+                            dialogTitle={`Edit Member`}
+                            FormComponent={GroupMemberForm}
+                            formProps={{
+                                data: { ...member, group_id: group.id },
+                            }}
                         />
+                        // <UserRow
+                        //     key={member.id}
+                        //     user={member?.user}
+                        //     userName={memberName({ member: member })}
+                        // />
                     ))}
             </CardContent>
         </Card>

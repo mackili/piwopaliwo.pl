@@ -11,9 +11,13 @@ import TransactionForm from "../(components)/(actions)/transaction-form";
 export default function TransactionsDisplay({
     transactions,
     group,
+    groupMembers,
     ...props
-}: { transactions: Transaction[]; group: Group } & ComponentProps<"table">) {
-    console.log("Rendering transactions table");
+}: {
+    transactions: Transaction[];
+    group: Group;
+    groupMembers: GroupMember[];
+} & ComponentProps<"table">) {
     const columns: ColumnDef<Transaction>[] = useMemo(
         () => [
             {
@@ -93,7 +97,7 @@ export default function TransactionsDisplay({
                         dialogTitle={`Edit ${row.getValue("description")}`}
                         formProps={{
                             data: row.original,
-                            groupMembers: group.members,
+                            groupMembers: groupMembers,
                         }}
                         FormComponent={TransactionForm}
                         variant="outline"
@@ -101,7 +105,7 @@ export default function TransactionsDisplay({
                 ),
             },
         ],
-        [group.members]
+        [groupMembers]
     );
     return <DataTable columns={columns} data={transactions} {...props} />;
 }

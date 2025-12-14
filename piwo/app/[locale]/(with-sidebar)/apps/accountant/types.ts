@@ -72,6 +72,14 @@ export const TotalSpentObjectSchema = z.object({
 export const TransactionWithSplitsSchema = TransactionSchema.extend({
     splits: z.array(TransactionSplitSchema),
 });
+export const GroupMemberBalanceSchema = z.object({
+    member: GroupMemberSchema,
+    iso: z.string().length(3),
+    paid_amount: z.number(),
+    owed_amount: z.number(),
+    net_amount: z.number(),
+    status: z.enum(["owes", "is_owed"]),
+});
 
 export type Group = z.infer<typeof GroupSchema>;
 export type GroupMember = z.infer<typeof GroupMemberSchema>;
@@ -82,3 +90,4 @@ export type Balance = z.infer<typeof BalanceSchema>;
 export type TotalSpentObject = z.infer<typeof TotalSpentObjectSchema>;
 export type TransactionWithSplits = z.infer<typeof TransactionWithSplitsSchema>;
 export type GroupBalance = z.infer<typeof GroupBalanceSchema>;
+export type GroupMemberBalance = z.infer<typeof GroupMemberBalanceSchema>;

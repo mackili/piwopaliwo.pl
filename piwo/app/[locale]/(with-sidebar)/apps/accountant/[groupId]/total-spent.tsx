@@ -6,8 +6,6 @@ import { PostgrestError } from "@supabase/supabase-js";
 import TotalSpentChart from "./total-spent-chart";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 
-const DB_TOTAL_SUM_FUNCTION_NAME = "acc_get_transaction_summary";
-
 export function calculateGrandTotal(
     totals: TotalSpentObject[] | null,
     currencies: GroupCurrency[] | null | undefined
@@ -34,10 +32,14 @@ export default async function TotalSpent({
     ...props
 }: { group: Group } & ComponentProps<"div">) {
     const supabase = await createClient();
-    const { data: totals, error } = (await supabase.rpc(
-        DB_TOTAL_SUM_FUNCTION_NAME,
-        { p_group_id: group.id, p_member_id: null }
-    )) as { data: TotalSpentObject[] | null; error: PostgrestError | null };
+    const { data: totals, error } = (await supabase
+        .from("v_group_total_spending")
+        .select("iso,amount")
+        .eq("group_id", group.id)
+        .order("amount", { ascending: false })) as {
+        data: TotalSpentObject[] | null;
+        error: PostgrestError | null;
+    };
     const primaryCurrency = group.currencies.find(
         (currency) => currency.primary
     );

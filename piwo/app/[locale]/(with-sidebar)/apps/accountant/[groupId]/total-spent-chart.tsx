@@ -21,7 +21,6 @@ export default function TotalSpentChart({
         acc[iso] = amount;
         return acc;
     }, {} as Record<string, number | string>);
-    console.log(chartData);
     const chartConfig = data.reduce((config, { iso }, index) => {
         config[iso] = {
             label: iso,

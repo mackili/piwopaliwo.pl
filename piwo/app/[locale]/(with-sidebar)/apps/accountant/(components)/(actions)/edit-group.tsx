@@ -21,6 +21,8 @@ export default function EditGroupButton({
     user: User;
     group: Group;
 } & VariantProps<typeof buttonVariants>) {
+    if (Object.keys(group).includes("members")) delete group.members;
+    if (Object.keys(group).includes("owner")) delete group.owner;
     return user.id === group.owner_id ? (
         <Dialog>
             <DialogTrigger asChild>

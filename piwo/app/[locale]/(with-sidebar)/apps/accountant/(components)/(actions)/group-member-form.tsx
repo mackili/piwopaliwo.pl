@@ -41,7 +41,11 @@ export default function GroupMemberForm({
         if (isValid === false) {
             return;
         }
-        const result = await upsertGroupMember(form.getValues());
+        const groupMemberData = form.getValues();
+        if (Object.keys(groupMemberData).includes("user")) {
+            delete groupMemberData.user;
+        }
+        const result = await upsertGroupMember(groupMemberData);
         if (result.data) {
             router.refresh();
             setDialogOpen(false);
