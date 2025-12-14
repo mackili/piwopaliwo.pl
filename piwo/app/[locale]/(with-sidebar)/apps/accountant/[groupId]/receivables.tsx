@@ -8,6 +8,7 @@ import UserRow from "@/components/ui/user-row";
 import { memberName } from "./members-table";
 import { calculateGrandTotal } from "./total-spent";
 import { ArrowRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default async function GroupReceivables({
     group,
@@ -51,7 +52,14 @@ export default async function GroupReceivables({
     return (
         <Card {...props}>
             <CardHeader>
-                <h4>Receivables</h4>
+                <div className="flex flex-row gap-2">
+                    <h4>Receivables</h4>
+                    <p className="flex items-center">
+                        <Badge variant="outline" className="aspect-square">
+                            {balances?.length || 0}
+                        </Badge>
+                    </p>
+                </div>
             </CardHeader>
             <CardContent className="overflow-scroll flex flex-col gap-4">
                 {balances &&

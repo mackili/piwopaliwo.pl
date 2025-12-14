@@ -13,6 +13,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui/datatable-header";
 import { DataTable } from "@/components/ui/datatable";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 
 export default function GroupCurrenciesTable({
     group,
@@ -59,7 +60,14 @@ export default function GroupCurrenciesTable({
     return (
         <Card {...props}>
             <CardHeader>
-                <h4>Currencies</h4>
+                <div className="flex flex-row gap-2">
+                    <h4>Currencies</h4>
+                    <p className="flex items-center">
+                        <Badge variant="outline" className="aspect-square">
+                            {group.currencies?.length || 0}
+                        </Badge>
+                    </p>
+                </div>
                 <CardAction>
                     <NewElementButton
                         buttonLabel="Manage"
