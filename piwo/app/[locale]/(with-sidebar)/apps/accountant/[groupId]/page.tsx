@@ -20,7 +20,7 @@ export default async function Page({
     const { data, error } = (await supabase
         .from("group")
         .select(
-            "id,name,description,thumbnail_url,owner_id,created_at,members:group_member(id,nickname,added_at,user_id,user:UserInfo(firstName,lastName,avatarUrl)),currencies"
+            "id,name,description,thumbnail_url,owner_id,created_at,members:group_member_group_id_fkey(id,nickname,added_at,user_id,user:UserInfo(firstName,lastName,avatarUrl)),currencies"
         )
         .eq("id", groupId)
         .single()) as { data: Group | null; error: PostgrestError | null };

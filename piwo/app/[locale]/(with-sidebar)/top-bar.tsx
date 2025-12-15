@@ -1,3 +1,4 @@
+import NotificationBell from "@/components/notifications/notification-bell";
 import {
     AutomaticBreadcrumbs,
     BreadcrumbsSkeleton,
@@ -12,6 +13,10 @@ export function TopBar() {
             <Suspense fallback={<BreadcrumbsSkeleton />}>
                 <AutomaticBreadcrumbs />
             </Suspense>
+            <div className="grow"></div>
+            {/* <div className="w-full flex justify-end"> */}
+            <NotificationBell />
+            {/* </div> */}
         </section>
     );
 }

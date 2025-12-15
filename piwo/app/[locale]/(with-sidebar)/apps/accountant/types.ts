@@ -88,6 +88,26 @@ export const GroupDailyTransactionSummarySchema = z.object({
     date: z.iso.datetime({ offset: true }),
 });
 
+export const GroupInviteSchema = z.object({
+    group_id: z.uuid(),
+    group_member_id: z.uuid(),
+    user_id: z.uuid(),
+    created_at: z.iso.datetime({ offset: true }),
+    accepted_at: z.iso.datetime({ offset: true }).nullish(),
+    rejected_at: z.iso.datetime({ offset: true }).nullish(),
+});
+
+export const GroupInviteViewSchema = z.object({
+    id: z.uuid(),
+    group_id: z.uuid(),
+    group_member_id: z.uuid(),
+    user_id: z.uuid(),
+    created_at: z.iso.datetime({ offset: true }),
+    accepted_at: z.iso.datetime({ offset: true }),
+    group: GroupSchema,
+    group_member: GroupMemberSchema,
+});
+
 export type Group = z.infer<typeof GroupSchema>;
 export type GroupMember = z.infer<typeof GroupMemberSchema>;
 export type Transaction = z.infer<typeof TransactionSchema>;
@@ -101,3 +121,5 @@ export type GroupMemberBalance = z.infer<typeof GroupMemberBalanceSchema>;
 export type GroupDailyTransactionSummary = z.infer<
     typeof GroupDailyTransactionSummarySchema
 >;
+export type GroupInvite = z.infer<typeof GroupInviteSchema>;
+export type GroupInviteView = z.infer<typeof GroupInviteViewSchema>;
