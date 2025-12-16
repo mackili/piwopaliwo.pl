@@ -70,7 +70,6 @@ const OptimizedReceivables = memo(function OptimizedReceivables({
                 }));
 
                 result[memberId] = calculateGrandTotal(totals, currencies);
-                console.log(result);
                 return result;
             },
             {} as Record<string, number>

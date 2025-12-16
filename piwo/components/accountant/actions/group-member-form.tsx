@@ -2,18 +2,24 @@
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { GroupMember, GroupMemberSchema } from "../../types";
+import {
+    GroupMember,
+    GroupMemberSchema,
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/error-message";
-import { ComponentProps, useActionState } from "react";
+import { ComponentProps, useActionState, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useRouter } from "next/navigation";
 import { v4 as uuid } from "uuid";
-import { upsertGroupMember } from "./upsert-group-member";
+import { getAvailableUsers, upsertGroupMember } from "./upsert-group-member";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
+import UserSelect from "@/components/ui/user-dropdown";
+import { UserInfo } from "@/components/scoretracker/types";
+import { PostgrestError } from "@supabase/supabase-js";
 
 export default function GroupMemberForm({
     data,
@@ -24,6 +30,8 @@ export default function GroupMemberForm({
     setDialogOpen: (open: boolean) => void;
 } & ComponentProps<"form">) {
     const router = useRouter();
+    const [users, setUsers] = useState<UserInfo[]>([]);
+    const [usersError, setUsersError] = useState<PostgrestError>();
     const [result, handleSubmit, isPending] = useActionState(
         handleGroupMemberSave,
         null
@@ -36,6 +44,17 @@ export default function GroupMemberForm({
         },
     });
 
+    useEffect(() => {
+        const setUserData = async () => {
+            const { data, error } = await getAvailableUsers();
+            if (error) {
+                setUsersError(error as PostgrestError);
+            } else {
+                setUsers(data || []);
+            }
+        };
+        setUserData();
+    }, []);
     async function handleGroupMemberSave() {
         const isValid = await form.trigger();
         if (isValid === false) {
@@ -75,7 +94,30 @@ export default function GroupMemberForm({
                         </FormItem>
                     )}
                 />
-
+                {users && (
+                    <FormField
+                        control={form.control}
+                        name="user_id"
+                        render={({ field, fieldState }) => (
+                            <FormItem className="w-full">
+                                <FormLabel>User</FormLabel>
+                                <UserSelect
+                                    name={field.name}
+                                    value={field.value || undefined}
+                                    users={users}
+                                    onValueChange={field.onChange}
+                                    className="w-full"
+                                />
+                                {fieldState.invalid && (
+                                    <ErrorMessage
+                                        error={fieldState?.error?.message || ""}
+                                    />
+                                )}
+                            </FormItem>
+                        )}
+                    />
+                )}
+                {usersError && <PostgrestErrorDisplay error={usersError} />}
                 <PostgrestErrorDisplay error={result} />
                 <DialogFooter>
                     <DialogClose asChild>

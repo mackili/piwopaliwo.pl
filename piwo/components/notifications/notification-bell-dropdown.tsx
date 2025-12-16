@@ -1,6 +1,6 @@
 "use client";
 
-import { BellIcon, XIcon } from "lucide-react";
+import { BellIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import {
     DropdownMenu,
@@ -16,13 +16,10 @@ import {
     PostgrestError,
     REALTIME_SUBSCRIBE_STATES,
     RealtimePostgresChangesPayload,
-    RealtimePostgresDeletePayload,
-    RealtimePostgresInsertPayload,
-    RealtimePostgresUpdatePayload,
 } from "@supabase/supabase-js";
 import { UserNotification } from "./types";
 import { SupabaseResponse } from "@/utils/supabase/types";
-import { Card, CardAction, CardHeader } from "../ui/card";
+import { Card, CardHeader } from "../ui/card";
 import { useRouter } from "next/navigation";
 import { useCurrentLocale } from "@/locales/client";
 import PostgrestErrorDisplay from "../ui/postgrest-error-display";
@@ -91,7 +88,6 @@ export default function NotificationBellDropdown({
                             );
                             return newArray;
                         } else {
-                            console.log([payload.new, ...prevNotifications]);
                             return [payload.new, ...prevNotifications];
                         }
                     });
@@ -116,13 +112,12 @@ export default function NotificationBellDropdown({
                 upsertNotifications
             )
             .subscribe((status, error) => {
-                console.log(status, error);
                 setSubscriptionStatus(status);
             });
         return () => {
             supabase.removeChannel(notificationsChannel);
         };
-    }, [supabase, userId]);
+    }, []);
     async function handleClick(notification: UserNotification) {
         const data = { id: notification.id, read_at: new Date().toISOString() };
         const { error } = await supabase
@@ -138,7 +133,7 @@ export default function NotificationBellDropdown({
     }
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
                 <Button
                     type="button"
                     variant={
@@ -153,7 +148,7 @@ export default function NotificationBellDropdown({
                 >
                     <BellIcon />
                     <div
-                        className={`absolute top-2 right-2 border-2 bg-destructive w-2 h-2 rounded-full transition-all ease-in-out scale-0 origin-center ${
+                        className={`absolute top-2 right-2 bg-destructive w-2 h-2 rounded-full transition-all ease-in-out scale-0 origin-center border-0 antialiased z-1 ${
                             notifications.filter(
                                 (notification) => !notification.read_at
                             ).length > 0 && "scale-100"

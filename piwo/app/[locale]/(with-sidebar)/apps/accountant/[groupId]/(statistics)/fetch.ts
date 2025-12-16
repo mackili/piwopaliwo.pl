@@ -35,6 +35,5 @@ export async function fetchDailyTransactionSummaries(
     }
     query.limit(limit ? Math.min(30, limit) : 30);
     const result = await query;
-    console.log(result);
     return result;
 }

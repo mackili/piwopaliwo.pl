@@ -18,7 +18,7 @@ import OptimizedReceivables from "./receivables-optimized";
 export default function GroupReceivablesCard({
     balancesResponse,
     currenciesResponse,
-    group,
+    // group,
     groupMembers,
     ...props
 }: {
@@ -30,7 +30,6 @@ export default function GroupReceivablesCard({
     const { data: balances, error: balancesError } = balancesResponse;
     const currenciesData = (currenciesResponse.data?.currencies ||
         []) as GroupCurrency[];
-    console.log("showing group", group);
     return (
         <Card {...props}>
             <Tabs defaultValue="optimized">

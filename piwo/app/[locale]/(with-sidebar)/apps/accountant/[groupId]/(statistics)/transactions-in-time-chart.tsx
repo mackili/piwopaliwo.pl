@@ -26,44 +26,6 @@ const TransactionsInTimeChart = memo(function TransactionsInTimeChart({
             })),
         [data, group.currencies]
     );
-
-    //     if (!convertedCurrencies) return [];
-
-    //     const grouped = convertedCurrencies.reduce((acc, transaction) => {
-    //         const date = transaction.date.split("T")[0]; // Extract date (YYYY-MM-DD)
-    //         const currency = transaction.iso;
-
-    //         // Initialize the date entry if it doesn't exist
-    //         if (!acc[date]) {
-    //             acc[date] = {};
-    //         }
-
-    //         // Initialize the currency entry for the date if it doesn't exist
-    //         if (!acc[date][currency]) {
-    //             acc[date][currency] = 0;
-    //         }
-
-    //         // Sum up the convertedRate for the date and currency
-    //         acc[date][currency] += transaction.convertedRate;
-
-    //         return acc;
-    //     }, {} as Record<string, Record<string, number>>);
-
-    //     // Transform the grouped data into an array suitable for the chart
-    //     return Object.entries(grouped).map(([date, currencies]) => ({
-    //         date,
-    //         ...currencies,
-    //     }));
-    // }, [convertedCurrencies]);
-    // const allIsos = group.currencies.map((c) => c.iso);
-
-    // const normalized = groupedData
-    //     .map((row) => ({
-    //         ...Object.fromEntries(allIsos.map((iso) => [iso, 0])),
-    //         ...row,
-    //     }))
-    //     .sort((a, b) => a.date.localeCompare(b.date));
-    // console.log(normalized);
     const allIsos = group.currencies.map((c) => c.iso);
 
     const cumulative = useMemo(() => {
@@ -115,7 +77,6 @@ const TransactionsInTimeChart = memo(function TransactionsInTimeChart({
             return next;
         });
     }, [convertedCurrencies, allIsos]);
-    console.log(cumulative);
     return (
         <ChartContainer config={{}} className="min-h-[200px] w-full">
             <AreaChart data={cumulative}>

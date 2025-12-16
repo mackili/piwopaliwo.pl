@@ -3,21 +3,24 @@
 import { CardFooter } from "@/components/ui/card";
 import { GroupInviteView } from "../types";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { ComponentProps, useState } from "react";
 import { acceptInvitation, declineInvitation } from "./fetch";
 import { PostgrestError } from "@supabase/supabase-js";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useRouter } from "next/navigation";
 import { useCurrentLocale } from "@/locales/client";
+import { twMerge } from "tailwind-merge";
 
 export default function InvitationAcceptForm({
     invitation,
     userId,
+    className,
+    ...props
 }: {
     invitation: GroupInviteView;
     userId: string;
-}) {
+} & ComponentProps<"div">) {
     const [isPending, setPending] = useState<boolean>(false);
     const [error, setError] = useState<PostgrestError | null>(null);
     const router = useRouter();
@@ -46,7 +49,10 @@ export default function InvitationAcceptForm({
         setPending(false);
     };
     return (
-        <CardFooter className="justify-end-safe gap-4">
+        <CardFooter
+            className={twMerge("justify-end-safe gap-4", className)}
+            {...props}
+        >
             {error && <PostgrestErrorDisplay error={error} />}
             <LoadingSpinner
                 className={

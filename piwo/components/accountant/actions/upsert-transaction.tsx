@@ -5,7 +5,7 @@ import {
     Transaction,
     TransactionSchema,
     TransactionWithSplits,
-} from "../../types";
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { PostgrestError } from "@supabase/supabase-js";
 
 const UPSERT_TRANSACTION_WITH_SPLITS_FUNCTION_NAME =

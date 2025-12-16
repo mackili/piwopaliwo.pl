@@ -25,8 +25,8 @@ export default function GroupStatistics({
             <Tabs defaultValue="member-balance-currency">
                 <CardHeader>
                     <h4>{`${group.name}'s`} Statistics</h4>
-                    <CardAction className="@max-sm:col-span-full @max-sm:row-start-2 overflow-x-scroll w-full">
-                        <TabsList className="overflow-scroll">
+                    <CardAction className="@max-sm:col-span-full @max-sm:row-start-2 @max-sm:overflow-x-scroll w-full">
+                        <TabsList>
                             <TabsTrigger value="member-balance-currency">
                                 Balance per currency
                             </TabsTrigger>

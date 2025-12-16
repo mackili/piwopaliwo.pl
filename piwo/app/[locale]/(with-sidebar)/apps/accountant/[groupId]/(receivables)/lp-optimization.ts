@@ -132,12 +132,4 @@ export function optimizeTransactions(balances: Balances): {
             amount: value,
         }));
     return { data: transfers, error: null };
-    // for (const [name, value] of sol.variables) {
-    //     if (!name.startsWith("how_much_who_pays_who_")) continue;
-    //     if (value === 0) continue;
-    //     transfers.push({
-    //         amount: value,
-    //     });
-    //     console.log(name, "---", value);
-    // }
 }

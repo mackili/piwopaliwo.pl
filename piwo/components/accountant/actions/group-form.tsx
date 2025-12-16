@@ -2,7 +2,10 @@
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { Group, GroupSchema } from "../../types";
+import {
+    Group,
+    GroupSchema,
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/error-message";

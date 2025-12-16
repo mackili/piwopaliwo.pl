@@ -7,7 +7,7 @@ import {
 import { Group } from "../types";
 import { ComponentProps } from "react";
 import Image from "next/image";
-import EditGroupButton from "../(components)/(actions)/edit-group";
+import EditGroupButton from "@/components/accountant/actions/edit-group";
 import { User } from "@supabase/supabase-js";
 
 export function GroupHead({

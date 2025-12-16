@@ -10,7 +10,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Group } from "../../types";
+import { Group } from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { v4 as uuid } from "uuid";
 import { User } from "@supabase/supabase-js";
 import GroupForm from "./group-form";

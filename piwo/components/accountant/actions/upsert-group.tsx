@@ -1,7 +1,10 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { Group, GroupCurrency } from "../../types";
+import {
+    Group,
+    GroupCurrency,
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { PostgrestError } from "@supabase/supabase-js";
 
 export async function upsertGroup(group: Group) {

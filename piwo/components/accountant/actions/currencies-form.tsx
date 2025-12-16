@@ -2,7 +2,11 @@
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFieldArray, useForm } from "react-hook-form";
-import { Group, GroupCurrency, GroupCurrencySchema } from "../../types";
+import {
+    Group,
+    GroupCurrency,
+    GroupCurrencySchema,
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/error-message";
@@ -82,7 +86,6 @@ export default function GroupCurrenciesForm({
         const oldPrimaryCurrencyIndex = allCurrencies.findIndex(
             (element) => element.primary
         );
-        console.log(oldPrimaryCurrencyIndex);
         if (
             !currency.primary &&
             oldPrimaryCurrencyIndex === updatedCurrencyIndex

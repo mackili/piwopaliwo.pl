@@ -9,9 +9,8 @@ import { ComponentProps } from "react";
 import { createClient } from "@/utils/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import TransactionsDisplay from "./transaction";
-import NewElement from "../(components)/(actions)/new-element-button";
-// import { v4 as uuid } from "uuid";
-import TransactionForm from "../(components)/(actions)/transaction-form";
+import NewElement from "@/components/accountant/actions/new-element-button";
+import TransactionForm from "@/components/accountant/actions/transaction-form";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { SupabaseResponse } from "@/utils/supabase/types";
 

@@ -17,7 +17,6 @@ import {
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
-    SidebarSeparator,
     useSidebar,
 } from "@/components/ui/sidebar";
 import { menuItems } from "@/components/ui/nav-menu-items";

@@ -8,7 +8,7 @@ import {
     TransactionSplit,
     TransactionWithSplits,
     TransactionWithSplitsSchema,
-} from "../../types";
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/error-message";

@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Group } from "../../types";
+import { Group } from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { User } from "@supabase/supabase-js";
 import GroupForm from "./group-form";
 import { VariantProps } from "class-variance-authority";

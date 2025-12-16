@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/card";
 import { Group, GroupCurrency } from "../types";
 import { ComponentProps, useMemo } from "react";
-import NewElementButton from "../(components)/(actions)/new-element-button";
-import GroupCurrenciesForm from "../(components)/(actions)/currencies-form";
+import NewElementButton from "@/components/accountant/actions/new-element-button";
+import GroupCurrenciesForm from "@/components/accountant/actions/currencies-form";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui/datatable-header";
 import { DataTable } from "@/components/ui/datatable";

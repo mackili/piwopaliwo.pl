@@ -1,5 +1,5 @@
 import { ComponentProps } from "react";
-import { Group, GroupMember } from "../types";
+import { Group, GroupMember, GroupMemberStatus } from "../types";
 import {
     Card,
     CardAction,
@@ -7,9 +7,10 @@ import {
     CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import NewElementButton from "../(components)/(actions)/new-element-button";
-import GroupMemberForm from "../(components)/(actions)/group-member-form";
+import NewElementButton from "@/components/accountant/actions/new-element-button";
+import GroupMemberForm from "@/components/accountant/actions/group-member-form";
 import UserRow from "@/components/ui/user-row";
+import { CheckIcon, CrownIcon, MailIcon, XIcon } from "lucide-react";
 
 export function memberName({ member }: { member: GroupMember }) {
     const nickname = member.nickname;
@@ -18,6 +19,27 @@ export function memberName({ member }: { member: GroupMember }) {
     const fullName = `${firstName || ""} ${lastName || ""}`;
     return fullName.length > 1 ? fullName : nickname;
 }
+
+const MemberStatusSymbol = (status: GroupMemberStatus) => {
+    let icon = <></>;
+    switch (status) {
+        case "owner":
+            icon = <CrownIcon />;
+            break;
+        case "accepted":
+            icon = <CheckIcon />;
+            break;
+        case "rejected":
+            icon = <XIcon />;
+            break;
+        case "invited":
+            icon = <MailIcon />;
+            break;
+        default:
+            break;
+    }
+    return icon;
+};
 
 export default function GroupMembersTable({
     group,
@@ -59,10 +81,17 @@ export default function GroupMembersTable({
                             size="lg"
                             className="overflow-hidden hover:bg-accent dark:hover:bg-accent px-2 py-2 h-12"
                             buttonLabel={
-                                <UserRow
-                                    user={member?.user}
-                                    userName={memberName({ member: member })}
-                                />
+                                <div className="flex flex-row w-full items-center">
+                                    <UserRow
+                                        user={member?.user}
+                                        userName={memberName({
+                                            member: member,
+                                        })}
+                                        className="grow"
+                                    />
+                                    {member?.status &&
+                                        MemberStatusSymbol(member.status)}
+                                </div>
                             }
                             dialogTitle={`Edit Member`}
                             FormComponent={GroupMemberForm}
@@ -70,11 +99,6 @@ export default function GroupMembersTable({
                                 data: { ...member, group_id: group.id },
                             }}
                         />
-                        // <UserRow
-                        //     key={member.id}
-                        //     user={member?.user}
-                        //     userName={memberName({ member: member })}
-                        // />
                     ))}
             </CardContent>
         </Card>

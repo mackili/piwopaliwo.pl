@@ -1,3 +1,4 @@
+"use client";
 import { ComponentProps } from "react";
 import { Group } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
 import {
@@ -11,16 +12,17 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { CameraOff } from "lucide-react";
 import Link from "next/link";
-import { getCurrentLocale } from "@/locales/server";
+import { useCurrentLocale } from "@/locales/client";
 
-export function groupUrlGenerator(groupId: string, locale: string) {
-    return `/${locale}/apps/accountant/${groupId}`;
-}
-
-export default async function GroupCard({
+export default function GroupCard({
     group,
-}: { group: Group } & ComponentProps<"div">) {
-    const locale = await getCurrentLocale();
+}: {
+    group: Group;
+} & ComponentProps<"div">) {
+    const locale = useCurrentLocale();
+    function groupUrlGenerator(groupId: string) {
+        return `/${locale}/apps/accountant/${groupId}`;
+    }
     return (
         <Card className="w-full justify-around">
             <CardHeader>
@@ -44,10 +46,7 @@ export default async function GroupCard({
                 </CardTitle>
             </CardContent>
             <CardFooter>
-                <Link
-                    href={groupUrlGenerator(group.id, locale)}
-                    className="w-full"
-                >
+                <Link href={groupUrlGenerator(group.id)} className="w-full">
                     <Button variant="default" size="lg" className="w-full">
                         Enter
                     </Button>

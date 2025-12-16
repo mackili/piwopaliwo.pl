@@ -35,7 +35,6 @@ export default function CommentsFooter({
         }
     }
     function changeOffset(newOffset: number) {
-        console.log([newOffset, parameters.offset]);
         if (newOffset !== parameters.offset) {
             onChange({
                 limit: parameters.limit,

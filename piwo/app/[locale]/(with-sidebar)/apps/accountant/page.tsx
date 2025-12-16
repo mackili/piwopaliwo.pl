@@ -1,9 +1,9 @@
 import { Card, CardAction, CardHeader } from "@/components/ui/card";
-import GroupsGrid from "./(components)/(groups)/groups-grid";
-import NewGroupButton from "./(components)/(actions)/new-group";
+import GroupsGrid from "@/components/accountant/groups-grid";
+import NewGroupButton from "@/components/accountant/actions/new-group";
 import { createClient } from "@/utils/supabase/server";
 import { Suspense } from "react";
-import GroupsGridSkeleton from "./(components)/(groups)/groups-grid-skeleton";
+import GroupsGridSkeleton from "@/components/accountant/groups-grid-skeleton";
 
 export default async function Accountant() {
     const supabase = await createClient();
@@ -20,7 +20,7 @@ export default async function Accountant() {
                     </CardHeader>
                 </Card>
             </section>
-            <section>
+            <section className="@container">
                 <Suspense fallback={<GroupsGridSkeleton />}>
                     <GroupsGrid />
                 </Suspense>

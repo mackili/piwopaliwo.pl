@@ -1,6 +1,13 @@
 import * as z from "zod";
 import { UserInfoSchema } from "@/components/scoretracker/types";
 
+export const GroupMemberStatusSchema = z.enum([
+    "invited",
+    "accepted",
+    "rejected",
+    "owner",
+]);
+
 export const GroupMemberSchema = z.object({
     id: z.uuid(),
     nickname: z.string().min(1).max(15),
@@ -10,6 +17,7 @@ export const GroupMemberSchema = z.object({
     assigned_at: z.iso.datetime({ offset: true }).nullish(),
     removed_at: z.iso.datetime({ offset: true }).nullish(),
     user: UserInfoSchema.nullish(),
+    status: GroupMemberStatusSchema.nullish(),
 });
 
 export const GroupCurrencySchema = z.object({
@@ -109,6 +117,7 @@ export const GroupInviteViewSchema = z.object({
 });
 
 export type Group = z.infer<typeof GroupSchema>;
+export type GroupMemberStatus = z.infer<typeof GroupMemberStatusSchema>;
 export type GroupMember = z.infer<typeof GroupMemberSchema>;
 export type Transaction = z.infer<typeof TransactionSchema>;
 export type GroupCurrency = z.infer<typeof GroupCurrencySchema>;
