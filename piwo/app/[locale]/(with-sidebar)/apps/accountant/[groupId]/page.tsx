@@ -7,7 +7,7 @@ import TotalSpent from "./total-spent";
 import GroupCurrenciesTable from "./currencies-table";
 import GroupTransactionTable from "./transactions-table";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
-import GroupReceivables from "./(receivables)/receivables";
+import GroupReceivables from "@/components/accountant/receivables/receivables";
 import GroupStatistics from "./stats";
 
 export default async function Page({

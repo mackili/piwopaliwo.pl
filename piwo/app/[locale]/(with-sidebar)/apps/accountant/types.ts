@@ -36,7 +36,7 @@ export const GroupSchema = z.object({
     owner_id: z.uuid(),
     owner: UserInfoSchema.optional(),
     members: z.array(GroupMemberSchema).optional(),
-    currencies: z.array(GroupCurrencySchema).default([]),
+    currencies: z.array(GroupCurrencySchema).default([]).optional(),
 });
 
 export const TransactionSchema = z.object({

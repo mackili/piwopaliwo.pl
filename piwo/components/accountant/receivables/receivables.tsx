@@ -1,4 +1,7 @@
-import { Group, GroupBalance } from "../../types";
+import {
+    Group,
+    GroupBalance,
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { ComponentProps } from "react";
 import { createClient } from "@/utils/supabase/server";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";

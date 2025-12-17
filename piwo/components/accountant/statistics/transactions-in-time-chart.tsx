@@ -1,6 +1,9 @@
 "use client";
 import { memo, useMemo } from "react";
-import { Group, GroupDailyTransactionSummary } from "../../types";
+import {
+    Group,
+    GroupDailyTransactionSummary,
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import {
     ChartContainer,
     ChartTooltip,
@@ -21,12 +24,13 @@ const TransactionsInTimeChart = memo(function TransactionsInTimeChart({
                 ...currency,
                 convertedRate:
                     currency.amount *
-                    (group.currencies.find((curr) => curr.iso === currency.iso)
-                        ?.rate || 1),
+                    ((group?.currencies || []).find(
+                        (curr) => curr.iso === currency.iso
+                    )?.rate || 1),
             })),
         [data, group.currencies]
     );
-    const allIsos = group.currencies.map((c) => c.iso);
+    const allIsos = (group?.currencies || []).map((c) => c.iso);
 
     const cumulative = useMemo(() => {
         if (!convertedCurrencies) return [];
@@ -89,7 +93,7 @@ const TransactionsInTimeChart = memo(function TransactionsInTimeChart({
                 />
                 <YAxis tickLine={false} tickMargin={10} axisLine={false} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                {group.currencies.map((currency, index) => (
+                {(group?.currencies || []).map((currency, index) => (
                     <Area
                         key={currency.iso}
                         type="monotone"

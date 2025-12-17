@@ -12,7 +12,6 @@ import ErrorMessage from "@/components/ui/error-message";
 import { ComponentProps, useActionState } from "react";
 import { twMerge } from "tailwind-merge";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { CameraOff } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -136,21 +135,6 @@ export default function GroupForm({
                         </FormItem>
                     )}
                 />
-                {/* <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field, fieldState }) => (
-                        <FormItem>
-                            <FormLabel>Group Description</FormLabel>
-                            <Textarea {...field} value={field?.value || ""} />
-                            {fieldState.invalid && (
-                                <ErrorMessage
-                                    error={fieldState?.error?.message || ""}
-                                />
-                            )}
-                        </FormItem>
-                    )}
-                /> */}
                 <PostgrestErrorDisplay error={result} />
                 <DialogFooter>
                     <DialogClose asChild>

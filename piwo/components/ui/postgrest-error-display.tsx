@@ -5,10 +5,10 @@ export default function PostgrestErrorDisplay({
 }: {
     error:
         | {
-              code: string;
-              details: string | null;
-              hint: string | null;
-              message: string | null;
+              code?: string;
+              details?: string | null;
+              hint?: string | null;
+              message?: string | null;
           }
         | null
         | undefined;

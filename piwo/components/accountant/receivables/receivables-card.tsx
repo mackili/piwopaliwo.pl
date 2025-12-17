@@ -5,7 +5,12 @@ import {
     CardContent,
     CardHeader,
 } from "@/components/ui/card";
-import { Group, GroupBalance, GroupCurrency, GroupMember } from "../../types";
+import {
+    Group,
+    GroupBalance,
+    GroupCurrency,
+    GroupMember,
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { ComponentProps } from "react";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { Badge } from "@/components/ui/badge";

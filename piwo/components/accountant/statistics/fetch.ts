@@ -2,7 +2,10 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseResponse } from "@/utils/supabase/types";
-import { GroupDailyTransactionSummary, GroupMemberBalance } from "../../types";
+import {
+    GroupDailyTransactionSummary,
+    GroupMemberBalance,
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 
 export async function fetchGroupMemberBalances(
     groupId: string

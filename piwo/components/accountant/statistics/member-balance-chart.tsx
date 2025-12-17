@@ -1,6 +1,9 @@
 "use client";
 import { memo } from "react";
-import { Group, GroupMemberBalance } from "../../types";
+import {
+    Group,
+    GroupMemberBalance,
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import {
     ChartConfig,
     ChartContainer,

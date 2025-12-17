@@ -5,7 +5,7 @@ import {
     CardContent,
     CardHeader,
 } from "@/components/ui/card";
-import { Group } from "../../types";
+import { Group } from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { useEffect, useRef, useCallback, useState } from "react";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { Button } from "@/components/ui/button";

@@ -7,14 +7,14 @@ import {
 import { Group } from "../types";
 import { ComponentProps } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import GroupStatisticsChart from "./(statistics)/stat-chart-display";
+import GroupStatisticsChart from "@/components/accountant/statistics/stat-chart-display";
 import {
     fetchDailyTransactionSummaries,
     fetchGroupMemberBalances,
-} from "./(statistics)/fetch";
-import MemberBalanceChart from "./(statistics)/member-balance-chart";
-import AggregateMemberBalanceChart from "./(statistics)/aggregated-member-balance-chart";
-import TransactionsInTimeChart from "./(statistics)/transactions-in-time-chart";
+} from "@/components/accountant/statistics/fetch";
+import MemberBalanceChart from "@/components/accountant/statistics/member-balance-chart";
+import AggregateMemberBalanceChart from "@/components/accountant/statistics/aggregated-member-balance-chart";
+import TransactionsInTimeChart from "@/components/accountant/statistics/transactions-in-time-chart";
 
 export default function GroupStatistics({
     group,

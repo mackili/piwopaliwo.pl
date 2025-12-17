@@ -40,7 +40,7 @@ export default async function TotalSpent({
         data: TotalSpentObject[] | null;
         error: PostgrestError | null;
     };
-    const primaryCurrency = group.currencies.find(
+    const primaryCurrency = (group?.currencies || []).find(
         (currency) => currency.primary
     );
     return (

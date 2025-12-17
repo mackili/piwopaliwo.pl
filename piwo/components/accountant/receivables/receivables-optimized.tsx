@@ -4,11 +4,11 @@ import {
     GroupCurrency,
     GroupMember,
     TotalSpentObject,
-} from "../../types";
+} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 import { Card, CardContent } from "@/components/ui/card";
-import { calculateGrandTotal } from "../grand-totals-client";
+import { calculateGrandTotal } from "../../../app/[locale]/(with-sidebar)/apps/accountant/[groupId]/grand-totals-client";
 import UserRow from "@/components/ui/user-row";
-import { memberName } from "../members-table";
+import { memberName } from "../../../app/[locale]/(with-sidebar)/apps/accountant/[groupId]/members-table";
 import { ArrowRight } from "lucide-react";
 import { memo, useMemo } from "react";
 import { optimizeTransactions } from "./lp-optimization";
