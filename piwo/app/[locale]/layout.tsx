@@ -1,9 +1,8 @@
-import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
-import "../globals.css";
-import NavBar from "@/components/navbar";
+import "@/app/globals.css";
+import { I18nProviderClient } from "@/locales/client";
+import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { I18nProviderClient } from "../../locales/client";
 import { LocaleToggle } from "@/components/ui/locale-toggle";
 
 export const metadata: Metadata = {
@@ -27,11 +26,7 @@ export default async function RootLayout({
                 enableSystem
                 disableTransitionOnChange
             >
-                <NavBar />
                 {children}
-                <footer className="row-start-3 flex gap-[24px] pb-8 flex-wrap items-center justify-center">
-                    Piwo Paliwo 2.0 {new Date().getFullYear()}
-                </footer>
                 <ThemeToggle />
                 <LocaleToggle />
             </ThemeProvider>

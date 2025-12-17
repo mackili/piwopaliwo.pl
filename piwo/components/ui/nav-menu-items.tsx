@@ -12,6 +12,17 @@ import {
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { useCurrentLocale, useI18n } from "@/locales/client";
+import {
+    BadgeCentIcon,
+    BeerIcon,
+    EqualApproximatelyIcon,
+    Gamepad2Icon,
+    HomeIcon,
+    LucideIcon,
+    NewspaperIcon,
+    TerminalIcon,
+    VolleyballIcon,
+} from "lucide-react";
 
 const listItemCSS =
     "flex flex-col flex-wrap gap-1 w-full justify-start justify-items-start rounded-md p-2 outline-hidden select-none hover-effect";
@@ -20,8 +31,8 @@ interface MenuItem {
     description?: string;
     id: string;
     order?: number;
-
     link: string;
+    icon: LucideIcon;
 }
 
 type AuxiliaryMenuItem = MenuItem;
@@ -31,22 +42,34 @@ type MainMenuItem = MenuItem & {
     status: "active" | "disabled";
 };
 
-const menuItems: MainMenuItem[] = [
-    { id: "home", order: 0, link: "/", status: "active" },
+export const menuItems: MainMenuItem[] = [
+    {
+        id: "home",
+        order: 0,
+        link: "",
+        status: "active",
+        icon: HomeIcon,
+        children: [
+            {
+                description: `PiwoPaliwo's communication channel`,
+                id: "blog",
+                icon: NewspaperIcon,
+                link: "/blog",
+            },
+        ],
+    },
     {
         description: "Find all games offered on the platform here",
         id: "games",
         order: 10,
         link: "#",
         status: "disabled",
+        icon: Gamepad2Icon,
         children: [
             {
                 description: `PiwoPaliwo's version of the famous economic game`,
                 id: "piwopol",
-                link: "#",
-            },
-            {
-                id: "piwopol",
+                icon: BadgeCentIcon,
                 link: "#",
             },
         ],
@@ -56,16 +79,25 @@ const menuItems: MainMenuItem[] = [
         order: 20,
         link: "#",
         status: "active",
+        icon: TerminalIcon,
         children: [
+            {
+                description: "NavMenu.accountant_description",
+                id: "accountant",
+                link: "/apps/accountant",
+                icon: EqualApproximatelyIcon,
+            },
             {
                 description: "NavMenu.scoreTracker_description",
                 id: "scoreTracker",
                 link: "/apps/scoretracker",
+                icon: VolleyballIcon,
             },
             {
                 description: "NavMenu.beerCounter_description",
                 id: "beerCounter",
                 link: "/apps/beercounter",
+                icon: BeerIcon,
             },
         ],
     },
@@ -133,7 +165,7 @@ export default function NavigationMenuPP({
                                                             )}
                                                         >
                                                             <div className="flex flex-col flex-wrap gap-1">
-                                                                <h4 className="!text-base">
+                                                                <h4 className="text-base!">
                                                                     {t(
                                                                         // @ts-expect-error structured with the translation
                                                                         `NavMenu.${childItem.id}`
@@ -143,7 +175,7 @@ export default function NavigationMenuPP({
                                                                     <p className="text-sm">
                                                                         {t(
                                                                             // @ts-expect-error structured with the translation
-                                                                            childItem.description
+                                                                            `NavMenu.${childItem.id}_description`
                                                                         )}
                                                                     </p>
                                                                 )}

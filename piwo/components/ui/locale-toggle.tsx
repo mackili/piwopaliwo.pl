@@ -26,10 +26,16 @@ export function LocaleToggle() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => changeLocale("pl")}>
-                    Polski
+                    🇵🇱 Polski
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => changeLocale("en")}>
-                    English
+                    🇬🇧 English
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => changeLocale("cz")}>
+                    🇨🇿 Čeština
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => changeLocale("ee")}>
+                    🇪🇪 Eesti
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

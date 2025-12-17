@@ -52,6 +52,58 @@ const entries: DictionaryEntryType[] = [
         locale: "en",
         pronunciation: "/ˈfjuː.əl/",
     },
+    {
+        title: "pivo",
+        type: "podstatné jméno; rod střední",
+        description:
+            "pěnivý nápoj, obvykle s nízkým obsahem alkoholu, vyráběný kvašením ze sladovaného ječmene, chmele, kvasnic a vody; také: porce tohoto nápoje",
+        variations: ["pivko", "pivíčko"],
+        source: {
+            name: "Slovník spisovného jazyka českého",
+            link: "https://ssjc.ujc.cas.cz/",
+        },
+        locale: "cz",
+        pronunciation: "/ˈpɪvo/",
+    },
+    {
+        title: "palivo",
+        type: "podstatné jméno; rod střední",
+        description:
+            "látka používaná jako zdroj energie k pohonu nebo provozu různých zařízení",
+        variations: ["palívko"],
+        source: {
+            name: "Slovník spisovného jazyka českého",
+            link: "https://ssjc.ujc.cas.cz/",
+        },
+        locale: "cz",
+        pronunciation: "/ˈpalɪvo/",
+    },
+    {
+        title: "õlu",
+        type: "nimisõna",
+        description:
+            "vahutav alkohoolne jook, tavaliselt madala alkoholisisaldusega, mis on valmistatud odralinnaste, humala, pärmi ja vee kääritamisel; ka: selle joogi portsjon",
+        variations: ["õlleke"],
+        source: {
+            name: "Eesti keele seletav sõnaraamat",
+            link: "https://www.eki.ee/dict/ekss/",
+        },
+        locale: "ee",
+        pronunciation: "/ˈɤlu/",
+    },
+    {
+        title: "kütus",
+        type: "nimisõna",
+        description:
+            "aine, mida kasutatakse soojuse või energia tootmiseks, tavaliselt põletamise teel",
+        variations: ["kütuseke"],
+        source: {
+            name: "Eesti keele seletav sõnaraamat",
+            link: "https://www.eki.ee/dict/ekss/",
+        },
+        locale: "ee",
+        pronunciation: "/ˈkytus/",
+    },
 ];
 
 // const repeatedEntries = [...entries, ...entries, ...entries];

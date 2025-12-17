@@ -1,15 +1,12 @@
 "use client";
 import { organization } from "@/public/statics";
 import { useEffect, useState } from "react";
-import Piwo from "./piwo";
-import NavigationMenuPP from "./ui/nav-menu-items";
 import UserNav from "./auth/user-nav";
+import BeerMenu from "./ui/beer-menu";
 
 export default function NavBar() {
     const [isVisible, setVisible] = useState(true);
     const [hasMounted, setHasMounted] = useState(false);
-    const [navTriggered, setNavTriggered] = useState(false);
-    const [navOpen, setNavOpen] = useState(false);
 
     useEffect(() => {
         setHasMounted(true);
@@ -20,18 +17,11 @@ export default function NavBar() {
                 currentScrollY > lastScrollY && currentScrollY > 100
             );
             setVisible(visible);
-            if (!visible && navOpen === true) {
-                setNavTriggered(false);
-            }
             lastScrollY = currentScrollY;
         };
         window.addEventListener("scroll", controlNavbar);
         return () => window.removeEventListener("scroll", controlNavbar);
-    }, [navOpen]);
-
-    useEffect(() => {
-        setNavOpen(navTriggered);
-    }, [navTriggered]);
+    }, []);
     return (
         <div
             className={`fixed top-0 left-0 z-100 w-full max-w-screen flex px-8 border-b-2 shadow-xs border-sidebar-border flex-row flex-nowrap items-center justify-between gap-4 transition-all antialiased backdrop-blur-xs ${
@@ -46,23 +36,7 @@ export default function NavBar() {
                     hasMounted && isVisible ? "" : "scale-60"
                 }  origin-left`}
             >
-                <div id="organization-logo" className={`relative inline`}>
-                    <button
-                        className={`h-16 w-16 transition-all hover:scale-110 hover:rotate-5 hover:perspective-dramatic hover:translate-x-2 hover:-translate-y-2 ${
-                            navOpen &&
-                            "scale-105 rotate-10 translate-x-2 sm:-translate-y-2 perspective-dramatic"
-                        } ${isVisible && "cursor-pointer"}`}
-                        onClick={() => setNavTriggered(!navTriggered)}
-                        disabled={!isVisible}
-                    >
-                        <Piwo width={64} height={64} />
-                    </button>
-                    <NavigationMenuPP
-                        className={`mt-4 absolute ${
-                            navOpen === true ? "scale-100" : "scale-0"
-                        }`}
-                    />
-                </div>
+                <BeerMenu isVisible={isVisible} />
                 <div className="flex select-none">
                     <h2 className="text-xl! sm:text-3xl!">
                         {organization.name}

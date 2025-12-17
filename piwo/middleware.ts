@@ -1,29 +1,8 @@
-import { type NextRequest } from "next/server";
-import { updateSession } from "@/utils/supabase/middleware";
-import { createI18nMiddleware } from "next-international/middleware";
+import { chain } from "./middlewares/chain";
+import { withI18nMiddleware } from "./middlewares/withI18nMiddleware";
+import { withAuthMiddleware } from "./middlewares/withAuthMiddleware";
 
-const I18nMiddleware = createI18nMiddleware({
-    locales: ["pl", "en"],
-    defaultLocale: "pl",
-});
-
-export async function middleware(request: NextRequest) {
-    const i18nResponse = I18nMiddleware(request);
-    const sessionResponse = await updateSession(request);
-    const { pathname } = request.nextUrl;
-    // const publicPageRegex = /^\/[a-z]{2}(\/auth(\/(login|signup))?)?\/?$/;
-    const privatePageRege = /^\/[a-z]{2}(\/apps\a?|\/settings?)/;
-    // if (publicPageRegex.test(pathname)) {
-    //     return i18nResponse;
-    // } else {
-    //     return sessionResponse;
-    // }
-    if (privatePageRege.test(pathname)) {
-        return sessionResponse;
-    } else {
-        return i18nResponse;
-    }
-}
+export default chain([withAuthMiddleware, withI18nMiddleware]);
 
 export const config = {
     matcher: [
