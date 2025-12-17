@@ -3,7 +3,7 @@ import { CustomMiddleware } from "./chain";
 import { createI18nMiddleware } from "next-international/middleware";
 
 const I18nMiddleware = createI18nMiddleware({
-    locales: ["pl", "en"],
+    locales: ["pl", "en", "cz", "ee"],
     defaultLocale: "pl",
 });
 
