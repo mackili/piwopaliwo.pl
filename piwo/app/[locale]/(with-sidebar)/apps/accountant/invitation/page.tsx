@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { getCurrentLocale } from "@/locales/server";
+import { getCurrentLocale, getI18n } from "@/locales/server";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { GroupInviteView } from "../types";
@@ -12,6 +12,7 @@ export default async function Invite({
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+    const t = await getI18n();
     function redirectToMainAccountant() {
         redirect(`/${locale}/apps/accountant`);
     }
@@ -43,9 +44,15 @@ export default async function Invite({
                 {invitation && userId && (
                     <>
                         <CardHeader>
-                            <h3>{`Invitation to ${invitation?.group?.name}`}</h3>
+                            <h3>{`${t("Accountant.invitationToGroup")} ${
+                                invitation?.group?.name
+                            }`}</h3>
                         </CardHeader>
-                        <CardContent>{`You have been invited to join the group ${invitation.group?.name} as ${invitation.group_member?.nickname}.`}</CardContent>
+                        <CardContent>{`${t("Accountant.youHaveBeenInvited")}} ${
+                            invitation.group?.name
+                        } ${t("as")} ${
+                            invitation.group_member?.nickname
+                        }.`}</CardContent>
                         <InvitationAcceptForm
                             invitation={invitation}
                             userId={userId}

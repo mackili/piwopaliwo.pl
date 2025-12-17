@@ -12,6 +12,7 @@ import { Group } from "../../../app/[locale]/(with-sidebar)/apps/accountant/type
 import { User } from "@supabase/supabase-js";
 import GroupForm from "./group-form";
 import { VariantProps } from "class-variance-authority";
+import { useI18n } from "@/locales/client";
 
 export default function EditGroupButton({
     user,
@@ -21,18 +22,19 @@ export default function EditGroupButton({
     user: User;
     group: Group;
 } & VariantProps<typeof buttonVariants>) {
+    const t = useI18n();
     if (Object.keys(group).includes("members")) delete group.members;
     if (Object.keys(group).includes("owner")) delete group.owner;
     return user.id === group.owner_id ? (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant={variant}>Edit Group</Button>
+                <Button variant={variant}>{t("edit")}</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>New Group Creator</DialogTitle>
+                    <DialogTitle>{t("edit")}</DialogTitle>
                     <DialogDescription>
-                        Enter the details about your new Accountant group
+                        {t("Accountant.createNewGroupEnterDetails")}
                     </DialogDescription>
                 </DialogHeader>
                 <GroupForm groupData={group} />

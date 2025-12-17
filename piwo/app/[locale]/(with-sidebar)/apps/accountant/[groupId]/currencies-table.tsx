@@ -14,11 +14,13 @@ import { DataTableColumnHeader } from "@/components/ui/datatable-header";
 import { DataTable } from "@/components/ui/datatable";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from "@/locales/client";
 
 export default function GroupCurrenciesTable({
     group,
     ...props
 }: { group: Group } & ComponentProps<"div">) {
+    const t = useI18n();
     const columns: ColumnDef<GroupCurrency>[] = useMemo(
         () => [
             {
@@ -27,7 +29,7 @@ export default function GroupCurrenciesTable({
                 header: ({ column }) => (
                     <DataTableColumnHeader
                         column={{ ...column }}
-                        title="Description"
+                        title={t("Accountant.description")}
                     />
                 ),
             },
@@ -37,7 +39,7 @@ export default function GroupCurrenciesTable({
                 header: ({ column }) => (
                     <DataTableColumnHeader
                         column={{ ...column }}
-                        title="Rate"
+                        title={t("Accountant.currencyRate")}
                     />
                 ),
             },
@@ -47,7 +49,7 @@ export default function GroupCurrenciesTable({
                 header: ({ column }) => (
                     <DataTableColumnHeader
                         column={{ ...column }}
-                        title="Primary"
+                        title={t("Accountant.primary")}
                     />
                 ),
                 cell: ({ row }) => (
@@ -55,13 +57,13 @@ export default function GroupCurrenciesTable({
                 ),
             },
         ],
-        []
+        [t]
     );
     return (
         <Card {...props}>
             <CardHeader>
                 <div className="flex flex-row gap-2">
-                    <h4>Currencies</h4>
+                    <h4>{t("Accountant.currencies")}</h4>
                     <p className="flex items-center">
                         <Badge variant="outline" className="aspect-square">
                             {group.currencies?.length || 0}
@@ -70,8 +72,8 @@ export default function GroupCurrenciesTable({
                 </div>
                 <CardAction>
                     <NewElementButton
-                        buttonLabel="Manage"
-                        dialogTitle="Manage Currencies"
+                        buttonLabel={t("Accountant.manageCurrencies")}
+                        dialogTitle={t("Accountant.manageCurrencies")}
                         FormComponent={GroupCurrenciesForm}
                         formProps={{ data: group }}
                     />

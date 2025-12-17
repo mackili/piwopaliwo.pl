@@ -29,6 +29,7 @@ import { XIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
+import { useI18n } from "@/locales/client";
 
 const CurrencyArrayObjectSchema = z.object({
     currencies: z.array(GroupCurrencySchema),
@@ -42,6 +43,7 @@ export default function GroupCurrenciesForm({
     data: Group;
     setDialogOpen: (open: boolean) => void;
 } & ComponentProps<"form">) {
+    const t = useI18n();
     const router = useRouter();
     const [result, handleSubmit, isPending] = useActionState(
         handleTransactionSave,
@@ -133,7 +135,9 @@ export default function GroupCurrenciesForm({
                                 control={form.control}
                                 render={({ field: controllerField }) => (
                                     <FormItem>
-                                        <FormLabel>Currency Code</FormLabel>
+                                        <FormLabel>
+                                            {t("Accountant.currencyCode")}
+                                        </FormLabel>
                                         <Select
                                             {...controllerField}
                                             onValueChange={
@@ -164,7 +168,9 @@ export default function GroupCurrenciesForm({
                                 control={form.control}
                                 render={({ field: controllerField }) => (
                                     <FormItem>
-                                        <FormLabel>Currency Rate</FormLabel>
+                                        <FormLabel>
+                                            {t("Accountant.currencyRate")}
+                                        </FormLabel>
                                         <Input
                                             type="number"
                                             {...controllerField}
@@ -185,7 +191,9 @@ export default function GroupCurrenciesForm({
                                     fieldState,
                                 }) => (
                                     <FormItem>
-                                        <FormLabel>Primary</FormLabel>
+                                        <FormLabel>
+                                            {t("Accountant.primary")}
+                                        </FormLabel>
                                         <Checkbox
                                             name={controllerField.name}
                                             disabled={controllerField.disabled}
@@ -227,7 +235,7 @@ export default function GroupCurrenciesForm({
                         })
                     }
                 >
-                    Add Currency
+                    {t("Accountant.addCurrency")}
                 </Button>
                 {form.formState.errors.root && (
                     <ErrorMessage
@@ -238,11 +246,11 @@ export default function GroupCurrenciesForm({
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button type="button" variant="secondary">
-                            Cancel
+                            {t("BeerCounter.cancel")}
                         </Button>
                     </DialogClose>
                     <Button disabled={isPending} type="submit">
-                        {isPending ? <LoadingSpinner /> : "Submit"}
+                        {isPending ? <LoadingSpinner /> : t("submit")}
                     </Button>
                 </DialogFooter>
             </form>

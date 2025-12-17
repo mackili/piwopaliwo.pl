@@ -19,7 +19,7 @@ import { ChangeEvent, useState } from "react";
 import { upsertGroup } from "./upsert-group";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useRouter } from "next/navigation";
-import { useCurrentLocale } from "@/locales/client";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 import { upsertThumbnail } from "./upsert-thumbnail";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 
@@ -44,6 +44,7 @@ export default function GroupForm({
 }: {
     groupData: Group;
 } & ComponentProps<"form">) {
+    const t = useI18n();
     const router = useRouter();
     const locale = useCurrentLocale();
     const [result, handleSubmit, isPending] = useActionState(
@@ -113,7 +114,7 @@ export default function GroupForm({
                     )}
                 </Card>
                 <FormItem>
-                    <FormLabel>Group Thumbnail</FormLabel>
+                    <FormLabel>{t("Accountant.groupThumbnail")}</FormLabel>
                     <Input
                         type="file"
                         accept="image/*"
@@ -125,7 +126,7 @@ export default function GroupForm({
                     name="name"
                     render={({ field, fieldState }) => (
                         <FormItem>
-                            <FormLabel>Group Name</FormLabel>
+                            <FormLabel>{t("Accountant.groupName")}</FormLabel>
                             <Input type="text" {...field} />
                             {fieldState.invalid && (
                                 <ErrorMessage
@@ -139,11 +140,11 @@ export default function GroupForm({
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button type="button" variant="secondary">
-                            Cancel
+                            {t("BeerCounter.cancel")}
                         </Button>
                     </DialogClose>
                     <Button disabled={isPending} type="submit">
-                        {isPending ? <LoadingSpinner /> : "Submit"}
+                        {isPending ? <LoadingSpinner /> : t("submit")}
                     </Button>
                 </DialogFooter>
             </form>

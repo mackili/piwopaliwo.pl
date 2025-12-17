@@ -2,18 +2,17 @@
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
-    // DialogClose,
     DialogContent,
     DialogDescription,
-    // DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Group } from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
+import { Group } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
 import { v4 as uuid } from "uuid";
 import { User } from "@supabase/supabase-js";
 import GroupForm from "./group-form";
+import { useI18n } from "@/locales/client";
 
 const generateNewGroup: (userId: string) => Group = (userId) => ({
     id: uuid(),
@@ -25,16 +24,17 @@ const generateNewGroup: (userId: string) => Group = (userId) => ({
 });
 
 export default function NewGroupButton({ user }: { user: User }) {
+    const t = useI18n();
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="default">New Group</Button>
+                <Button variant="default">{t("Accountant.newGroup")}</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>New Group Creator</DialogTitle>
+                    <DialogTitle>{t("Accountant.createNewGroup")}</DialogTitle>
                     <DialogDescription>
-                        Enter the details about your new Accountant group
+                        {t("Accountant.createNewGroupEnterDetails")}
                     </DialogDescription>
                 </DialogHeader>
                 <GroupForm groupData={generateNewGroup(user.id)} />

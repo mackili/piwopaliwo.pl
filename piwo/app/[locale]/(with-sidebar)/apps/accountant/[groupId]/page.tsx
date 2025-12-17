@@ -29,7 +29,11 @@ export default async function Page({
         <div className="@container">
             <div className="w-full grid @max-xl:grid-cols-1 @2xl:grid-cols-2 @4xl:grid-cols-6 p-4 gap-4">
                 <GroupHead group={data} user={user} className="col-span-full" />
-                <GroupMembersTable group={data} className="@4xl:col-span-2" />
+                <GroupMembersTable
+                    group={data}
+                    groupMembers={data.members || []}
+                    className="@4xl:col-span-2"
+                />
                 <GroupCurrenciesTable
                     group={data}
                     className="@4xl:col-span-2"

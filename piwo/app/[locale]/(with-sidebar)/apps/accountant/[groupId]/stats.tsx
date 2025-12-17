@@ -1,3 +1,4 @@
+"use client";
 import {
     Card,
     CardAction,
@@ -15,26 +16,28 @@ import {
 import MemberBalanceChart from "@/components/accountant/statistics/member-balance-chart";
 import AggregateMemberBalanceChart from "@/components/accountant/statistics/aggregated-member-balance-chart";
 import TransactionsInTimeChart from "@/components/accountant/statistics/transactions-in-time-chart";
+import { useI18n } from "@/locales/client";
 
 export default function GroupStatistics({
     group,
     ...props
 }: { group: Group } & ComponentProps<"div">) {
+    const t = useI18n();
     return (
         <Card {...props}>
             <Tabs defaultValue="member-balance-currency">
                 <CardHeader>
-                    <h4>{`${group.name}'s`} Statistics</h4>
+                    <h4>{t("Accountant.statistics")}</h4>
                     <CardAction className="@max-sm:col-span-full @max-sm:row-start-2 @max-sm:overflow-x-scroll w-full">
                         <TabsList>
                             <TabsTrigger value="member-balance-currency">
-                                Balance per currency
+                                {t("Accountant.stats.balancePerCurrency")}
                             </TabsTrigger>
                             <TabsTrigger value="member-balance">
-                                Aggregate balance
+                                {t("Accountant.stats.dailyTransactions")}
                             </TabsTrigger>
                             <TabsTrigger value="daily-transactions">
-                                Daily transactions
+                                {t("Accountant.stats.dailyTransactions")}
                             </TabsTrigger>
                         </TabsList>
                     </CardAction>
@@ -43,7 +46,9 @@ export default function GroupStatistics({
                     <TabsContent value="member-balance-currency">
                         <GroupStatisticsChart
                             group={group}
-                            chartTitle="Member Balances"
+                            chartTitle={t(
+                                "Accountant.stats.balancePerCurrency"
+                            )}
                             fetchFunction={fetchGroupMemberBalances}
                             Chart={MemberBalanceChart}
                         />
@@ -51,7 +56,7 @@ export default function GroupStatistics({
                     <TabsContent value="member-balance">
                         <GroupStatisticsChart
                             group={group}
-                            chartTitle="Aggregate Member Balances"
+                            chartTitle={t("Accountant.stats.dailyTransactions")}
                             fetchFunction={fetchGroupMemberBalances}
                             Chart={AggregateMemberBalanceChart}
                         />
@@ -59,7 +64,7 @@ export default function GroupStatistics({
                     <TabsContent value="daily-transactions">
                         <GroupStatisticsChart
                             group={group}
-                            chartTitle="Transactions in time"
+                            chartTitle={t("Accountant.stats.dailyTransactions")}
                             fetchFunction={fetchDailyTransactionSummaries}
                             Chart={TransactionsInTimeChart}
                         />

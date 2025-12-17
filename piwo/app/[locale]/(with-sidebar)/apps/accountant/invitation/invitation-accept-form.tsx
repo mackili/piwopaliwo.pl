@@ -9,7 +9,7 @@ import { PostgrestError } from "@supabase/supabase-js";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useRouter } from "next/navigation";
-import { useCurrentLocale } from "@/locales/client";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 import { twMerge } from "tailwind-merge";
 
 export default function InvitationAcceptForm({
@@ -21,6 +21,7 @@ export default function InvitationAcceptForm({
     invitation: GroupInviteView;
     userId: string;
 } & ComponentProps<"div">) {
+    const t = useI18n();
     const [isPending, setPending] = useState<boolean>(false);
     const [error, setError] = useState<PostgrestError | null>(null);
     const router = useRouter();
@@ -66,14 +67,14 @@ export default function InvitationAcceptForm({
                 disabled={isPending}
                 onClick={() => respondToInvitation(false)}
             >
-                Deny
+                {t("BeerCounter.cancel")}
             </Button>
             <Button
                 variant="default"
                 disabled={isPending}
                 onClick={() => respondToInvitation(true)}
             >
-                Accept
+                {t("accept")}
             </Button>
         </CardFooter>
     );

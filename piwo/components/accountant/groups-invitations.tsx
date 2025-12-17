@@ -5,12 +5,14 @@ import { SupabaseResponse } from "@/utils/supabase/types";
 import { GroupInviteView } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
 import PostgrestErrorDisplay from "../ui/postgrest-error-display";
 import { ComponentProps } from "react";
+import { getI18n } from "@/locales/server";
 
 const GROUP_INVITE_VIEW = "v_group_invitation";
 
 export default async function GroupsInvitations({
     ...props
 }: ComponentProps<"div">) {
+    const t = await getI18n();
     const supabase = await createClient();
     const { data: user, error: userError } = await supabase.auth.getUser();
     const { data: invitations, error: invitationsError } = user?.user?.id
@@ -23,7 +25,7 @@ export default async function GroupsInvitations({
     return (
         <Card {...props}>
             <CardHeader>
-                <h3>Pending Invitations</h3>
+                <h3>{t("Accountant.pendingInvitations")}</h3>
             </CardHeader>
             <CardContent className="max-h-full overflow-y-scroll">
                 {invitations &&
@@ -36,7 +38,12 @@ export default async function GroupsInvitations({
                             {invite?.group?.name &&
                                 invite?.group_member?.nickname && (
                                     <CardContent>
-                                        {`You have been invited to join the group ${invite.group?.name} as ${invite.group_member?.nickname}.`}
+                                        {`${t(
+                                            "Accountant.youHaveBeenInvited"
+                                        )}} ${invite.group?.name} ${t("as")} ${
+                                            invite.group_member?.nickname
+                                        }
+                        `}
                                     </CardContent>
                                 )}
                             <InvitationAcceptForm
@@ -47,7 +54,9 @@ export default async function GroupsInvitations({
                         </Card>
                     ))}
                 {invitations && invitations.length === 0 && (
-                    <p className="bg-accent p-4 rounded-md italic">{`There's nothing waiting for you right now. Sorry!`}</p>
+                    <p className="bg-accent p-4 rounded-md italic">
+                        {t("Accountant.noInvitationsComm")}
+                    </p>
                 )}
                 {(invitationsError || userError) && (
                     <PostgrestErrorDisplay

@@ -4,8 +4,10 @@ import NewGroupButton from "@/components/accountant/actions/new-group";
 import { createClient } from "@/utils/supabase/server";
 import { Suspense } from "react";
 import GroupsGridSkeleton from "@/components/accountant/groups-grid-skeleton";
+import { getI18n } from "@/locales/server";
 
 export default async function Accountant() {
+    const t = await getI18n();
     const supabase = await createClient();
     const { user } = (await supabase.auth.getUser()).data;
     return (
@@ -16,7 +18,9 @@ export default async function Accountant() {
                         <CardAction>
                             {user && <NewGroupButton user={user} />}
                         </CardAction>
-                        <h1 className="max-sm:text-3xl!">Accountant</h1>
+                        <h1 className="max-sm:text-3xl!">
+                            {t("NavMenu.accountant")}
+                        </h1>
                     </CardHeader>
                 </Card>
             </section>

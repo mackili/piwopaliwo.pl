@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/card";
 import { PlusIcon, XIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/locales/client";
 
 function generateSplit(
     transaction: Transaction,
@@ -91,6 +92,7 @@ export default function TransactionForm({
     groupMembers: GroupMember[];
     setDialogOpen: (open: boolean) => void;
 } & ComponentProps<"form">) {
+    const t = useI18n();
     const router = useRouter();
     const [shares, setShares] = useState<TransactionShare[] | null>(null);
     const [result, handleSubmit, isPending] = useActionState(
@@ -235,7 +237,7 @@ export default function TransactionForm({
                     name="description"
                     render={({ field, fieldState }) => (
                         <FormItem>
-                            <FormLabel>Description</FormLabel>
+                            <FormLabel>{t("Accountant.description")}</FormLabel>
                             <Input
                                 type="text"
                                 {...field}
@@ -255,7 +257,7 @@ export default function TransactionForm({
                         name="amount"
                         render={({ field, fieldState }) => (
                             <FormItem className="grow">
-                                <FormLabel>Amount</FormLabel>
+                                <FormLabel>{t("Accountant.amount")}</FormLabel>
                                 <Input
                                     type="number"
                                     {...field}
@@ -286,7 +288,9 @@ export default function TransactionForm({
                         name="currency_iso_code"
                         render={({ field, fieldState }) => (
                             <FormItem>
-                                <FormLabel>Currency</FormLabel>
+                                <FormLabel>
+                                    {t("Accountant.currency")}
+                                </FormLabel>
                                 <Select
                                     name={field.name}
                                     value={field.value}
@@ -320,7 +324,7 @@ export default function TransactionForm({
                     name="paid_by_id"
                     render={({ field, fieldState }) => (
                         <FormItem>
-                            <FormLabel>Paid By</FormLabel>
+                            <FormLabel>{t("Accountant.paidBy")}</FormLabel>
                             <UserSelect
                                 name={field.name}
                                 value={field.value}
@@ -345,7 +349,7 @@ export default function TransactionForm({
                 />
                 <Card>
                     <CardHeader>
-                        Splits
+                        {t("Accountant.splits")}
                         <CardAction>
                             <FormField
                                 name="split_type"
@@ -394,7 +398,9 @@ export default function TransactionForm({
                                                         : "col-span-7 w-full"
                                                 }
                                             >
-                                                <FormLabel>Borrower</FormLabel>
+                                                <FormLabel>
+                                                    {t("Accountant.borrower")}
+                                                </FormLabel>
                                                 <UserSelect
                                                     name={controllerField.name}
                                                     value={
@@ -444,7 +450,9 @@ export default function TransactionForm({
                                                         : "col-span-2"
                                                 }
                                             >
-                                                <FormLabel>Amount</FormLabel>
+                                                <FormLabel>
+                                                    {t("Accountant.amount")}
+                                                </FormLabel>
                                                 <Input
                                                     type={
                                                         splitType === "shares"
@@ -526,7 +534,7 @@ export default function TransactionForm({
                             }
                         >
                             <PlusIcon />
-                            Add Split
+                            {`${t("add")} ${t("Accountant.splits")}`}
                         </Button>
                     </CardFooter>
                 </Card>
@@ -535,11 +543,11 @@ export default function TransactionForm({
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button type="button" variant="secondary">
-                            Cancel
+                            {t("BeerCounter.cancel")}
                         </Button>
                     </DialogClose>
                     <Button disabled={isPending} type="submit">
-                        {isPending ? <LoadingSpinner /> : "Submit"}
+                        {isPending ? <LoadingSpinner /> : t("submit")}
                     </Button>
                 </DialogFooter>
             </form>

@@ -19,6 +19,7 @@ import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import AllReceivables from "./receivables-all";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OptimizedReceivables from "./receivables-optimized";
+import { useI18n } from "@/locales/client";
 
 export default function GroupReceivablesCard({
     balancesResponse,
@@ -32,6 +33,7 @@ export default function GroupReceivablesCard({
     balancesResponse: SupabaseResponse<GroupBalance>;
     currenciesResponse: PostgrestSingleResponse<Group>;
 } & ComponentProps<"div">) {
+    const t = useI18n();
     const { data: balances, error: balancesError } = balancesResponse;
     const currenciesData = (currenciesResponse.data?.currencies ||
         []) as GroupCurrency[];
@@ -40,7 +42,7 @@ export default function GroupReceivablesCard({
             <Tabs defaultValue="optimized">
                 <CardHeader>
                     <div className="flex flex-row gap-2">
-                        <h4>Receivables</h4>
+                        <h4>{t("Accountant.receivables")}</h4>
                         <p className="flex items-center">
                             <Badge variant="outline" className="aspect-square">
                                 {balances?.length || 0}
@@ -50,9 +52,11 @@ export default function GroupReceivablesCard({
                     <CardAction>
                         <TabsList>
                             <TabsTrigger value="optimized">
-                                Optimized
+                                {t("Accountant.optimized")}
                             </TabsTrigger>
-                            <TabsTrigger value="all">All</TabsTrigger>
+                            <TabsTrigger value="all">
+                                {t("Accountant.all")}
+                            </TabsTrigger>
                         </TabsList>
                     </CardAction>
                 </CardHeader>

@@ -1,3 +1,4 @@
+"use client";
 import { ComponentProps } from "react";
 import { Group, GroupMember, GroupMemberStatus } from "../types";
 import {
@@ -11,6 +12,7 @@ import NewElementButton from "@/components/accountant/actions/new-element-button
 import GroupMemberForm from "@/components/accountant/actions/group-member-form";
 import UserRow from "@/components/ui/user-row";
 import { CheckIcon, CrownIcon, MailIcon, XIcon } from "lucide-react";
+import { useI18n } from "@/locales/client";
 
 export function memberName({ member }: { member: GroupMember }) {
     const nickname = member.nickname;
@@ -43,23 +45,25 @@ const MemberStatusSymbol = (status: GroupMemberStatus) => {
 
 export default function GroupMembersTable({
     group,
+    groupMembers,
     ...props
-}: { group: Group } & ComponentProps<"div">) {
+}: { group: Group; groupMembers: GroupMember[] } & ComponentProps<"div">) {
+    const t = useI18n();
     return (
         <Card {...props}>
             <CardHeader>
                 <div className="flex flex-row gap-2">
-                    <h4>Members</h4>
+                    <h4>{t("Accountant.members")}</h4>
                     <p className="flex items-center">
                         <Badge variant="outline" className="aspect-square">
-                            {group.members?.length || 0}
+                            {groupMembers?.length || 0}
                         </Badge>
                     </p>
                 </div>
                 <CardAction>
                     <NewElementButton
-                        buttonLabel="Add Member"
-                        dialogTitle="New Member"
+                        buttonLabel={t("Accountant.addMember")}
+                        dialogTitle={t("Accountant.addMember")}
                         formProps={{
                             data: {
                                 id: "",
@@ -73,8 +77,8 @@ export default function GroupMembersTable({
                 </CardAction>
             </CardHeader>
             <CardContent className="flex flex-col gap-2 max-h-128">
-                {group?.members &&
-                    group.members.map((member) => (
+                {groupMembers &&
+                    groupMembers.map((member) => (
                         <NewElementButton
                             key={member.id}
                             variant="ghost"
@@ -93,7 +97,7 @@ export default function GroupMembersTable({
                                         MemberStatusSymbol(member.status)}
                                 </div>
                             }
-                            dialogTitle={`Edit Member`}
+                            dialogTitle={t("Accountant.editMember")}
                             FormComponent={GroupMemberForm}
                             formProps={{
                                 data: { ...member, group_id: group.id },

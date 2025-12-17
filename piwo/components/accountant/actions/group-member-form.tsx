@@ -20,6 +20,7 @@ import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import UserSelect from "@/components/ui/user-dropdown";
 import { UserInfo } from "@/components/scoretracker/types";
 import { PostgrestError } from "@supabase/supabase-js";
+import { useI18n } from "@/locales/client";
 
 export default function GroupMemberForm({
     data,
@@ -29,6 +30,7 @@ export default function GroupMemberForm({
     data: GroupMember;
     setDialogOpen: (open: boolean) => void;
 } & ComponentProps<"form">) {
+    const t = useI18n();
     const router = useRouter();
     const [users, setUsers] = useState<UserInfo[]>([]);
     const [usersError, setUsersError] = useState<PostgrestError>();
@@ -84,7 +86,7 @@ export default function GroupMemberForm({
                     name="nickname"
                     render={({ field, fieldState }) => (
                         <FormItem>
-                            <FormLabel>Nickname</FormLabel>
+                            <FormLabel>{t("Accountant.nickname")}</FormLabel>
                             <Input type="text" {...field} />
                             {fieldState.invalid && (
                                 <ErrorMessage
@@ -100,7 +102,7 @@ export default function GroupMemberForm({
                         name="user_id"
                         render={({ field, fieldState }) => (
                             <FormItem className="w-full">
-                                <FormLabel>User</FormLabel>
+                                <FormLabel>{t("user")}</FormLabel>
                                 <UserSelect
                                     name={field.name}
                                     value={field.value || undefined}
@@ -122,11 +124,11 @@ export default function GroupMemberForm({
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button type="button" variant="secondary">
-                            Cancel
+                            {t("BeerCounter.cancel")}
                         </Button>
                     </DialogClose>
                     <Button disabled={isPending} type="submit">
-                        {isPending ? <LoadingSpinner /> : "Submit"}
+                        {isPending ? <LoadingSpinner /> : t("submit")}
                     </Button>
                 </DialogFooter>
             </form>

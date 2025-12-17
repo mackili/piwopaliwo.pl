@@ -7,6 +7,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/ui/datatable-header";
 import NewElementButton from "@/components/accountant/actions/new-element-button";
 import TransactionForm from "@/components/accountant/actions/transaction-form";
+import { useI18n } from "@/locales/client";
 
 export default function TransactionsDisplay({
     transactions,
@@ -18,6 +19,7 @@ export default function TransactionsDisplay({
     group: Group;
     groupMembers: GroupMember[];
 } & ComponentProps<"table">) {
+    const t = useI18n();
     const columns: ColumnDef<Transaction>[] = useMemo(
         () => [
             {
@@ -26,7 +28,7 @@ export default function TransactionsDisplay({
                 header: ({ column }) => (
                     <DataTableColumnHeader
                         column={{ ...column }}
-                        title="Description"
+                        title={t("Accountant.description")}
                     />
                 ),
             },
@@ -34,21 +36,30 @@ export default function TransactionsDisplay({
                 enableHiding: false,
                 accessorKey: "amount",
                 header: ({ column }) => (
-                    <DataTableColumnHeader column={column} title="Amount" />
+                    <DataTableColumnHeader
+                        column={column}
+                        title={t("Accountant.amount")}
+                    />
                 ),
             },
             {
                 enableHiding: false,
                 accessorKey: "currency_iso_code",
                 header: ({ column }) => (
-                    <DataTableColumnHeader column={column} title="Currency" />
+                    <DataTableColumnHeader
+                        column={column}
+                        title={t("Accountant.currency")}
+                    />
                 ),
             },
             {
                 enableHiding: false,
                 accessorKey: "paid_by",
                 header: ({ column }) => (
-                    <DataTableColumnHeader column={column} title="Paid By" />
+                    <DataTableColumnHeader
+                        column={column}
+                        title={t("Accountant.paidBy")}
+                    />
                 ),
                 cell: ({ row }) => (
                     <div className="flex flex-row gap-2 flex-nowrap items-center">
@@ -93,8 +104,10 @@ export default function TransactionsDisplay({
                 enableHiding: false,
                 cell: ({ row }) => (
                     <NewElementButton
-                        buttonLabel={"Edit"}
-                        dialogTitle={`Edit ${row.getValue("description")}`}
+                        buttonLabel={t("edit")}
+                        dialogTitle={`${t("edit")} ${row.getValue(
+                            "description"
+                        )}`}
                         formProps={{
                             data: row.original,
                             groupMembers: groupMembers,
@@ -105,7 +118,7 @@ export default function TransactionsDisplay({
                 ),
             },
         ],
-        [groupMembers]
+        [groupMembers, t]
     );
     return <DataTable columns={columns} data={transactions} {...props} />;
 }

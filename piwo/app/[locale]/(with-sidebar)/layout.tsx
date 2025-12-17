@@ -1,8 +1,5 @@
-import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import "@/app/globals.css";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { LocaleToggle } from "@/components/ui/locale-toggle";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./sidebar";
 import { createClient } from "@/utils/supabase/server";
@@ -21,23 +18,14 @@ export default async function RootLayout({
     const supabase = await createClient();
     const { data } = await supabase.auth.getUser();
     return (
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-        >
-            <SidebarProvider>
-                <AppSidebar user={data?.user} />
-                <SidebarInset>
-                    <TopBar />
-                    <section className="flex-1 w-full overflow-y-auto">
-                        {children}
-                    </section>
-                </SidebarInset>
-            </SidebarProvider>
-            <ThemeToggle />
-            <LocaleToggle />
-        </ThemeProvider>
+        <SidebarProvider>
+            <AppSidebar user={data?.user} />
+            <SidebarInset>
+                <TopBar />
+                <section className="flex-1 w-full overflow-y-auto">
+                    {children}
+                </section>
+            </SidebarInset>
+        </SidebarProvider>
     );
 }

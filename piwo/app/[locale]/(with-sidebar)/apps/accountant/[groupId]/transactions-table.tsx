@@ -13,6 +13,7 @@ import NewElement from "@/components/accountant/actions/new-element-button";
 import TransactionForm from "@/components/accountant/actions/transaction-form";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { SupabaseResponse } from "@/utils/supabase/types";
+import { getI18n } from "@/locales/server";
 
 const defaultTransaction: (groupId: string, userId: string) => Transaction = (
     groupId,
@@ -45,11 +46,12 @@ export default async function GroupTransactionTable({
     const currentUserMember = (group?.members || []).find(
         (member) => member.user_id === user?.id
     );
+    const t = await getI18n();
     return (
         <Card {...props}>
             <CardHeader>
                 <div className="flex flex-row gap-2">
-                    <h4>Transactions</h4>
+                    <h4>{t("Accountant.transactions")}</h4>
                     <p className="flex items-center">
                         <Badge variant="outline" className="aspect-square">
                             {data?.length || 0}
@@ -59,8 +61,8 @@ export default async function GroupTransactionTable({
                 <CardAction>
                     {user && (
                         <NewElement
-                            buttonLabel="New Transaction"
-                            dialogTitle="New Transaction"
+                            buttonLabel={t("Accountant.newTransaction")}
+                            dialogTitle={t("Accountant.newTransaction")}
                             FormComponent={TransactionForm}
                             formProps={{
                                 data: defaultTransaction(
