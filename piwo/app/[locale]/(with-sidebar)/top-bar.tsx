@@ -14,9 +14,7 @@ export function TopBar() {
                 <AutomaticBreadcrumbs />
             </Suspense>
             <div className="grow"></div>
-            {/* <div className="w-full flex justify-end"> */}
             <NotificationBell />
-            {/* </div> */}
         </section>
     );
 }

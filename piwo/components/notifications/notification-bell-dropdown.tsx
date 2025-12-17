@@ -36,22 +36,6 @@ export default function NotificationBellDropdown({
     const [error, setError] = useState<PostgrestError>();
     const [subscriptionStatus, setSubscriptionStatus] =
         useState<REALTIME_SUBSCRIBE_STATES>();
-    const fetchNotifications = async () => {
-        const { data, error } = (await supabase
-            .from("user_notification")
-            .select()
-            .eq("user_id", userId)
-            .is("read_at", null)
-            .order("created_at", {
-                ascending: false,
-            })) as SupabaseResponse<UserNotification>;
-        if (error) {
-            setError(error as PostgrestError);
-        }
-        if (data) {
-            setNotifications(data);
-        }
-    };
     function removeNotificationFromArray(notificationId?: number) {
         if (notificationId) {
             setNotifications(
@@ -62,6 +46,22 @@ export default function NotificationBellDropdown({
         }
     }
     useEffect(() => {
+        const fetchNotifications = async () => {
+            const { data, error } = (await supabase
+                .from("user_notification")
+                .select()
+                .eq("user_id", userId)
+                .is("read_at", null)
+                .order("created_at", {
+                    ascending: false,
+                })) as SupabaseResponse<UserNotification>;
+            if (error) {
+                setError(error as PostgrestError);
+            }
+            if (data) {
+                setNotifications(data);
+            }
+        };
         fetchNotifications();
         function upsertNotifications(
             payload: RealtimePostgresChangesPayload<UserNotification>
@@ -111,13 +111,13 @@ export default function NotificationBellDropdown({
                 },
                 upsertNotifications
             )
-            .subscribe((status, error) => {
+            .subscribe((status) => {
                 setSubscriptionStatus(status);
             });
         return () => {
             supabase.removeChannel(notificationsChannel);
         };
-    }, []);
+    }, [supabase, userId]);
     async function handleClick(notification: UserNotification) {
         const data = { id: notification.id, read_at: new Date().toISOString() };
         const { error } = await supabase

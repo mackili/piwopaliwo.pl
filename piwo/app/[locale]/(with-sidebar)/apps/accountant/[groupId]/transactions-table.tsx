@@ -24,6 +24,7 @@ const defaultTransaction: (groupId: string, userId: string) => Transaction = (
     currency_iso_code: "PLN",
     amount: 0,
     group_id: groupId,
+    split_type: "equal",
 });
 
 export default async function GroupTransactionTable({
@@ -34,7 +35,7 @@ export default async function GroupTransactionTable({
     const { data, error } = (await supabase
         .from("transaction")
         .select(
-            "id,description,paid_by_id,currency_iso_code,amount,group_id,created_at,paid_by:group_member!transaction_paid_by_fkey(id,nickname,user:UserInfo(firstName,lastName,avatarUrl,userId)),splits:transaction_split(transaction_id,group_id,borrower_id,created_at,amount)"
+            "id,description,paid_by_id,currency_iso_code,amount,group_id,split_type,created_at,paid_by:group_member!transaction_paid_by_fkey(id,nickname,user:UserInfo(firstName,lastName,avatarUrl,userId)),splits:transaction_split(transaction_id,group_id,borrower_id,created_at,amount)"
         )
         .eq("group_id", group.id)
         .order("created_at", {

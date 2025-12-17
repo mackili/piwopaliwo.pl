@@ -8,6 +8,9 @@ export const GroupMemberStatusSchema = z.enum([
     "owner",
 ]);
 
+export const SplitTypesValues = ["manual", "equal", "shares"] as const;
+export const SplitTypesSchema = z.enum(SplitTypesValues);
+
 export const GroupMemberSchema = z.object({
     id: z.uuid(),
     nickname: z.string().min(1).max(15),
@@ -48,6 +51,7 @@ export const TransactionSchema = z.object({
     amount: z.number().nonnegative(),
     group_id: z.uuid(),
     paid_by: GroupMemberSchema.nullish(),
+    split_type: SplitTypesSchema,
 });
 
 export const TransactionSplitSchema = z.object({
@@ -116,6 +120,7 @@ export const GroupInviteViewSchema = z.object({
     group_member: GroupMemberSchema,
 });
 
+export type SplitTypes = z.infer<typeof SplitTypesSchema>;
 export type Group = z.infer<typeof GroupSchema>;
 export type GroupMemberStatus = z.infer<typeof GroupMemberStatusSchema>;
 export type GroupMember = z.infer<typeof GroupMemberSchema>;
@@ -132,3 +137,12 @@ export type GroupDailyTransactionSummary = z.infer<
 >;
 export type GroupInvite = z.infer<typeof GroupInviteSchema>;
 export type GroupInviteView = z.infer<typeof GroupInviteViewSchema>;
+
+/**
+ * Types just for the app - not from db
+ */
+export const TransactionShareSchema = z.object({
+    groupMemberId: z.uuid(),
+    share: z.int().min(0),
+});
+export type TransactionShare = z.infer<typeof TransactionShareSchema>;

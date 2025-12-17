@@ -4,7 +4,10 @@ import { Input } from "@/components/ui/input";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
     GroupMember,
+    SplitTypes,
+    SplitTypesValues,
     Transaction,
+    TransactionShare,
     TransactionSplit,
     TransactionWithSplits,
     TransactionWithSplitsSchema,
@@ -12,7 +15,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/error-message";
-import { ComponentProps, useActionState } from "react";
+import { ComponentProps, useActionState, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import LoadingSpinner from "@/components/ui/loading-spinner";
@@ -30,11 +33,13 @@ import UserSelect from "@/components/ui/user-dropdown";
 import { upsertTransactionWithSplits } from "./upsert-transaction";
 import {
     Card,
+    CardAction,
     CardContent,
     CardFooter,
     CardHeader,
 } from "@/components/ui/card";
 import { PlusIcon, XIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 function generateSplit(
     transaction: Transaction,
@@ -51,6 +56,31 @@ function generateSplit(
     };
 }
 
+function leastCommonDevisor(numbers: number[]) {
+    function decimalsToIntegers(arr: number[]) {
+        const decimals = arr.map((n) => {
+            const s = n.toString();
+            return s.includes(".") ? s.split(".")[1].length : 0;
+        });
+        const maxDecimals = Math.max(...decimals);
+        const factor = 10 ** maxDecimals;
+
+        return {
+            integers: arr.map((n) => Math.round(n * factor)),
+            factor,
+        };
+    }
+    const { integers } = decimalsToIntegers(numbers);
+    function gcd(a: number, b: number) {
+        while (b !== 0) {
+            [a, b] = [b, a % b];
+        }
+        return Math.abs(a);
+    }
+    const divisor = integers.reduce(gcd);
+    return integers.map((n) => n / divisor);
+}
+
 export default function TransactionForm({
     data,
     groupMembers,
@@ -62,10 +92,31 @@ export default function TransactionForm({
     setDialogOpen: (open: boolean) => void;
 } & ComponentProps<"form">) {
     const router = useRouter();
+    const [shares, setShares] = useState<TransactionShare[] | null>(null);
     const [result, handleSubmit, isPending] = useActionState(
         handleTransactionSave,
         null
     );
+    /**
+     * Set shares if default data type is 'shares'
+     */
+    useEffect(() => {
+        if (data.split_type === "shares") {
+            const totalAmount = data.amount;
+            const percentShares: number[] = data.splits.map(
+                (split) => split.amount / totalAmount
+            );
+            const integerShares = leastCommonDevisor(percentShares);
+            const integerTransactionShares: TransactionShare[] =
+                integerShares.map((share, index) => ({
+                    share: share,
+                    groupMemberId: data.splits[index].borrower_id,
+                }));
+            console.log(integerShares);
+            setShares(integerTransactionShares);
+        }
+    }, [data]);
+
     const form = useForm<TransactionWithSplits>({
         resolver: zodResolver(TransactionWithSplitsSchema),
         defaultValues: {
@@ -74,9 +125,9 @@ export default function TransactionForm({
             id: data.id.length <= 0 ? uuid() : data.id,
             paid_by: undefined,
             splits: data?.splits || [],
+            split_type: data.split_type || "equal",
         },
     });
-
     const {
         fields: splits,
         append,
@@ -87,6 +138,71 @@ export default function TransactionForm({
         keyName: "lender_id",
         rules: { minLength: 0 },
     });
+
+    function setEqualAmountPerMember() {
+        const splits = form.getValues("splits");
+        const memberCount = splits.length;
+        const amountPerMember = form.getValues("amount") / memberCount;
+        splits.forEach((split, index) =>
+            form.setValue(`splits.${index}.amount`, amountPerMember)
+        );
+    }
+
+    function setEqualShares() {
+        const splits = form.getValues("splits");
+        const equalShares: TransactionShare[] = splits.map((split) => ({
+            groupMemberId: split.borrower_id,
+            share: 1,
+        }));
+        setShares(equalShares);
+    }
+
+    function setGroupMemberShare(groupMemberId: string, share: number) {
+        const currentShares: TransactionShare[] = [...(shares || [])];
+        const memberShare = currentShares.find(
+            (share) => share.groupMemberId === groupMemberId
+        );
+        if (memberShare) {
+            memberShare.share = share;
+        }
+        setShares(currentShares);
+        setAmountPerMemberByShare();
+    }
+
+    function setAmountPerMemberByShare() {
+        const currentShares: TransactionShare[] = [...(shares || [])];
+        const totalShares = currentShares.reduce(
+            (acc, curr) => (acc += curr.share),
+            0
+        );
+        splits.forEach((split, index) => {
+            form.setValue(
+                `splits.${index}.amount`,
+                (form.getValues("amount") / totalShares) *
+                    (currentShares.find(
+                        (sh) => sh.groupMemberId === split.borrower_id
+                    )?.share || 0)
+            );
+        });
+    }
+
+    function handleSplitTypeChange(value: SplitTypes) {
+        switch (value) {
+            case "equal":
+                setEqualAmountPerMember();
+                break;
+            case "shares":
+                setEqualShares();
+                break;
+            default:
+                break;
+        }
+        form.setValue("split_type", value);
+    }
+
+    function findShareOfMember(groupMemberId: string) {
+        return shares?.find((share) => share.groupMemberId === groupMemberId);
+    }
 
     async function handleTransactionSave() {
         const isValid = await form.trigger();
@@ -105,6 +221,8 @@ export default function TransactionForm({
             return `${result.error?.code}: ${result.error?.message}`;
         }
     }
+    const splitType = form.watch("split_type");
+
     return (
         <Form {...form}>
             <form
@@ -142,12 +260,18 @@ export default function TransactionForm({
                                     type="number"
                                     {...field}
                                     value={field.value || ""}
-                                    onChange={(e) =>
+                                    onChange={(e) => {
                                         form.setValue(
                                             "amount",
                                             Number(e.target.value)
-                                        )
-                                    }
+                                        );
+                                        if (splitType === "equal") {
+                                            setEqualAmountPerMember();
+                                        }
+                                        if (splitType === "shares") {
+                                            setAmountPerMemberByShare();
+                                        }
+                                    }}
                                 />
                                 {fieldState.invalid && (
                                     <ErrorMessage
@@ -210,7 +334,6 @@ export default function TransactionForm({
                                     avatarUrl: member?.user?.avatarUrl,
                                 }))}
                                 className="w-full"
-                                // defaultUser={defaultUser}
                             />
                             {fieldState.invalid && (
                                 <ErrorMessage
@@ -221,7 +344,38 @@ export default function TransactionForm({
                     )}
                 />
                 <Card>
-                    <CardHeader>Splits</CardHeader>
+                    <CardHeader>
+                        Splits
+                        <CardAction>
+                            <FormField
+                                name="split_type"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <Select
+                                        name={field.name}
+                                        onValueChange={handleSplitTypeChange}
+                                        value={field.value as SplitTypes}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue>
+                                                {field.value.toUpperCase()}
+                                            </SelectValue>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {SplitTypesValues.map((type) => (
+                                                <SelectItem
+                                                    key={type}
+                                                    value={type}
+                                                >
+                                                    {type.toUpperCase()}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
+                        </CardAction>
+                    </CardHeader>
                     <CardContent className="flex flex-col gap-2">
                         {splits.map((split, index) => (
                             <Card key={index}>
@@ -233,7 +387,13 @@ export default function TransactionForm({
                                             field: controllerField,
                                             fieldState,
                                         }) => (
-                                            <FormItem className="col-span-8">
+                                            <FormItem
+                                                className={
+                                                    splitType !== "shares"
+                                                        ? "col-span-8"
+                                                        : "col-span-7 w-full"
+                                                }
+                                            >
                                                 <FormLabel>Borrower</FormLabel>
                                                 <UserSelect
                                                     name={controllerField.name}
@@ -277,11 +437,26 @@ export default function TransactionForm({
                                         render={({
                                             field: controllerField,
                                         }) => (
-                                            <FormItem className="col-span-3">
+                                            <FormItem
+                                                className={
+                                                    splitType !== "shares"
+                                                        ? "col-span-3"
+                                                        : "col-span-2"
+                                                }
+                                            >
                                                 <FormLabel>Amount</FormLabel>
                                                 <Input
-                                                    type="number"
+                                                    type={
+                                                        splitType === "shares"
+                                                            ? "text"
+                                                            : "number"
+                                                    }
                                                     {...controllerField}
+                                                    disabled={
+                                                        splitType === "equal" ||
+                                                        splitType === "shares"
+                                                    }
+                                                    step="0.01"
                                                     onChange={(e) =>
                                                         controllerField.onChange(
                                                             Number(
@@ -293,10 +468,41 @@ export default function TransactionForm({
                                             </FormItem>
                                         )}
                                     />
+                                    {splitType === "shares" &&
+                                        findShareOfMember(
+                                            split.borrower_id
+                                        ) && (
+                                            <div className="grid gap-2 col-span-2">
+                                                <Label>Shares</Label>
+                                                <Input
+                                                    type="number"
+                                                    min="0"
+                                                    step="1"
+                                                    value={
+                                                        findShareOfMember(
+                                                            split.borrower_id
+                                                        )?.share
+                                                    }
+                                                    onChange={(e) =>
+                                                        setGroupMemberShare(
+                                                            split.borrower_id,
+                                                            Number(
+                                                                e.target.value
+                                                            )
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        )}
                                     <Button
                                         type="button"
                                         variant="ghost"
                                         size="icon"
+                                        className={
+                                            splitType === "shares"
+                                                ? "col-span-1"
+                                                : ""
+                                        }
                                         onClick={() => remove(index)}
                                     >
                                         <XIcon />
