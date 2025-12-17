@@ -383,7 +383,7 @@ export default function TransactionForm({
                     <CardContent className="flex flex-col gap-2">
                         {splits.map((split, index) => (
                             <Card key={index}>
-                                <CardContent className="grid grid-cols-12 gap-2 ">
+                                <CardContent className="grid @max-md:grid-cols-6 @md:grid-cols-12 gap-2 items-end">
                                     <FormField
                                         name={`splits.${index}.borrower_id`}
                                         control={form.control}
@@ -395,7 +395,7 @@ export default function TransactionForm({
                                                 className={
                                                     splitType !== "shares"
                                                         ? "col-span-8"
-                                                        : "col-span-7 w-full"
+                                                        : "col-span-6 w-full"
                                                 }
                                             >
                                                 <FormLabel>
@@ -446,7 +446,7 @@ export default function TransactionForm({
                                             <FormItem
                                                 className={
                                                     splitType !== "shares"
-                                                        ? "col-span-3"
+                                                        ? "col-span-4"
                                                         : "col-span-2"
                                                 }
                                             >
@@ -504,13 +504,13 @@ export default function TransactionForm({
                                         )}
                                     <Button
                                         type="button"
-                                        variant="ghost"
+                                        variant="outline"
                                         size="icon"
-                                        className={
+                                        className={`${
                                             splitType === "shares"
-                                                ? "col-span-1"
+                                                ? "col-span-2"
                                                 : ""
-                                        }
+                                        }`}
                                         onClick={() => remove(index)}
                                     >
                                         <XIcon />
