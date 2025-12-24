@@ -1,3 +1,4 @@
+import { PostgrestError } from "@supabase/supabase-js";
 import ErrorMessage from "./error-message";
 
 export default function PostgrestErrorDisplay({
@@ -10,6 +11,7 @@ export default function PostgrestErrorDisplay({
               hint?: string | null;
               message?: string | null;
           }
+        | PostgrestError
         | null
         | undefined;
 }) {
