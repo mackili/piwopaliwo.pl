@@ -8,6 +8,7 @@ import { DataTableColumnHeader } from "@/components/ui/datatable-header";
 import NewElementButton from "@/components/accountant/actions/new-element-button";
 import TransactionForm from "@/components/accountant/actions/transaction-form";
 import { useI18n } from "@/locales/client";
+import RemoveTransactionButton from "@/components/accountant/actions/remove-transaction-button";
 
 export default function TransactionsDisplay({
     transactions,
@@ -103,18 +104,23 @@ export default function TransactionsDisplay({
                 id: "actions",
                 enableHiding: false,
                 cell: ({ row }) => (
-                    <NewElementButton
-                        buttonLabel={t("edit")}
-                        dialogTitle={`${t("edit")} ${row.getValue(
-                            "description"
-                        )}`}
-                        formProps={{
-                            data: row.original,
-                            groupMembers: groupMembers,
-                        }}
-                        FormComponent={TransactionForm}
-                        variant="outline"
-                    />
+                    <div className="flex flex-row flex-nowrap gap-2 items-center">
+                        <NewElementButton
+                            buttonLabel={t("edit")}
+                            dialogTitle={`${t("edit")} ${row.getValue(
+                                "description"
+                            )}`}
+                            formProps={{
+                                data: row.original,
+                                groupMembers: groupMembers,
+                            }}
+                            FormComponent={TransactionForm}
+                            variant="outline"
+                        />
+                        <RemoveTransactionButton
+                            transactionId={row.original.id}
+                        />
+                    </div>
                 ),
             },
         ],

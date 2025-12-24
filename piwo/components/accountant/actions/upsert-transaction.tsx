@@ -39,3 +39,13 @@ export async function upsertTransactionWithSplits(
     };
     return { data, error };
 }
+
+export async function removeTransaction(transactionId: string) {
+    const supabase = await createClient();
+    const { error } = await supabase
+        .from("transaction")
+        .delete()
+        .eq("id", transactionId);
+    console.log(error);
+    return { error };
+}

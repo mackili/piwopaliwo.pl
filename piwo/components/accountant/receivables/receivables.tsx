@@ -14,10 +14,8 @@ export default async function GroupReceivables({
 }: { group: Group } & ComponentProps<"div">) {
     const supabase = await createClient();
     const balancesPromise = supabase
-        .from("group_balance")
-        .select(
-            "borrower_id,lender_id,group_id,currency_balance,borrower:group_balance_borrower_id_fkey(id,nickname,user:UserInfo(firstName,lastName,userId,avatarUrl)),lender:group_balance_lender_id_fkey(id,nickname,user:UserInfo(firstName,lastName,userId,avatarUrl))"
-        )
+        .from("v_group_balance")
+        .select()
         .eq("group_id", group.id);
     const currenciesPromise = supabase
         .from("group")

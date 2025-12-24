@@ -6,7 +6,6 @@ import {
     GroupMember,
     SplitTypes,
     SplitTypesValues,
-    Transaction,
     TransactionShare,
     TransactionSplit,
     TransactionWithSplits,
@@ -41,21 +40,6 @@ import {
 import { PlusIcon, XIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { useI18n } from "@/locales/client";
-
-function generateSplit(
-    transaction: Transaction,
-    existingSplitCount: number,
-    groupMemberId?: string
-): TransactionSplit {
-    return {
-        transaction_id: transaction.id,
-        // @ts-expect-error this is not set as it is a default data generator
-        borrower_id: groupMemberId || undefined,
-        group_id: transaction.group_id,
-        // amount: transaction.amount / Math.max(1, existingSplitCount + 1) || 0,
-        amount: 0,
-    };
-}
 
 function leastCommonDevisor(numbers: number[]) {
     function decimalsToIntegers(arr: number[]) {
@@ -114,7 +98,6 @@ export default function TransactionForm({
                     share: share,
                     groupMemberId: data.splits[index].borrower_id,
                 }));
-            console.log(integerShares);
             setShares(integerTransactionShares);
         }
     }, [data]);
@@ -144,46 +127,133 @@ export default function TransactionForm({
     function setEqualAmountPerMember() {
         const splits = form.getValues("splits");
         const memberCount = splits.length;
+        if (memberCount <= 0) return;
         const amountPerMember = form.getValues("amount") / memberCount;
-        splits.forEach((split, index) =>
+        splits.forEach((_, index) =>
             form.setValue(`splits.${index}.amount`, amountPerMember)
         );
     }
 
+    function syncSharesWithSplits(
+        nextSplits: TransactionSplit[],
+        prevShares: TransactionShare[] = []
+    ): TransactionShare[] {
+        const seen = new Set<string>();
+        const nextShares: TransactionShare[] = [];
+
+        for (const split of nextSplits) {
+            const borrowerId = split.borrower_id;
+            if (!borrowerId) continue;
+            if (seen.has(borrowerId)) continue;
+            seen.add(borrowerId);
+
+            const prev = prevShares.find((s) => s.groupMemberId === borrowerId);
+            nextShares.push({
+                groupMemberId: borrowerId,
+                share: prev?.share ?? 1,
+            });
+        }
+
+        return nextShares;
+    }
+
     function setEqualShares() {
         const splits = form.getValues("splits");
-        const equalShares: TransactionShare[] = splits.map((split) => ({
-            groupMemberId: split.borrower_id,
-            share: 1,
-        }));
+        const equalShares: TransactionShare[] = splits
+            .map((split) => split.borrower_id)
+            .filter((id): id is string => Boolean(id))
+            .map((id) => ({ groupMemberId: id, share: 1 }));
         setShares(equalShares);
+        setAmountPerMemberByShare(equalShares);
     }
 
     function setGroupMemberShare(groupMemberId: string, share: number) {
-        const currentShares: TransactionShare[] = [...(shares || [])];
-        const memberShare = currentShares.find(
-            (share) => share.groupMemberId === groupMemberId
+        const nextShares: TransactionShare[] = [...(shares || [])];
+        const memberShare = nextShares.find(
+            (s) => s.groupMemberId === groupMemberId
         );
         if (memberShare) {
             memberShare.share = share;
+        } else {
+            nextShares.push({ groupMemberId, share });
         }
-        setShares(currentShares);
-        setAmountPerMemberByShare();
+        setShares(nextShares);
+        setAmountPerMemberByShare(nextShares);
     }
 
-    function setAmountPerMemberByShare() {
-        const currentShares: TransactionShare[] = [...(shares || [])];
+    function handleBorrowerChange(index: number, nextBorrowerId: string) {
+        const splitType = form.getValues("split_type");
+
+        if (splitType === "equal") {
+            setEqualAmountPerMember();
+            return;
+        }
+
+        if (splitType !== "shares") {
+            return;
+        }
+
+        const currentSplits = form.getValues("splits");
+        const prevBorrowerId = currentSplits[index]?.borrower_id;
+
+        const nextSplits = [...currentSplits];
+        nextSplits[index] = {
+            ...nextSplits[index],
+            borrower_id: nextBorrowerId,
+        };
+
+        const prevShares = shares ?? [];
+        const nextShares = syncSharesWithSplits(nextSplits, prevShares);
+
+        // Try to carry over the edited row's previous share value to the new borrower,
+        // but only if the new borrower didn't already exist in shares.
+        const newBorrowerAlreadyHadShare = prevShares.some(
+            (s) => s.groupMemberId === nextBorrowerId
+        );
+        if (!newBorrowerAlreadyHadShare && prevBorrowerId) {
+            const prevShareValue =
+                prevShares.find((s) => s.groupMemberId === prevBorrowerId)
+                    ?.share ?? 1;
+            const entry = nextShares.find(
+                (s) => s.groupMemberId === nextBorrowerId
+            );
+            if (entry) entry.share = prevShareValue;
+        }
+
+        setShares(nextShares);
+        setAmountPerMemberByShare(nextShares);
+    }
+
+    function setAmountPerMemberByShare(sharesOverride?: TransactionShare[]) {
+        const currentShares: TransactionShare[] = [
+            ...(sharesOverride ?? shares ?? []),
+        ];
         const totalShares = currentShares.reduce(
-            (acc, curr) => (acc += curr.share),
+            (acc, curr) => acc + curr.share,
             0
         );
-        splits.forEach((split, index) => {
+
+        const currentSplits = form.getValues("splits");
+
+        if (totalShares <= 0) {
+            // if nobody has shares yet, set 0 (or return)
+            currentSplits.forEach((_, index) =>
+                form.setValue(`splits.${index}.amount`, 0)
+            );
+            return;
+        }
+
+        const amount = form.getValues("amount");
+
+        currentSplits.forEach((split, index) => {
+            const memberShare =
+                currentShares.find(
+                    (sh) => sh.groupMemberId === split.borrower_id
+                )?.share ?? 0;
+
             form.setValue(
                 `splits.${index}.amount`,
-                (form.getValues("amount") / totalShares) *
-                    (currentShares.find(
-                        (sh) => sh.groupMemberId === split.borrower_id
-                    )?.share || 0)
+                (amount / totalShares) * memberShare
             );
         });
     }
@@ -206,6 +276,55 @@ export default function TransactionForm({
         return shares?.find((share) => share.groupMemberId === groupMemberId);
     }
 
+    function handleAddSplit() {
+        const transaction = form.getValues();
+        const defaultSplit: TransactionSplit = {
+            transaction_id: transaction.id,
+            // @ts-expect-error this is not set as it is a default data generator
+            borrower_id: undefined,
+            group_id: transaction.group_id,
+            amount: 0,
+        };
+        append(defaultSplit);
+        switch (transaction.split_type) {
+            case "equal":
+                setEqualAmountPerMember();
+                break;
+            case "shares":
+                setEqualShares();
+                break;
+            default:
+                break;
+        }
+    }
+
+    function handleRemoveSplit(index: number) {
+        const splitType = form.getValues("split_type");
+        const currentSplits = form.getValues("splits");
+        const nextSplits = currentSplits.filter((_, i) => i !== index);
+
+        if (splitType === "equal") {
+            remove(index);
+            // recompute from nextSplits without depending on RHF update timing
+            if (nextSplits.length <= 0) return;
+            const amountPerMember =
+                form.getValues("amount") / nextSplits.length;
+            nextSplits.forEach((_, i) =>
+                form.setValue(`splits.${i}.amount`, amountPerMember)
+            );
+            return;
+        }
+
+        if (splitType === "shares") {
+            const prevShares = shares ?? [];
+            const nextShares = syncSharesWithSplits(nextSplits, prevShares);
+            setShares(nextShares);
+            setAmountPerMemberByShare(nextShares);
+        }
+
+        remove(index);
+    }
+
     async function handleTransactionSave() {
         const isValid = await form.trigger();
         if (isValid === false) {
@@ -224,6 +343,7 @@ export default function TransactionForm({
         }
     }
     const splitType = form.watch("split_type");
+    const watchedSplits = form.watch("splits");
 
     return (
         <Form {...form}>
@@ -381,105 +501,160 @@ export default function TransactionForm({
                         </CardAction>
                     </CardHeader>
                     <CardContent className="flex flex-col gap-2">
-                        {splits.map((split, index) => (
-                            <Card key={index}>
-                                <CardContent className="grid @max-md:grid-cols-6 @md:grid-cols-12 gap-2 items-end">
-                                    <FormField
-                                        name={`splits.${index}.borrower_id`}
-                                        control={form.control}
-                                        render={({
-                                            field: controllerField,
-                                            fieldState,
-                                        }) => (
-                                            <FormItem
-                                                className={
-                                                    splitType !== "shares"
-                                                        ? "col-span-8"
-                                                        : "col-span-6 w-full"
-                                                }
-                                            >
-                                                <FormLabel>
-                                                    {t("Accountant.borrower")}
-                                                </FormLabel>
-                                                <UserSelect
-                                                    name={controllerField.name}
-                                                    value={
-                                                        controllerField.value
+                        {splits.map((split, index) => {
+                            const borrowerId = form.watch(
+                                `splits.${index}.borrower_id`
+                            );
+
+                            const takenBorrowerIds = new Set(
+                                (watchedSplits || [])
+                                    .map((s) => s.borrower_id)
+                                    .filter(
+                                        (id): id is string =>
+                                            Boolean(id) && id !== borrowerId
+                                    )
+                            );
+
+                            return (
+                                <Card key={index}>
+                                    <CardContent className="grid @max-md:grid-cols-6 @md:grid-cols-12 gap-2 items-end">
+                                        <FormField
+                                            name={`splits.${index}.borrower_id`}
+                                            control={form.control}
+                                            render={({
+                                                field: controllerField,
+                                                fieldState,
+                                            }) => (
+                                                <FormItem
+                                                    className={
+                                                        splitType !== "shares"
+                                                            ? "col-span-8"
+                                                            : "col-span-6 w-full"
                                                     }
-                                                    onValueChange={
-                                                        controllerField.onChange
+                                                >
+                                                    <FormLabel>
+                                                        {t(
+                                                            "Accountant.borrower"
+                                                        )}
+                                                    </FormLabel>
+                                                    <UserSelect
+                                                        name={
+                                                            controllerField.name
+                                                        }
+                                                        value={
+                                                            controllerField.value
+                                                        }
+                                                        onValueChange={(
+                                                            newId
+                                                        ) => {
+                                                            if (
+                                                                takenBorrowerIds.has(
+                                                                    newId
+                                                                )
+                                                            ) {
+                                                                form.setError(
+                                                                    `splits.${index}.borrower_id`,
+                                                                    {
+                                                                        type: "validate",
+                                                                        message:
+                                                                            "Borrower already selected",
+                                                                    }
+                                                                );
+                                                                return;
+                                                            }
+
+                                                            form.clearErrors(
+                                                                `splits.${index}.borrower_id`
+                                                            );
+                                                            controllerField.onChange(
+                                                                newId
+                                                            );
+                                                            handleBorrowerChange(
+                                                                index,
+                                                                newId
+                                                            );
+                                                        }}
+                                                        users={(
+                                                            groupMembers || []
+                                                        )
+                                                            .filter(
+                                                                (member) =>
+                                                                    !takenBorrowerIds.has(
+                                                                        member.id
+                                                                    )
+                                                            )
+                                                            .map((member) => ({
+                                                                userId: member.id,
+                                                                firstName:
+                                                                    member?.user
+                                                                        ?.firstName ||
+                                                                    member.nickname,
+                                                                lastName:
+                                                                    member?.user
+                                                                        ?.lastName,
+                                                                avatarUrl:
+                                                                    member?.user
+                                                                        ?.avatarUrl,
+                                                            }))}
+                                                        className="w-full"
+                                                    />
+                                                    {fieldState.invalid && (
+                                                        <ErrorMessage
+                                                            error={
+                                                                fieldState
+                                                                    ?.error
+                                                                    ?.message ||
+                                                                ""
+                                                            }
+                                                        />
+                                                    )}
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            name={`splits.${index}.amount`}
+                                            control={form.control}
+                                            render={({
+                                                field: controllerField,
+                                            }) => (
+                                                <FormItem
+                                                    className={
+                                                        splitType !== "shares"
+                                                            ? "col-span-4"
+                                                            : "col-span-2"
                                                     }
-                                                    users={(
-                                                        groupMembers || []
-                                                    ).map((member) => ({
-                                                        userId: member.id,
-                                                        firstName:
-                                                            member?.user
-                                                                ?.firstName ||
-                                                            member.nickname,
-                                                        lastName:
-                                                            member?.user
-                                                                ?.lastName,
-                                                        avatarUrl:
-                                                            member?.user
-                                                                ?.avatarUrl,
-                                                    }))}
-                                                    className="w-full"
-                                                />
-                                                {fieldState.invalid && (
-                                                    <ErrorMessage
-                                                        error={
-                                                            fieldState?.error
-                                                                ?.message || ""
+                                                >
+                                                    <FormLabel>
+                                                        {t("Accountant.amount")}
+                                                    </FormLabel>
+                                                    <Input
+                                                        type={
+                                                            splitType ===
+                                                            "shares"
+                                                                ? "text"
+                                                                : "number"
+                                                        }
+                                                        {...controllerField}
+                                                        disabled={
+                                                            splitType ===
+                                                                "equal" ||
+                                                            splitType ===
+                                                                "shares"
+                                                        }
+                                                        step="0.01"
+                                                        onChange={(e) =>
+                                                            controllerField.onChange(
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
                                                         }
                                                     />
-                                                )}
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        name={`splits.${index}.amount`}
-                                        control={form.control}
-                                        render={({
-                                            field: controllerField,
-                                        }) => (
-                                            <FormItem
-                                                className={
-                                                    splitType !== "shares"
-                                                        ? "col-span-4"
-                                                        : "col-span-2"
-                                                }
-                                            >
-                                                <FormLabel>
-                                                    {t("Accountant.amount")}
-                                                </FormLabel>
-                                                <Input
-                                                    type={
-                                                        splitType === "shares"
-                                                            ? "text"
-                                                            : "number"
-                                                    }
-                                                    {...controllerField}
-                                                    disabled={
-                                                        splitType === "equal" ||
-                                                        splitType === "shares"
-                                                    }
-                                                    step="0.01"
-                                                    onChange={(e) =>
-                                                        controllerField.onChange(
-                                                            Number(
-                                                                e.target.value
-                                                            )
-                                                        )
-                                                    }
-                                                />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    {splitType === "shares" &&
-                                        findShareOfMember(
-                                            split.borrower_id
-                                        ) && (
+                                                </FormItem>
+                                            )}
+                                        />
+                                        {splitType === "shares" && (
                                             <div className="grid gap-2 col-span-2">
                                                 <Label>Shares</Label>
                                                 <Input
@@ -488,50 +663,47 @@ export default function TransactionForm({
                                                     step="1"
                                                     value={
                                                         findShareOfMember(
-                                                            split.borrower_id
-                                                        )?.share
+                                                            borrowerId || ""
+                                                        )?.share ?? 0
                                                     }
-                                                    onChange={(e) =>
+                                                    onChange={(e) => {
+                                                        if (!borrowerId) return;
                                                         setGroupMemberShare(
-                                                            split.borrower_id,
+                                                            borrowerId,
                                                             Number(
                                                                 e.target.value
                                                             )
-                                                        )
-                                                    }
+                                                        );
+                                                    }}
                                                 />
                                             </div>
                                         )}
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="icon"
-                                        className={`${
-                                            splitType === "shares"
-                                                ? "col-span-2"
-                                                : ""
-                                        }`}
-                                        onClick={() => remove(index)}
-                                    >
-                                        <XIcon />
-                                    </Button>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="icon"
+                                            className={`${
+                                                splitType === "shares"
+                                                    ? "col-span-2"
+                                                    : ""
+                                            }`}
+                                            onClick={() =>
+                                                handleRemoveSplit(index)
+                                            }
+                                        >
+                                            <XIcon />
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
                     </CardContent>
                     <CardFooter>
                         <Button
                             type="button"
                             variant="outline"
                             className="w-full"
-                            onClick={() =>
-                                append(
-                                    generateSplit(
-                                        form.getValues(),
-                                        splits.length
-                                    )
-                                )
-                            }
+                            onClick={handleAddSplit}
                         >
                             <PlusIcon />
                             {`${t("add")} ${t("Accountant.splits")}`}
