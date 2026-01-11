@@ -76,7 +76,7 @@ export default function GroupMembersTable({
                     />
                 </CardAction>
             </CardHeader>
-            <CardContent className="flex flex-col gap-2 max-h-128">
+            <CardContent className="flex flex-col gap-2 max-h-60 overflow-y-scroll">
                 {groupMembers &&
                     groupMembers.map((member) => (
                         <NewElementButton

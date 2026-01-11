@@ -34,7 +34,7 @@ export default function GroupStatistics({
                                 {t("Accountant.stats.balancePerCurrency")}
                             </TabsTrigger>
                             <TabsTrigger value="member-balance">
-                                {t("Accountant.stats.dailyTransactions")}
+                                {t("Accountant.stats.aggBalance")}
                             </TabsTrigger>
                             <TabsTrigger value="daily-transactions">
                                 {t("Accountant.stats.dailyTransactions")}
@@ -56,7 +56,7 @@ export default function GroupStatistics({
                     <TabsContent value="member-balance">
                         <GroupStatisticsChart
                             group={group}
-                            chartTitle={t("Accountant.stats.dailyTransactions")}
+                            chartTitle={t("Accountant.stats.aggBalance")}
                             fetchFunction={fetchGroupMemberBalances}
                             Chart={AggregateMemberBalanceChart}
                         />

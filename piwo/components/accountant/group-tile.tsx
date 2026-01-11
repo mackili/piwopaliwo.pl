@@ -1,5 +1,5 @@
 "use client";
-import { ComponentProps } from "react";
+import { ComponentProps, useState } from "react";
 import { Group } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
 import {
     Card,
@@ -13,6 +13,7 @@ import Image from "next/image";
 import { CameraOff } from "lucide-react";
 import Link from "next/link";
 import { useCurrentLocale, useI18n } from "@/locales/client";
+import LoadingSpinner from "../ui/loading-spinner";
 
 export default function GroupCard({
     group,
@@ -21,8 +22,12 @@ export default function GroupCard({
 } & ComponentProps<"div">) {
     const t = useI18n();
     const locale = useCurrentLocale();
+    const [isLoading, setLoading] = useState<boolean>(false);
     function groupUrlGenerator(groupId: string) {
         return `/${locale}/apps/accountant/${groupId}`;
+    }
+    function handleLoading() {
+        setLoading(!isLoading);
     }
     return (
         <Card className="w-full justify-around">
@@ -34,8 +39,8 @@ export default function GroupCard({
                         <Image
                             src={group.thumbnail_url}
                             alt={group.name}
-                            height={100}
-                            width={120}
+                            height={500}
+                            width={600}
                             className="object-cover w-full h-full rounded-sm lg:rounded-lg xl:rounded-xl"
                         />
                     )}
@@ -47,9 +52,17 @@ export default function GroupCard({
                 </CardTitle>
             </CardContent>
             <CardFooter>
-                <Link href={groupUrlGenerator(group.id)} className="w-full">
+                <Link
+                    href={groupUrlGenerator(group.id)}
+                    className="w-full"
+                    onClick={handleLoading}
+                >
                     <Button variant="default" size="lg" className="w-full">
-                        {t("Accountant.enterGroup")}
+                        {isLoading ? (
+                            <LoadingSpinner />
+                        ) : (
+                            t("Accountant.enterGroup")
+                        )}
                     </Button>
                 </Link>
             </CardFooter>
