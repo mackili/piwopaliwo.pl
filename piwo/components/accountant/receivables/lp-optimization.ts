@@ -4,17 +4,9 @@ import type { Model, Solution, Constraint } from "yalps";
 type Balances = Record<string, number>;
 type Transfer = { from: string; to: string; amount: number };
 
-function getFromToTransaction(str: string) {
-    const parts = str.split("_");
-    const from = parts[parts.length - 2];
-    const to = parts[parts.length - 1];
-
-    return { from: from, to: to };
-}
-
 /**
  * Convert currency units to integer "cents" using the requested rule:
- * multiply by 100 and Math.ceil(), while preserving the sign and ceilling magnitude.
+ * multiply by 100 and Math.ceil(), while preserving the sign and ceiling magnitude.
  */
 function toCentsCeil(value: number): number {
     if (!Number.isFinite(value)) return 0;
@@ -23,8 +15,55 @@ function toCentsCeil(value: number): number {
 }
 
 function fromCents(value: number): number {
-    // Keep it stable as a 2-decimal currency value
     return Number((value / 100).toFixed(2));
+}
+
+/**
+ * After per-person ceil rounding, sum may drift away from 0.
+ * Normalize by adjusting a single participant so total sum becomes 0.
+ */
+function normalizeRoundedToZeroSum(
+    people: Array<[string, number]>
+): Array<[string, number]> {
+    const sum = people.reduce((acc, [, v]) => acc + v, 0);
+    if (sum === 0) return people;
+
+    // Prefer adjusting someone on the side of the drift to avoid sign flips.
+    // If sum > 0, reduce a creditor; if sum < 0, increase a debtor.
+    const wantPositive = sum > 0;
+
+    let idx = -1;
+    let bestAbs = -1;
+
+    for (let i = 0; i < people.length; i++) {
+        const v = people[i][1];
+        if (wantPositive ? v > 0 : v < 0) {
+            const av = Math.abs(v);
+            if (av > bestAbs) {
+                bestAbs = av;
+                idx = i;
+            }
+        }
+    }
+
+    // Fallback: adjust the largest magnitude entry.
+    if (idx === -1) {
+        for (let i = 0; i < people.length; i++) {
+            const av = Math.abs(people[i][1]);
+            if (av > bestAbs) {
+                bestAbs = av;
+                idx = i;
+            }
+        }
+    }
+
+    if (idx === -1) return people;
+
+    const [name, v] = people[idx];
+    const adjusted = v - sum; // makes total sum 0
+    const copy = people.slice();
+    copy[idx] = [name, adjusted];
+    return copy;
 }
 
 /**
@@ -38,118 +77,88 @@ export function optimizeTransactions(balances: Balances): {
     data: Transfer[] | null;
     error: string | null;
 } {
-    // Scale balances to integer cents (ceil) for the whole optimization
-    const people: Array<[string, number]> = Object.entries(balances).map(
+    // Round to integer cents (ceil), then normalize to keep feasibility (sum must be 0)
+    let people: Array<[string, number]> = Object.entries(balances).map(
         ([person, amount]) => [person, toCentsCeil(amount)]
     );
+    people = normalizeRoundedToZeroSum(people);
 
-    // Big-M for linking x (amount) with y (whether transfer is used)
-    const absAmounts = people.map(([, amount]) => Math.abs(amount));
-    const totalPositive = people.reduce(
-        (sum, [, amount]) => sum + (amount > 0 ? amount : 0),
-        0
-    );
-    const M = Math.max(1, totalPositive, ...absAmounts); // in cents
+    // Drop zeros to reduce problem size
+    people = people.filter(([, amount]) => amount !== 0);
+
+    const debtors = people.filter(([, amount]) => amount < 0); // payers
+    const creditors = people.filter(([, amount]) => amount > 0); // receivers
+
+    // Trivial case
+    if (debtors.length === 0 || creditors.length === 0) {
+        return { data: [], error: null };
+    }
 
     const variables: Record<string, Record<string, number>> = {};
     const integers: string[] = [];
-
     const constraints: Map<string, Constraint> = new Map();
 
-    /**
-     * Adds binary constraints to the who pays who decision matrix
-     */
-    function addBinaryBounds() {
-        for (const [p] of people) {
-            for (const [q] of people) {
-                if (p === q) continue;
-                const yName = `who_pays_who_${p}_${q}`;
-                const boundKey = `bin_${yName}`;
-                constraints.set(boundKey, inRange(0, 1));
-                if (!variables[yName]) variables[yName] = {};
-                variables[yName][boundKey] = 1;
-                integers.push(yName);
-                variables[yName]["transactionCount"] = 1;
-            }
-        }
-    }
-    addBinaryBounds();
+    // Create only debtor -> creditor arcs (reduces vars from n^2 to |D|*|C|)
+    for (const [dName, dAmount] of debtors) {
+        for (const [cName, cAmount] of creditors) {
+            const yName = `use_${dName}_${cName}`; // binary
+            const xName = `amt_${dName}_${cName}`; // integer cents
 
-    /**
-     * How much one should pay the other? (integer cents)
-     */
-    for (const [p] of people) {
-        for (const [q] of people) {
-            if (p === q) continue;
-            const xName = `how_much_who_pays_who_${p}_${q}`;
+            // y in {0,1}
+            const yBound = `bin_${yName}`;
+            constraints.set(yBound, inRange(0, 1));
+            variables[yName] = { transactionCount: 1, [yBound]: 1 };
+            integers.push(yName);
+
+            // x >= 0
             constraints.set(xName, greaterEq(0));
-            variables[xName] = { transactionCount: 0 }; // does not affect objective
-            integers.push(xName); // ensure cent-precision solutions
-        }
-    }
+            variables[xName] = { transactionCount: 0 };
+            integers.push(xName);
 
-    /**
-     * Debtors must pay exactly what they owe (in cents)
-     */
-    for (const [person, amount] of people) {
-        if (amount >= 0) continue;
+            // Tight Big-M per arc: x <= min(owe, receive) * y
+            const Mij = Math.min(Math.abs(dAmount), cAmount);
 
-        const key = `out_${person}`;
-        constraints.set(key, equalTo(Math.abs(amount)));
-
-        for (const [other] of people) {
-            if (other === person) continue;
-            const xName = `how_much_who_pays_who_${person}_${other}`;
-            variables[xName][key] = 1;
-        }
-    }
-
-    /**
-     * Creditors must receive exactly what they should (in cents)
-     */
-    for (const [person, amount] of people) {
-        if (amount <= 0) continue;
-
-        const key = `in_${person}`;
-        constraints.set(key, equalTo(Math.abs(amount)));
-
-        for (const [other] of people) {
-            if (other === person) continue;
-            const xName = `how_much_who_pays_who_${other}_${person}`;
-            variables[xName][key] = 1;
-        }
-    }
-
-    /**
-     * Link "use transfer" binary y with paid amount x:
-     *   0 <= x <= M*y
-     *   x >= 1*y   (if y=1 then at least 1 cent)
-     */
-    for (const [p] of people) {
-        for (const [q] of people) {
-            if (p === q) continue;
-
-            const yName = `who_pays_who_${p}_${q}`;
-            const xName = `how_much_who_pays_who_${p}_${q}`;
-
-            const ubKey = `ub_${p}_${q}`; // x - M*y <= 0
+            const ubKey = `ub_${dName}_${cName}`; // x - Mij*y <= 0
             constraints.set(ubKey, inRange(Number.NEGATIVE_INFINITY, 0));
             variables[xName][ubKey] = 1;
-            variables[yName][ubKey] = -M;
+            variables[yName][ubKey] = -Mij;
 
-            const lbKey = `lb_${p}_${q}`; // x - 1*y >= 0
+            // If used then at least 1 cent: x - 1*y >= 0
+            const lbKey = `lb_${dName}_${cName}`;
             constraints.set(lbKey, greaterEq(0));
             variables[xName][lbKey] = 1;
             variables[yName][lbKey] = -1;
         }
     }
 
+    // Debtors: sum out == -balance
+    for (const [dName, dAmount] of debtors) {
+        const key = `out_${dName}`;
+        constraints.set(key, equalTo(Math.abs(dAmount)));
+
+        for (const [cName] of creditors) {
+            const xName = `amt_${dName}_${cName}`;
+            variables[xName][key] = 1;
+        }
+    }
+
+    // Creditors: sum in == balance
+    for (const [cName, cAmount] of creditors) {
+        const key = `in_${cName}`;
+        constraints.set(key, equalTo(cAmount));
+
+        for (const [dName] of debtors) {
+            const xName = `amt_${dName}_${cName}`;
+            variables[xName][key] = 1;
+        }
+    }
+
     const model: Model = {
         direction: "minimize",
         objective: "transactionCount",
-        constraints: constraints,
-        variables: variables,
-        integers: integers,
+        constraints,
+        variables,
+        integers,
     };
 
     const solution: Solution = solve(model);
@@ -158,14 +167,13 @@ export function optimizeTransactions(balances: Balances): {
     }
 
     const transfers: Transfer[] = solution.variables
-        .filter(
-            ([name, value]) =>
-                name.startsWith("how_much_who_pays_who_") && value > 0
-        )
-        .map(([name, value]) => ({
-            ...getFromToTransaction(name),
-            amount: fromCents(value), // back to decimals
-        }));
+        .filter(([name, value]) => name.startsWith("amt_") && value > 0)
+        .map(([name, value]) => {
+            const parts = name.split("_"); // amt_{from}_{to}
+            const from = parts[1];
+            const to = parts[2];
+            return { from, to, amount: fromCents(value) };
+        });
 
     return { data: transfers, error: null };
 }
