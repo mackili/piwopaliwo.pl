@@ -60,7 +60,8 @@ export default function AllReceivables({
                         <p className="flex flex-row flex-wrap gap-1 text-xs text-center">
                             {totalSpentObjects[index].map((total, index) => (
                                 <span key={index} className="whitespace-nowrap">
-                                    {total.amount} {total.iso}
+                                    {Math.ceil(total.amount * 100) / 100}{" "}
+                                    {total.iso}
                                 </span>
                             ))}
                         </p>
