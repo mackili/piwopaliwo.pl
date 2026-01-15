@@ -9,7 +9,9 @@ export const passwordRequirements = [
 ];
 
 export const passwordSchema = z
-    .string()
+    .string(
+        "Password must be 8-24 characters long and contain at least one small letter, at least one capital letter, a number and a special character"
+    )
     .min(8)
     .max(24)
     .refine((password) =>
