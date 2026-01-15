@@ -143,5 +143,7 @@ const translations = {
     manage: "Zarządzaj",
     add: "Dodaj",
     user: "Użytkownik",
+    previous: "Poprzednia",
+    next: "Następna",
 } as const;
 export default translations;

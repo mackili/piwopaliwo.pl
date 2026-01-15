@@ -142,4 +142,6 @@ export default {
     manage: "Spravovat",
     add: "Přidat",
     user: "Uživatel",
+    previous: "Předchozí",
+    next: "Další",
 } as const;

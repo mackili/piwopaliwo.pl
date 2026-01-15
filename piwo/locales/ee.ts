@@ -139,4 +139,6 @@ export default {
     manage: "Halda",
     add: "Lisa",
     user: "Kasutaja",
+    previous: "Eelmine",
+    next: "Järgmine",
 } as const;

@@ -142,4 +142,6 @@ export default {
     manage: "Manage",
     add: "Add",
     user: "User",
+    previous: "Previous",
+    next: "Next",
 } as const;
