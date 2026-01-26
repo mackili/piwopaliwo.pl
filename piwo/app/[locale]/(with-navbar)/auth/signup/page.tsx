@@ -11,7 +11,7 @@ export default async function Page() {
         <div className="flex h-screen justify-center-safe items-center-safe">
             <div className="md:w-100 flex gap-4 flex-col">
                 <Card>
-                    <CardContent>
+                    <CardContent className="flex w-full justify-center">
                         <GoogleLoginButton context="signup_with" />
                     </CardContent>
                 </Card>
