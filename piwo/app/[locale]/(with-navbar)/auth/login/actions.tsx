@@ -1,5 +1,5 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { User, UserSchema } from "@/components/auth/types";
@@ -19,8 +19,7 @@ export async function login(formData: User) {
         redirect(`/${locale}/auth/error`);
     }
 
-    // revalidatePath(`/${locale}`, "layout");
-    revalidatePath("/", "layout");
+    refresh();
     redirect(`/${locale}`);
 }
 
@@ -47,7 +46,6 @@ export async function signup(formData: User) {
         redirect(`/${locale}/auth/error`);
     }
 
-    // revalidatePath(`/${locale}`, "layout");
-    revalidatePath("/", "layout");
+    refresh();
     redirect(`/${locale}`);
 }

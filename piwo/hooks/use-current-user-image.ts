@@ -1,10 +1,10 @@
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 
 export const useCurrentUserImage = (user?: User | null) => {
     const [image, setImage] = useState<string | null>(
-        user?.user_metadata?.avatarUrl || null
+        user?.user_metadata?.avatarUrl || null,
     );
 
     useEffect(() => {

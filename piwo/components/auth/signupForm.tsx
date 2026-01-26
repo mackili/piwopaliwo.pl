@@ -13,8 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { UserSchema, User } from "./types";
+import { useI18n } from "@/locales/client";
 
 export default function SignUpPage() {
+    const t = useI18n();
     const signUpForm = useForm<User>({
         resolver: zodResolver(UserSchema),
         defaultValues: {
@@ -35,7 +37,7 @@ export default function SignUpPage() {
                     name="firstName"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Imię</FormLabel>
+                            <FormLabel>{t("firstName")}</FormLabel>
                             <FormControl>
                                 <Input
                                     type="text"
@@ -52,7 +54,7 @@ export default function SignUpPage() {
                     name="lastName"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nazwisko</FormLabel>
+                            <FormLabel>{t("lastName")}</FormLabel>
                             <FormControl>
                                 <Input
                                     type="text"
@@ -86,7 +88,7 @@ export default function SignUpPage() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Hasło</FormLabel>
+                            <FormLabel>{t("password")}</FormLabel>
                             <FormControl>
                                 <Input
                                     type="password"
@@ -98,7 +100,7 @@ export default function SignUpPage() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Zarejestruj się</Button>
+                <Button type="submit">{t("register")}</Button>
             </form>
         </Form>
     );

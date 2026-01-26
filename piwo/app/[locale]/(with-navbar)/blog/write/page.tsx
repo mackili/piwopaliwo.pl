@@ -2,7 +2,7 @@
 import { fetchArticle } from "../read/[article]/fetch";
 import MarkdownEditor from "@/components/markdown-editor/markdown-editor";
 import { TextDocumentSchema } from "@/components/markdown-editor/types";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { v4 as uuid } from "uuid";
 import { getCurrentLocale } from "@/locales/server";
@@ -25,7 +25,7 @@ export default async function Page({
                 access: "restricted",
                 status: "draft",
                 document_type: "blog",
-            }).data
+            }).data,
         );
         if (error) {
             redirect(`/${locale}/blog`);

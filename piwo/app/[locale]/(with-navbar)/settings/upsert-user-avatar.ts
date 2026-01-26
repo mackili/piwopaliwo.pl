@@ -1,5 +1,5 @@
 "use client";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import { useI18n } from "@/locales/client";
 const BUCKET_NAME = "avatars";
 const MAX_SIZE = 2000000; // max image size in bytes
@@ -7,7 +7,7 @@ const supabase = createClient();
 export default async function upsertAvatar(
     image: File,
     userId: string,
-    t: ReturnType<typeof useI18n>
+    t: ReturnType<typeof useI18n>,
 ) {
     if (image.size > MAX_SIZE) {
         return { data: null, error: t("Settings.avatarTooBig") };

@@ -1,5 +1,5 @@
 "use client";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 // import { useI18n } from "@/locales/client";
 const BUCKET_NAME = "accountant";
 // const MAX_SIZE = 2000000; // max image size in bytes
