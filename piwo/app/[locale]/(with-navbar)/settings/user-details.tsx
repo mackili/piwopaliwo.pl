@@ -10,7 +10,7 @@ import {
 import { UserInfoSchema } from "@/components/auth/types";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import { UserResponse, UserAttributes } from "@supabase/supabase-js";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

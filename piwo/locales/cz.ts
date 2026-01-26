@@ -144,4 +144,6 @@ export default {
     user: "Uživatel",
     previous: "Předchozí",
     next: "Další",
+    firstName: "Jméno",
+    lastName: "Příjmení",
 } as const;

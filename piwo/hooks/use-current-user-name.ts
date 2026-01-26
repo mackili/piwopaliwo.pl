@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 
@@ -6,7 +6,7 @@ export const useCurrentUserName = (user?: User | null) => {
     const [name, setName] = useState<string | null>(
         user?.user_metadata?.firstName && user?.user_metadata?.lastName
             ? `${user?.user_metadata?.firstName} ${user?.user_metadata?.lastName}`
-            : null
+            : null,
     );
 
     useEffect(() => {
@@ -17,7 +17,7 @@ export const useCurrentUserName = (user?: User | null) => {
                     console.error(error);
                 }
                 setName(
-                    `${data.session?.user.user_metadata?.firstName} ${data.session?.user.user_metadata?.lastName}`
+                    `${data.session?.user.user_metadata?.firstName} ${data.session?.user.user_metadata?.lastName}`,
                 );
             };
 

@@ -2,7 +2,7 @@
 import { useState, useRef, ChangeEvent } from "react";
 import { twMerge } from "tailwind-merge";
 import { Camera, CircleDashed } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import { useI18n } from "@/locales/client";
 const MAX_SIZE = 2000000; // max image size in bytes
 const supabase = createClient();
@@ -14,7 +14,7 @@ export async function upsertImage(
     fileName?: string,
     folderPath?: string,
     elementId?: string,
-    maxSize: number = MAX_SIZE
+    maxSize: number = MAX_SIZE,
 ) {
     if (image.size > maxSize) {
         return { data: null, error: t("Settings.avatarTooBig") };
@@ -38,7 +38,7 @@ export async function upsertImage(
 function makeFileName(
     fileName?: string,
     folderPath?: string,
-    elementId?: string
+    elementId?: string,
 ) {
     let path = "";
     if (folderPath) path += "/" + folderPath;
@@ -88,7 +88,7 @@ export default function UpsertImage({
                 fileName,
                 folderPath,
                 elementId,
-                maxSize
+                maxSize,
             );
             // Reset the input so the same file can be selected again if needed
             if (fileInputRef.current) {
@@ -97,7 +97,7 @@ export default function UpsertImage({
             if (error) {
                 setUploadStatus("error");
                 setUploadError(
-                    typeof error === "string" ? error : error.message
+                    typeof error === "string" ? error : error.message,
                 );
             } else {
                 setUploadError(null);
@@ -112,20 +112,21 @@ export default function UpsertImage({
                 className={twMerge(
                     "w-32 h-32 z-20 rounded-full absolute group-hover:bg-primary/20 flex transition-all items-center justify-center",
                     uploadStatus === "pending" && "bg-primary/20",
-                    className
+                    className,
                 )}
                 {...props}
             >
                 <Camera
                     className={twMerge(
                         "opacity-0 transition-all absolute group-hover:opacity-100",
-                        uploadStatus === "pending" && "opacity-0"
+                        uploadStatus === "pending" && "opacity-0",
                     )}
                 />
                 <CircleDashed
                     className={twMerge(
                         "opacity-0 absolute",
-                        uploadStatus === "pending" && "opacity-100 animate-spin"
+                        uploadStatus === "pending" &&
+                            "opacity-100 animate-spin",
                     )}
                 />
             </div>
@@ -133,7 +134,7 @@ export default function UpsertImage({
                 type="file"
                 className={twMerge(
                     className,
-                    "absolute z-30 cursor-pointer opacity-0"
+                    "absolute z-30 cursor-pointer opacity-0",
                 )}
                 ref={fileInputRef}
                 accept="image/*"

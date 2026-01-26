@@ -144,4 +144,6 @@ export default {
     user: "User",
     previous: "Previous",
     next: "Next",
+    firstName: "First Name",
+    lastName: "Last Name",
 } as const;

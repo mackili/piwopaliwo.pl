@@ -145,5 +145,7 @@ const translations = {
     user: "Użytkownik",
     previous: "Poprzednia",
     next: "Następna",
+    firstName: "Imię",
+    lastName: "Nazwisko",
 } as const;
 export default translations;

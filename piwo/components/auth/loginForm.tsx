@@ -13,8 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { UserSchema, User } from "./types";
+import { useI18n } from "@/locales/client";
 
 export default function LoginPage() {
+    const t = useI18n();
     const loginForm = useForm<User>({
         resolver: zodResolver(UserSchema),
         defaultValues: { email: "", password: "" },
@@ -47,7 +49,7 @@ export default function LoginPage() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Hasło</FormLabel>
+                            <FormLabel>{t("password")}</FormLabel>
                             <FormControl>
                                 <Input
                                     type="password"
@@ -60,7 +62,7 @@ export default function LoginPage() {
                     )}
                 />
                 <Button type="submit" variant="secondary">
-                    Zaloguj się
+                    {t("logIn")}
                 </Button>
             </form>
         </Form>

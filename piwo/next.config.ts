@@ -7,10 +7,11 @@ const nextConfig: NextConfig = {
     images: {
         remotePatterns: [
             new URL(
-                "https://eyrunfuyksizahrmncam.supabase.co/storage/v1/object/public/**"
+                "https://eyrunfuyksizahrmncam.supabase.co/storage/v1/object/public/**",
             ),
         ],
     },
+    allowedDevOrigins: ["192.168.0.31"],
 };
 
 const withMDX = createMDX({

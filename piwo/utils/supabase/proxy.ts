@@ -17,17 +17,17 @@ export async function updateSession(request: NextRequest) {
                 setAll(cookiesToSet) {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     cookiesToSet.forEach(({ name, value, options }) =>
-                        request.cookies.set(name, value)
+                        request.cookies.set(name, value),
                     );
                     supabaseResponse = NextResponse.next({
                         request,
                     });
                     cookiesToSet.forEach(({ name, value, options }) =>
-                        supabaseResponse.cookies.set(name, value, options)
+                        supabaseResponse.cookies.set(name, value, options),
                     );
                 },
             },
-        }
+        },
     );
 
     // Do not run code between createServerClient and
@@ -39,17 +39,18 @@ export async function updateSession(request: NextRequest) {
     const {
         data: { user },
     } = await supabase.auth.getUser();
-
     if (
         !user &&
-        !request.nextUrl.pathname.startsWith("/login") &&
-        !request.nextUrl.pathname.startsWith("/auth") &&
-        !request.nextUrl.pathname.startsWith("/error")
+        !request.nextUrl.pathname.endsWith("/auth/login") &&
+        !request.nextUrl.pathname.endsWith("/auth/signup") &&
+        !request.nextUrl.pathname.includes("/auth") &&
+        !request.nextUrl.pathname.endsWith("/auth/error")
     ) {
         // no user, potentially respond by redirecting the user to the login page
-        const url = request.nextUrl.clone();
-        url.pathname = "/pl/auth/login";
-        return NextResponse.redirect(url);
+        // const url = request.nextUrl.clone();
+        // url.pathname = "/pl/auth/login";
+        // return NextResponse.redirect(url);
+        return NextResponse.redirect(new URL("/pl/auth/login", request.url));
     }
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is.

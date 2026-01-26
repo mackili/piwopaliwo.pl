@@ -2,7 +2,7 @@ import {
     TextDocument,
     TextDocumentSchema,
 } from "@/components/markdown-editor/types";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import { PostgrestError } from "@supabase/supabase-js";
 import z from "zod";
 
@@ -11,7 +11,7 @@ export async function fetchArticles() {
     const { data, error } = await supabase
         .from("TextDocument")
         .select(
-            "id,title,author,status,created_at,access,thumbnail_url,banner_url,authorData:UserInfo!TextDocument_author_fkey1(*)"
+            "id,title,author,status,created_at,access,thumbnail_url,banner_url,authorData:UserInfo!TextDocument_author_fkey1(*)",
         )
         .eq("document_type", "blog")
         .order("created_at", { ascending: false })

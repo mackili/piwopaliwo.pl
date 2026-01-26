@@ -141,4 +141,6 @@ export default {
     user: "Kasutaja",
     previous: "Eelmine",
     next: "Järgmine",
+    firstName: "Eesnimi",
+    lastName: "Perekonnanimi",
 } as const;

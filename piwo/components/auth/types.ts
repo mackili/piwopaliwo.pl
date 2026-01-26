@@ -10,12 +10,12 @@ export const passwordRequirements = [
 
 export const passwordSchema = z
     .string(
-        "Password must be 8-24 characters long and contain at least one small letter, at least one capital letter, a number and a special character"
+        "Password must be 8-24 characters long and contain at least one small letter, at least one capital letter, a number and a special character",
     )
     .min(8)
     .max(24)
     .refine((password) =>
-        passwordRequirements.every((req) => req.pattern.test(password))
+        passwordRequirements.every((req) => req.pattern.test(password)),
     );
 
 export const UserMetadataSchema = z.object({
@@ -38,3 +38,9 @@ export const UserSchema = UserMetadataSchema.safeExtend({
 export type UserMetadata = z.infer<typeof UserMetadataSchema>;
 export type UserInfo = z.infer<typeof UserInfoSchema>;
 export type User = z.infer<typeof UserSchema>;
+
+export type GoogleCredentialResponse = {
+    credential: string;
+    select_by: string;
+    state: string;
+};
