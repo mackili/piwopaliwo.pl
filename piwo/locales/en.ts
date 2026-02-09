@@ -78,6 +78,7 @@ export default {
         title: "Title",
         showPreview: "Show preview",
         preview: "Preview",
+        images: "Images",
     },
     Blog: {
         published: "Published on",

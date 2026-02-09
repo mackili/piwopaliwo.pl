@@ -4,8 +4,17 @@ import { twMerge } from "tailwind-merge";
 import { Camera, CircleDashed } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useI18n } from "@/locales/client";
-const MAX_SIZE = 2000000; // max image size in bytes
+import Compressor from "compressorjs";
+const MAX_SIZE = 2000000 as const; // max image size in bytes
 const supabase = createClient();
+const COMPRESSED_FORMATS = [
+    "image/avif",
+    "image/webp",
+    "image/jpeg",
+    "image/png",
+    "image/apng",
+    "image/gif",
+];
 
 export async function upsertImage(
     image: File,
@@ -16,15 +25,26 @@ export async function upsertImage(
     elementId?: string,
     maxSize: number = MAX_SIZE,
 ) {
-    if (image.size > maxSize) {
+    const compressedImage = COMPRESSED_FORMATS.includes(image.type)
+        ? await compressImage(image, maxSize)
+        : image;
+    if (compressedImage.size > maxSize) {
         return { data: null, error: t("Settings.avatarTooBig") };
     }
     const { data, error } = await supabase.storage
         .from(bucketName)
-        .update(makeFileName(fileName, folderPath, elementId), image, {
-            upsert: true,
-            metadata: { parentId: elementId },
-        });
+        .update(
+            makeFileName(
+                fileName || compressedImage.name,
+                folderPath,
+                elementId,
+            ),
+            compressedImage,
+            {
+                upsert: true,
+                metadata: { parentId: elementId },
+            },
+        );
     if (error) {
         return { data: null, error: error };
     }
@@ -33,6 +53,43 @@ export async function upsertImage(
         data: { ...data, publicUrl: publicUrl },
         error,
     };
+}
+
+export function isSafari(): boolean {
+    if (typeof navigator === "undefined") return false;
+
+    const ua = navigator.userAgent;
+
+    // "Safari" appears in Chrome/Edge UA too, so exclude them.
+    const isAppleSafari =
+        /Safari/i.test(ua) && !/Chrome|Chromium|Edg|OPR|Brave/i.test(ua);
+
+    return isAppleSafari;
+}
+
+async function compressImage(image: File, maxSize?: number) {
+    return await new Promise<File>((resolve, reject) => {
+        new Compressor(image, {
+            mimeType: isSafari() ? "image/jpeg" : "image/webp",
+            convertSize: maxSize || 5000000,
+            success(result) {
+                // compressorjs returns a Blob (sometimes a File). Normalize to File.
+                const file =
+                    result instanceof File
+                        ? result
+                        : new File(
+                              [result],
+                              image.name.replace(/\.[^/.]+$/, "") + ".webp",
+                              { type: result.type || "image/webp" },
+                          );
+
+                resolve(file);
+            },
+            error(err) {
+                reject(err);
+            },
+        });
+    });
 }
 
 function makeFileName(
@@ -90,6 +147,7 @@ export default function UpsertImage({
                 elementId,
                 maxSize,
             );
+            console.log(data, error);
             // Reset the input so the same file can be selected again if needed
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";

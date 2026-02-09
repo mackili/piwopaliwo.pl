@@ -78,6 +78,7 @@ export default {
         title: "Nadpis",
         showPreview: "Zobrazit náhled",
         preview: "Náhled",
+        images: "Obrázky",
     },
     Blog: {
         published: "Publikováno",

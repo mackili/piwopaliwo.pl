@@ -75,6 +75,7 @@ export default {
         title: "Pealkiri",
         showPreview: "Näita eelvaadet",
         preview: "Eelvaade",
+        images: "Pildid",
     },
     Blog: {
         published: "Avaldatud",

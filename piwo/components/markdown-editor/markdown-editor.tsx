@@ -19,6 +19,7 @@ import { readTextDocument, upsertHandler } from "./db-handler";
 import DocumentVisibilitySelect from "./document-visibility-select";
 import UpsertImage from "../ui/upsert-image";
 import Image from "next/image";
+import MarkdownImageDrawer from "./image-drawer";
 
 export default function MarkdownEditor({
     textDocument,
@@ -31,10 +32,10 @@ export default function MarkdownEditor({
 } & React.ComponentProps<"div">) {
     const t = useI18n();
     const [previewStatus, setPreviewStatus] = useState<"visible" | "hidden">(
-        "hidden"
+        "hidden",
     );
     const savedTextDocument = useRef<TextDocument | null | undefined>(
-        textDocument
+        textDocument,
     );
     const [saveStatus, setSaveStatus] = useState<SaveStatusEnum>("unknown");
     const form = useForm<TextDocument>({
@@ -176,7 +177,7 @@ export default function MarkdownEditor({
                         className={twMerge(
                             "transition-all ease-in-out flex h-full w-full flex-row",
                             previewStatus === "visible" ? "gap-8" : "gap-0",
-                            className
+                            className,
                         )}
                         {...props}
                     >
@@ -212,7 +213,7 @@ export default function MarkdownEditor({
                                 "transition-all ease-in-out origin-right flex flex-col gap-4",
                                 previewStatus === "hidden"
                                     ? "scale-0 opacity-0 flex-0 w-0 h-0"
-                                    : "scale-100 opacity-100 flex-1"
+                                    : "scale-100 opacity-100 flex-1",
                             )}
                         >
                             <Label htmlFor="preview">
@@ -227,6 +228,9 @@ export default function MarkdownEditor({
                     </div>
                 </form>
             </Form>
+            {textDocument?.id && (
+                <MarkdownImageDrawer textDocumentId={textDocument?.id} />
+            )}
         </>
     );
 }
