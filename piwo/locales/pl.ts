@@ -79,6 +79,7 @@ const translations = {
         title: "Tytuł",
         showPreview: "Pokaż podgląd",
         preview: "Podgląd",
+        images: "Zdjęcia",
     },
     Blog: {
         published: "Opublikowano",
