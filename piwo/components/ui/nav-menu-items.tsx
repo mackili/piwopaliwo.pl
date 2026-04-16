@@ -20,6 +20,7 @@ import {
     HomeIcon,
     LucideIcon,
     NewspaperIcon,
+    SailboatIcon,
     TerminalIcon,
     VolleyballIcon,
 } from "lucide-react";
@@ -99,6 +100,12 @@ export const menuItems: MainMenuItem[] = [
                 link: "/apps/beercounter",
                 icon: BeerIcon,
             },
+            {
+                description: "Plan your group's trip",
+                id: "tripPlanner",
+                link: "/apps/trip-planner",
+                icon: SailboatIcon,
+            },
         ],
     },
 ];
@@ -113,7 +120,7 @@ export default function NavigationMenuPP({
             {...props}
             className={twMerge(
                 "transition-all origin-top bg-sidebar/95 rounded-sm border-b-2 shadow-md border-sidebar-border antialiased backdrop-blur-2xl z-100",
-                props.className
+                props.className,
             )}
         >
             <NavigationMenu orientation="vertical">
@@ -137,19 +144,19 @@ export default function NavigationMenuPP({
                                                     href={`/${locale}${item.link}`}
                                                     className={twMerge(
                                                         listItemCSS,
-                                                        "h-full"
+                                                        "h-full",
                                                     )}
                                                 >
                                                     <h4>
                                                         {t(
                                                             // @ts-expect-error structured with the translation
-                                                            `NavMenu.${item.id}`
+                                                            `NavMenu.${item.id}`,
                                                         )}
                                                     </h4>
                                                     <p>
                                                         {t(
                                                             // @ts-expect-error structured with the translation
-                                                            `NavMenu.${item.id}_description`
+                                                            `NavMenu.${item.id}_description`,
                                                         ) || ""}
                                                     </p>
                                                 </Link>
@@ -161,27 +168,27 @@ export default function NavigationMenuPP({
                                                             key={index}
                                                             href={`/${locale}${childItem.link}`}
                                                             className={twMerge(
-                                                                listItemCSS
+                                                                listItemCSS,
                                                             )}
                                                         >
                                                             <div className="flex flex-col flex-wrap gap-1">
                                                                 <h4 className="text-base!">
                                                                     {t(
                                                                         // @ts-expect-error structured with the translation
-                                                                        `NavMenu.${childItem.id}`
+                                                                        `NavMenu.${childItem.id}`,
                                                                     )}
                                                                 </h4>
                                                                 {childItem.description && (
                                                                     <p className="text-sm">
                                                                         {t(
                                                                             // @ts-expect-error structured with the translation
-                                                                            `NavMenu.${childItem.id}_description`
+                                                                            `NavMenu.${childItem.id}_description`,
                                                                         )}
                                                                     </p>
                                                                 )}
                                                             </div>
                                                         </Link>
-                                                    )
+                                                    ),
                                                 )}
                                             </li>
                                         </ul>

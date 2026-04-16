@@ -583,27 +583,29 @@ export type Database = {
           end_date: string
           group_id: string
           id: string
+          last_modified_at: string
+          last_modified_by: string
           name: string
           start_date: string
-          status: string
+          status: Database["public"]["Enums"]["trip_status"]
           text_document_id: string | null
-          type: string | null
-          updated_at: string
+          type: Database["public"]["Enums"]["trip_types"]
         }
         Insert: {
           created_at?: string
-          created_by?: string
+          created_by: string
           currency_iso_code: string
           description?: string | null
           end_date: string
           group_id: string
           id?: string
+          last_modified_at: string
+          last_modified_by: string
           name: string
           start_date: string
-          status?: string
+          status?: Database["public"]["Enums"]["trip_status"]
           text_document_id?: string | null
-          type?: string | null
-          updated_at: string
+          type?: Database["public"]["Enums"]["trip_types"]
         }
         Update: {
           created_at?: string
@@ -613,21 +615,15 @@ export type Database = {
           end_date?: string
           group_id?: string
           id?: string
+          last_modified_at?: string
+          last_modified_by?: string
           name?: string
           start_date?: string
-          status?: string
+          status?: Database["public"]["Enums"]["trip_status"]
           text_document_id?: string | null
-          type?: string | null
-          updated_at?: string
+          type?: Database["public"]["Enums"]["trip_types"]
         }
         Relationships: [
-          {
-            foreignKeyName: "trip_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "UserInfo"
-            referencedColumns: ["userId"]
-          },
           {
             foreignKeyName: "trip_group_id_fkey"
             columns: ["group_id"]
@@ -697,6 +693,13 @@ export type Database = {
             referencedRelation: "trip"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "trip_feed_item_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_details"
+            referencedColumns: ["id"]
+          },
         ]
       }
       trip_participant: {
@@ -746,6 +749,13 @@ export type Database = {
             columns: ["trip_id"]
             isOneToOne: false
             referencedRelation: "trip"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_participant_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_details"
             referencedColumns: ["id"]
           },
         ]
@@ -1011,6 +1021,29 @@ export type Database = {
           },
         ]
       }
+      v_trip_details: {
+        Row: {
+          currency_iso_code: string | null
+          description: string | null
+          end_date: string | null
+          id: string | null
+          name: string | null
+          participants: Json | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["trip_status"] | null
+          text_document_id: string | null
+          type: Database["public"]["Enums"]["trip_types"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_text_document_id_fkey"
+            columns: ["text_document_id"]
+            isOneToOne: false
+            referencedRelation: "TextDocument"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       acc_get_transaction_currency: {
@@ -1053,17 +1086,22 @@ export type Database = {
       is_acc_group_member: { Args: { p_group_id: string }; Returns: boolean }
       is_acc_group_owner: { Args: { p_group_id: string }; Returns: boolean }
       is_trip_admin: { Args: { p_trip_id: string }; Returns: boolean }
+      is_trip_creator: { Args: { p_trip_id: string }; Returns: boolean }
       is_trip_participant: { Args: { p_trip_id: string }; Returns: boolean }
       send_notification: {
         Args: { p_details: Json; p_title: string; p_user_id: string }
         Returns: undefined
+      }
+      trip_insert_owner_participant: {
+        Args: { p_group_id: string; p_trip_id: string }
+        Returns: string
       }
     }
     Enums: {
       acc_group_user_status: "invited" | "accepted" | "rejected" | "owner"
       acc_transaction_split_type: "equal" | "shares" | "manual"
       DrinkType: "beer"
-      text_document_type: "bio" | "blog" | "trip_post"
+      text_document_type: "bio" | "blog" | "trip_post" | "trip_description"
       TextDocumentAccess: "open" | "restricted"
       TextDocumentStatus: "draft" | "published" | "unpublished"
       TrackerGameStatus: "paused" | "active" | "finished"
@@ -1074,6 +1112,15 @@ export type Database = {
         | "declined"
         | "confirmed"
         | "tentative"
+      trip_status: "proposed" | "confirmed" | "cancelled" | "past"
+      trip_types:
+        | "citybreak"
+        | "sailing"
+        | "skiing"
+        | "caravaning"
+        | "hiking"
+        | "cayaking"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1204,7 +1251,7 @@ export const Constants = {
       acc_group_user_status: ["invited", "accepted", "rejected", "owner"],
       acc_transaction_split_type: ["equal", "shares", "manual"],
       DrinkType: ["beer"],
-      text_document_type: ["bio", "blog", "trip_post"],
+      text_document_type: ["bio", "blog", "trip_post", "trip_description"],
       TextDocumentAccess: ["open", "restricted"],
       TextDocumentStatus: ["draft", "published", "unpublished"],
       TrackerGameStatus: ["paused", "active", "finished"],
@@ -1215,6 +1262,16 @@ export const Constants = {
         "declined",
         "confirmed",
         "tentative",
+      ],
+      trip_status: ["proposed", "confirmed", "cancelled", "past"],
+      trip_types: [
+        "citybreak",
+        "sailing",
+        "skiing",
+        "caravaning",
+        "hiking",
+        "cayaking",
+        "other",
       ],
     },
   },
