@@ -577,14 +577,15 @@ export type Database = {
       trip: {
         Row: {
           created_at: string
-          created_by: string
+          created_by: string | null
           currency_iso_code: string
           description: string | null
           end_date: string
           group_id: string
           id: string
-          last_modified_at: string
-          last_modified_by: string
+          last_modified_at: string | null
+          last_modified_by: string | null
+          location: string | null
           name: string
           start_date: string
           status: Database["public"]["Enums"]["trip_status"]
@@ -593,14 +594,15 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          created_by: string
+          created_by?: string | null
           currency_iso_code: string
           description?: string | null
           end_date: string
           group_id: string
           id?: string
-          last_modified_at: string
-          last_modified_by: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          location?: string | null
           name: string
           start_date: string
           status?: Database["public"]["Enums"]["trip_status"]
@@ -609,14 +611,15 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          created_by?: string
+          created_by?: string | null
           currency_iso_code?: string
           description?: string | null
           end_date?: string
           group_id?: string
           id?: string
-          last_modified_at?: string
-          last_modified_by?: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          location?: string | null
           name?: string
           start_date?: string
           status?: Database["public"]["Enums"]["trip_status"]
@@ -1026,7 +1029,9 @@ export type Database = {
           currency_iso_code: string | null
           description: string | null
           end_date: string | null
+          group_id: string | null
           id: string | null
+          location: string | null
           name: string | null
           participants: Json | null
           start_date: string | null
@@ -1035,6 +1040,20 @@ export type Database = {
           type: Database["public"]["Enums"]["trip_types"] | null
         }
         Relationships: [
+          {
+            foreignKeyName: "trip_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "group"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_membership"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "trip_text_document_id_fkey"
             columns: ["text_document_id"]

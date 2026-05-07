@@ -1,4 +1,5 @@
-import { Enums, Tables } from "@/database.types";
+"use server";
+import { Enums, TablesInsert } from "@/database.types";
 import { createClient } from "@/utils/supabase/server";
 
 export type ParticipantResponseJson = {
@@ -17,14 +18,6 @@ export type ParticipantResponseJson = {
         avatar_url: string | null;
     };
 };
-// export type TripTextDocument = {
-//     id: string;
-//     title: string | null;
-//     markdown: string | null;
-//     thumbnail_url: string | null;
-//     banner_url: string | null;
-//     type: Enums<"text_document_type">;
-// };
 
 async function fetchTrips() {
     const supabase = await createClient();
@@ -57,5 +50,13 @@ async function fetchTripDetails(tripId: string) {
             // text_document: TripTextDocument;
         }>();
 }
+async function upsertTrips(trips: TablesInsert<"trip">[]) {
+    console.log(trips);
+    const supabase = await createClient();
 
-export { fetchTrips, fetchTripDetails };
+    return await supabase
+        .from("trip")
+        .upsert(trips, { onConflict: "id" })
+        .select();
+}
+export { fetchTrips, fetchTripDetails, upsertTrips };

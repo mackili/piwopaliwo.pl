@@ -22,7 +22,6 @@ export default function TripSuperDetail({
                 <Button variant="default">Read trip memo</Button>
             </DrawerTrigger>
             <DrawerContent>
-                (
                 <>
                     <DrawerHeader>
                         <DrawerTitle>{title}</DrawerTitle>
@@ -31,7 +30,6 @@ export default function TripSuperDetail({
                         {children}
                     </div>
                 </>
-                )
             </DrawerContent>
         </Drawer>
     );

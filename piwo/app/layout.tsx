@@ -8,6 +8,7 @@ import {
     Outfit,
 } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 // import NavBar from "@/components/navbar";
 // import { ThemeToggle } from "@/components/ui/theme-toggle";
 
@@ -54,6 +55,7 @@ export default function RootLayout({
             >
                 {children}
                 <SpeedInsights />
+                <Toaster />
             </body>
         </html>
     );
