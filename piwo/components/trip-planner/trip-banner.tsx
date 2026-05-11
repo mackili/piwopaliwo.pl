@@ -14,12 +14,11 @@ import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 import { TripParticipantAvatars } from "./participant-avatars";
 import { ParticipantResponseJson } from "./fetch";
-import {
-    ButtonGroup,
-    ButtonGroupSeparator,
-} from "@/components/ui/button-group";
+import { ButtonGroup } from "@/components/ui/button-group";
 import EditTripForm from "./edit-trip";
 import TripParticipantsInvite from "./participants-invite";
+import { createClient } from "@/utils/supabase/server";
+import { getCurrentUserParticipant, permissionsReducer } from "./permissions";
 
 export function getNumberOfDays(start: string, end: string) {
     const date1 = new Date(start);
@@ -48,7 +47,19 @@ export default async function TripBanner({
 }: {
     trip: Tables<"v_trip_details">;
 } & ComponentProps<"div">) {
-    const locale = await getCurrentLocale();
+    const [locale, supabase] = await Promise.all([
+        getCurrentLocale(),
+        createClient(),
+    ]);
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    const currentUserGroupParticipant = user?.id
+        ? getCurrentUserParticipant(
+              trip.participants as ParticipantResponseJson[],
+              user.id,
+          )
+        : undefined;
     return (
         <Card
             {...props}
@@ -78,18 +89,27 @@ export default async function TripBanner({
                         </Badge>
                     )}
                 </div>
-                <CardAction>
-                    <ButtonGroup>
-                        <EditTripForm
-                            trip={trip as TablesInsert<"trip">}
-                            displayMode="dialog"
-                            title="Edit Trip"
-                            className="sm:max-w-sm"
-                        />
-                        <ButtonGroupSeparator />
-                        <TripParticipantsInvite trip={trip} disabled />
-                    </ButtonGroup>
-                </CardAction>
+                {currentUserGroupParticipant && (
+                    <CardAction>
+                        <ButtonGroup>
+                            {permissionsReducer({
+                                tripParticipant: currentUserGroupParticipant,
+                                permission: "edit_info",
+                            }) && (
+                                <EditTripForm
+                                    trip={trip as TablesInsert<"trip">}
+                                    displayMode="dialog"
+                                    title="Edit Trip"
+                                    className="max-sm:max-w-sm"
+                                />
+                            )}
+                            {permissionsReducer({
+                                tripParticipant: currentUserGroupParticipant,
+                                permission: "invite_participants",
+                            }) && <TripParticipantsInvite trip={trip} />}
+                        </ButtonGroup>
+                    </CardAction>
+                )}
             </CardHeader>{" "}
             <CardContent className="flex flex-row flex-wrap gap-8 justify-between">
                 <div className="flex flex-col gap-4">

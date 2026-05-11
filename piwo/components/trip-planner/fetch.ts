@@ -1,5 +1,5 @@
 "use server";
-import { Enums, TablesInsert } from "@/database.types";
+import { Enums, TablesInsert, TablesUpdate } from "@/database.types";
 import { createClient } from "@/utils/supabase/server";
 
 export type ParticipantResponseJson = {
@@ -16,8 +16,18 @@ export type ParticipantResponseJson = {
         first_name: string | null;
         last_name: string | null;
         avatar_url: string | null;
-    };
+    } | null;
 };
+
+interface TripTransactionSplitGeneral {
+    trip_participant_id: string;
+}
+
+interface TripTransactionSplitSpecified extends TripTransactionSplitGeneral {
+    share: number;
+}
+
+export type TripTransactionSplit = 
 
 async function fetchTrips() {
     const supabase = await createClient();
@@ -51,7 +61,6 @@ async function fetchTripDetails(tripId: string) {
         }>();
 }
 async function upsertTrips(trips: TablesInsert<"trip">[]) {
-    console.log(trips);
     const supabase = await createClient();
 
     return await supabase
@@ -59,4 +68,34 @@ async function upsertTrips(trips: TablesInsert<"trip">[]) {
         .upsert(trips, { onConflict: "id" })
         .select();
 }
-export { fetchTrips, fetchTripDetails, upsertTrips };
+
+async function updateParticipant(
+    participant: TablesUpdate<"trip_participant">,
+    participantId: string,
+) {
+    const supabase = await createClient();
+
+    return await supabase
+        .from("trip_participant")
+        .update(participant)
+        .eq("id", participantId);
+}
+
+async function inviteParticipants(
+    participants: TablesInsert<"trip_participant">[],
+) {
+    const supabase = await createClient();
+    const invitedParticipants = participants.map((participant) => ({
+        ...participant,
+        status: "invited" as Enums<"trip_participant_status">,
+    }));
+    return await supabase.from("trip_participant").insert(invitedParticipants);
+}
+
+export {
+    fetchTrips,
+    fetchTripDetails,
+    upsertTrips,
+    updateParticipant,
+    inviteParticipants,
+};

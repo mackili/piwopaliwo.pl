@@ -12,7 +12,6 @@ import {
 } from "./select";
 import { Popover, PopoverTrigger, PopoverContent } from "./popover";
 import { Calendar } from "./calendar";
-import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "./button";
 import { useCurrentLocale } from "@/locales/client";
@@ -40,7 +39,7 @@ export default function FormInput<T extends FieldValues>({
         | "text"
         | "select"
         | "url";
-    options?: { value: string; label?: string }[]; // For select fields
+    options?: { value: string; label?: string | React.ReactNode }[]; // For select fields
 }) {
     const locale = useCurrentLocale();
     return (

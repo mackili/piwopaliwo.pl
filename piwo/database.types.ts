@@ -707,34 +707,34 @@ export type Database = {
       }
       trip_participant: {
         Row: {
-          created_at: string
-          created_by: string
-          group_member_id: string | null
+          created_at: string | null
+          created_by: string | null
+          group_member_id: string
           id: string
-          last_modified_at: string
-          last_modified_by: string
+          last_modified_at: string | null
+          last_modified_by: string | null
           role: Database["public"]["Enums"]["trip_participant_role"]
           status: Database["public"]["Enums"]["trip_participant_status"]
           trip_id: string
         }
         Insert: {
-          created_at?: string
-          created_by: string
-          group_member_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          group_member_id: string
           id?: string
-          last_modified_at: string
-          last_modified_by: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           role?: Database["public"]["Enums"]["trip_participant_role"]
           status?: Database["public"]["Enums"]["trip_participant_status"]
           trip_id: string
         }
         Update: {
-          created_at?: string
-          created_by?: string
-          group_member_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          group_member_id?: string
           id?: string
-          last_modified_at?: string
-          last_modified_by?: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           role?: Database["public"]["Enums"]["trip_participant_role"]
           status?: Database["public"]["Enums"]["trip_participant_status"]
           trip_id?: string

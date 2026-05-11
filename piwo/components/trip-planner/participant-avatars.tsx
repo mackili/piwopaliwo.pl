@@ -15,18 +15,19 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { ParticipantResponseJson } from "./fetch";
 import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
+import { Enums } from "@/database.types";
 
 function TripParticipantStatusIcon({
-    participant,
+    status,
     className,
     isColorCoded = false,
     ...props
 }: {
-    participant: ParticipantResponseJson;
+    status: Enums<"trip_participant_status">;
     isColorCoded?: boolean;
 } & ComponentProps<"svg">) {
     let icon = <CircleQuestionMarkIcon className={className} {...props} />;
-    switch (participant.status) {
+    switch (status) {
         case "confirmed":
             icon = (
                 <CheckCircle2Icon
@@ -39,10 +40,26 @@ function TripParticipantStatusIcon({
             );
             break;
         case "declined":
-            icon = <XCircleIcon className={className} {...props} />;
+            icon = (
+                <XCircleIcon
+                    className={twMerge(
+                        isColorCoded && "stroke-red-700",
+                        className,
+                    )}
+                    {...props}
+                />
+            );
             break;
         case "invited":
-            icon = <MailQuestionMarkIcon className={className} {...props} />;
+            icon = (
+                <MailQuestionMarkIcon
+                    className={twMerge(
+                        isColorCoded && "stroke-blue-700",
+                        className,
+                    )}
+                    {...props}
+                />
+            );
             break;
         default:
             break;
@@ -69,12 +86,12 @@ function TripParticipantAvatar({
                 }
             />
             <AvatarFallback>
-                {participant.group_member?.nickname ||
-                    `${participant.user?.first_name?.slice(0, 1)}${participant.user?.last_name?.slice(0, 1)}`}
+                {`${participant.user?.first_name?.slice(0, 1)}${participant.user?.last_name?.slice(0, 1)}` ||
+                    participant.group_member?.nickname}
             </AvatarFallback>
             {showStatusIcon && (
                 <TripParticipantStatusIcon
-                    participant={participant}
+                    status={participant.status}
                     className="absolute bottom-1 left-1 h-4 w-4 stroke-white stroke-2"
                 />
             )}

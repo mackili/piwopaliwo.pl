@@ -801,36 +801,36 @@ export const publicTripFeedItemRelationshipsSchema = z.tuple([
 ]);
 
 export const publicTripParticipantRowSchema = z.object({
-  created_at: z.string(),
-  created_by: z.string(),
-  group_member_id: z.string().nullable(),
+  created_at: z.string().nullable(),
+  created_by: z.string().nullable(),
+  group_member_id: z.string(),
   id: z.string(),
-  last_modified_at: z.string(),
-  last_modified_by: z.string(),
+  last_modified_at: z.string().nullable(),
+  last_modified_by: z.string().nullable(),
   role: publicTripParticipantRoleSchema,
   status: publicTripParticipantStatusSchema,
   trip_id: z.string(),
 });
 
 export const publicTripParticipantInsertSchema = z.object({
-  created_at: z.string().optional(),
-  created_by: z.string(),
-  group_member_id: z.string().optional().nullable(),
+  created_at: z.string().optional().nullable(),
+  created_by: z.string().optional().nullable(),
+  group_member_id: z.string(),
   id: z.string().optional(),
-  last_modified_at: z.string(),
-  last_modified_by: z.string(),
+  last_modified_at: z.string().optional().nullable(),
+  last_modified_by: z.string().optional().nullable(),
   role: publicTripParticipantRoleSchema.optional(),
   status: publicTripParticipantStatusSchema.optional(),
   trip_id: z.string(),
 });
 
 export const publicTripParticipantUpdateSchema = z.object({
-  created_at: z.string().optional(),
-  created_by: z.string().optional(),
-  group_member_id: z.string().optional().nullable(),
+  created_at: z.string().optional().nullable(),
+  created_by: z.string().optional().nullable(),
+  group_member_id: z.string().optional(),
   id: z.string().optional(),
-  last_modified_at: z.string().optional(),
-  last_modified_by: z.string().optional(),
+  last_modified_at: z.string().optional().nullable(),
+  last_modified_by: z.string().optional().nullable(),
   role: publicTripParticipantRoleSchema.optional(),
   status: publicTripParticipantStatusSchema.optional(),
   trip_id: z.string().optional(),

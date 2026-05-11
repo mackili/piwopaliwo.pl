@@ -98,6 +98,39 @@ trip_event_participant {
     text notes
 }
 
+trip_transaction {
+    uuid id PK
+    uuid trip_id FK
+    uuid group_id FK
+    text description
+    number amount
+    text currency_iso_code
+    transaction_status status
+    acc_transaction_split_type split_type
+    jsonb
+}
+
+transaction_status {
+    idea
+    quoted
+    committed
+    paid
+}
+
+acc_transaction_split_type {
+    equal
+    shares
+    manual
+    percentage
+}
+
+trip_ledger {
+    uuid trip_transaction_id PK, FK
+    uuid trip_participant_id PK, FK
+    uuid group_member_id FK
+    number amount
+}
+
 accommodation
 
 accommodation_unit
