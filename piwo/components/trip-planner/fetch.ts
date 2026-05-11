@@ -19,16 +19,6 @@ export type ParticipantResponseJson = {
     } | null;
 };
 
-interface TripTransactionSplitGeneral {
-    trip_participant_id: string;
-}
-
-interface TripTransactionSplitSpecified extends TripTransactionSplitGeneral {
-    share: number;
-}
-
-export type TripTransactionSplit = 
-
 async function fetchTrips() {
     const supabase = await createClient();
     const user = await supabase.auth.getUser();
