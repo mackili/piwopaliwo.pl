@@ -703,6 +703,13 @@ export type Database = {
             referencedRelation: "v_trip_details"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "trip_feed_item_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_financial_summary"
+            referencedColumns: ["trip_id"]
+          },
         ]
       }
       trip_participant: {
@@ -760,6 +767,106 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_trip_details"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_participant_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_financial_summary"
+            referencedColumns: ["trip_id"]
+          },
+        ]
+      }
+      trip_transaction: {
+        Row: {
+          amount: number
+          calculation_type: Database["public"]["Enums"]["trip_transaction_calculation_type"]
+          category: Database["public"]["Enums"]["trip_transaction_category"]
+          created_at: string
+          created_by: string | null
+          currency_iso_code: string
+          description: string
+          group_id: string
+          id: string
+          last_modified_at: string | null
+          last_modified_by: string | null
+          notes: string | null
+          split_type: Database["public"]["Enums"]["acc_transaction_split_type"]
+          status: Database["public"]["Enums"]["transaction_status"]
+          transaction_split: Json
+          trip_id: string
+        }
+        Insert: {
+          amount?: number
+          calculation_type?: Database["public"]["Enums"]["trip_transaction_calculation_type"]
+          category: Database["public"]["Enums"]["trip_transaction_category"]
+          created_at?: string
+          created_by?: string | null
+          currency_iso_code?: string
+          description: string
+          group_id: string
+          id?: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          notes?: string | null
+          split_type?: Database["public"]["Enums"]["acc_transaction_split_type"]
+          status?: Database["public"]["Enums"]["transaction_status"]
+          transaction_split?: Json
+          trip_id: string
+        }
+        Update: {
+          amount?: number
+          calculation_type?: Database["public"]["Enums"]["trip_transaction_calculation_type"]
+          category?: Database["public"]["Enums"]["trip_transaction_category"]
+          created_at?: string
+          created_by?: string | null
+          currency_iso_code?: string
+          description?: string
+          group_id?: string
+          id?: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          notes?: string | null
+          split_type?: Database["public"]["Enums"]["acc_transaction_split_type"]
+          status?: Database["public"]["Enums"]["transaction_status"]
+          transaction_split?: Json
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_transaction_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "group"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_transaction_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_membership"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_transaction_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trip"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_transaction_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_transaction_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_financial_summary"
+            referencedColumns: ["trip_id"]
           },
         ]
       }
@@ -1063,6 +1170,15 @@ export type Database = {
           },
         ]
       }
+      v_trip_financial_summary: {
+        Row: {
+          financials: Json | null
+          participants: Json | null
+          trip_currency: string | null
+          trip_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       acc_get_transaction_currency: {
@@ -1118,12 +1234,13 @@ export type Database = {
     }
     Enums: {
       acc_group_user_status: "invited" | "accepted" | "rejected" | "owner"
-      acc_transaction_split_type: "equal" | "shares" | "manual"
+      acc_transaction_split_type: "equal" | "shares" | "manual" | "percentage"
       DrinkType: "beer"
       text_document_type: "bio" | "blog" | "trip_post" | "trip_description"
       TextDocumentAccess: "open" | "restricted"
       TextDocumentStatus: "draft" | "published" | "unpublished"
       TrackerGameStatus: "paused" | "active" | "finished"
+      transaction_status: "idea" | "quoted" | "committed" | "paid"
       trip_feed_item_type: "post" | "announcement"
       trip_participant_role: "admin" | "member" | "owner"
       trip_participant_status:
@@ -1132,6 +1249,18 @@ export type Database = {
         | "confirmed"
         | "tentative"
       trip_status: "proposed" | "confirmed" | "cancelled" | "past"
+      trip_transaction_calculation_type:
+        | "group_total"
+        | "per_day"
+        | "per_participant"
+        | "per_participant_per_day"
+      trip_transaction_category:
+        | "food"
+        | "transport"
+        | "fuel"
+        | "stay"
+        | "activity"
+        | "other"
       trip_types:
         | "citybreak"
         | "sailing"
@@ -1268,12 +1397,13 @@ export const Constants = {
   public: {
     Enums: {
       acc_group_user_status: ["invited", "accepted", "rejected", "owner"],
-      acc_transaction_split_type: ["equal", "shares", "manual"],
+      acc_transaction_split_type: ["equal", "shares", "manual", "percentage"],
       DrinkType: ["beer"],
       text_document_type: ["bio", "blog", "trip_post", "trip_description"],
       TextDocumentAccess: ["open", "restricted"],
       TextDocumentStatus: ["draft", "published", "unpublished"],
       TrackerGameStatus: ["paused", "active", "finished"],
+      transaction_status: ["idea", "quoted", "committed", "paid"],
       trip_feed_item_type: ["post", "announcement"],
       trip_participant_role: ["admin", "member", "owner"],
       trip_participant_status: [
@@ -1283,6 +1413,20 @@ export const Constants = {
         "tentative",
       ],
       trip_status: ["proposed", "confirmed", "cancelled", "past"],
+      trip_transaction_calculation_type: [
+        "group_total",
+        "per_day",
+        "per_participant",
+        "per_participant_per_day",
+      ],
+      trip_transaction_category: [
+        "food",
+        "transport",
+        "fuel",
+        "stay",
+        "activity",
+        "other",
+      ],
       trip_types: [
         "citybreak",
         "sailing",

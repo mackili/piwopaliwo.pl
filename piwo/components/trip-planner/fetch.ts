@@ -1,6 +1,10 @@
 "use server";
-import { Enums, TablesInsert, TablesUpdate } from "@/database.types";
+import { Enums, Tables, TablesInsert, TablesUpdate } from "@/database.types";
 import { createClient } from "@/utils/supabase/server";
+import {
+    TripFinancialsJson,
+    TripFinancialsParticipantsJson,
+} from "./custom-schemas";
 
 export type ParticipantResponseJson = {
     id: string;
@@ -82,10 +86,60 @@ async function inviteParticipants(
     return await supabase.from("trip_participant").insert(invitedParticipants);
 }
 
+async function fetchTripTransactions(
+    tripId: string,
+    limit: number = 10,
+    offset: number = 0,
+    orderBy: {
+        field: keyof Tables<"trip_transaction">;
+        ascending?: boolean;
+    } = {
+        field: "created_at",
+        ascending: true,
+    },
+) {
+    const supabase = await createClient();
+    const { data, count, error } = await supabase
+        .from("trip_transaction")
+        .select("*", { count: "exact", head: false })
+        .eq("trip_id", tripId)
+        .order(orderBy.field, { ascending: orderBy?.ascending || true })
+        .range(offset, offset + limit - 1);
+    return { data, count, error };
+}
+
+async function upsertTripTransaction(
+    transaction: TablesInsert<"trip_transaction">,
+) {
+    const supabase = await createClient();
+    return await supabase
+        .from("trip_transaction")
+        .upsert(transaction, { onConflict: "id" })
+        .select()
+        .single();
+}
+
+async function fetchPlannedFinanceStatistics(tripId: string) {
+    const supabase = await createClient();
+    return await supabase
+        .from("v_trip_financial_summary")
+        .select()
+        .eq("trip_id", tripId)
+        .limit(1)
+        .single()
+        .overrideTypes<{
+            financials: TripFinancialsJson[];
+            participants: TripFinancialsParticipantsJson[];
+        }>();
+}
+
 export {
     fetchTrips,
     fetchTripDetails,
     upsertTrips,
     updateParticipant,
     inviteParticipants,
+    fetchTripTransactions,
+    upsertTripTransaction,
+    fetchPlannedFinanceStatistics,
 };

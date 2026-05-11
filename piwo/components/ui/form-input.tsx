@@ -15,6 +15,7 @@ import { Calendar } from "./calendar";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "./button";
 import { useCurrentLocale } from "@/locales/client";
+import { ComponentProps } from "react";
 
 export default function FormInput<T extends FieldValues>({
     form,
@@ -22,6 +23,9 @@ export default function FormInput<T extends FieldValues>({
     label,
     type = "text",
     options,
+    step,
+    placeholder,
+    className,
 }: {
     name: Path<T>;
     label?: string;
@@ -40,21 +44,53 @@ export default function FormInput<T extends FieldValues>({
         | "select"
         | "url";
     options?: { value: string; label?: string | React.ReactNode }[]; // For select fields
-}) {
+    step?: string;
+    placeholder?: string;
+} & ComponentProps<"div">) {
     const locale = useCurrentLocale();
     return (
         <FormField
             name={name}
             control={form.control}
             render={({ field, fieldState }) => (
-                <FormItem>
+                <FormItem className={className}>
                     {label && <FormLabel>{label}</FormLabel>}
-                    {type === "text" && <Input type="text" {...field} />}
-                    {type === "email" && <Input type="email" {...field} />}
-                    {type === "password" && (
-                        <Input type="password" {...field} />
+                    {type === "text" && (
+                        <Input
+                            type="text"
+                            {...field}
+                            placeholder={placeholder}
+                        />
                     )}
-                    {type === "number" && <Input type="number" {...field} />}
+                    {type === "email" && (
+                        <Input
+                            type="email"
+                            {...field}
+                            placeholder={placeholder}
+                        />
+                    )}
+                    {type === "password" && (
+                        <Input
+                            type="password"
+                            {...field}
+                            placeholder={placeholder}
+                        />
+                    )}
+                    {type === "number" && (
+                        <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) =>
+                                field.onChange(
+                                    e.target.value
+                                        ? Number(e.target.value)
+                                        : undefined,
+                                )
+                            }
+                            step={step}
+                            placeholder={placeholder}
+                        />
+                    )}
                     {type === "checkbox" && (
                         <Checkbox
                             checked={field.value}

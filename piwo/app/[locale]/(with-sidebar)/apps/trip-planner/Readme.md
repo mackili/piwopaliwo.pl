@@ -107,7 +107,7 @@ trip_transaction {
     text currency_iso_code
     transaction_status status
     acc_transaction_split_type split_type
-    jsonb
+    jsonb transaction_split
 }
 
 transaction_status {

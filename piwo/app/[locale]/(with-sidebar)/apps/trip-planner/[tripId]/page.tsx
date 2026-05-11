@@ -2,6 +2,7 @@
 import { fetchTripDetails } from "@/components/trip-planner/fetch";
 import TripParticipantsCard from "@/components/trip-planner/participants-card";
 import TripBanner from "@/components/trip-planner/trip-banner";
+import TripCosts from "@/components/trip-planner/trip-costs";
 import TripOverview from "@/components/trip-planner/trip-overview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCurrentLocale } from "@/locales/server";
@@ -48,7 +49,7 @@ export default async function Page({
         redirect(`/${locale}/apps/trip-planner`);
     }
     return (
-        <div className="p-2 flex flex-col gap-8">
+        <div className="p-4 md:p-8 flex flex-col gap-8">
             {tripData && (
                 <>
                     <TripBanner trip={tripData} className="col-span-full" />
@@ -76,7 +77,7 @@ export default async function Page({
                                 <ActivityIcon />
                                 Feed
                             </TabsTrigger>
-                            <TabsTrigger value="costs" disabled>
+                            <TabsTrigger value="costs">
                                 <BanknoteIcon />
                                 Costs
                             </TabsTrigger>
@@ -95,6 +96,9 @@ export default async function Page({
                         </TabsList>
                         <TabsContent value="overview">
                             <TripOverview trip={tripData} />
+                        </TabsContent>
+                        <TabsContent value="costs">
+                            {tripData && <TripCosts trip={tripData} />}
                         </TabsContent>
                         <TabsContent value="participants">
                             <TripParticipantsCard
