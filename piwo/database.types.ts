@@ -718,6 +718,9 @@ export type Database = {
           created_by: string | null
           group_member_id: string
           id: string
+          is_confirmed: boolean | null
+          is_declined: boolean | null
+          is_tentative: boolean | null
           last_modified_at: string | null
           last_modified_by: string | null
           role: Database["public"]["Enums"]["trip_participant_role"]
@@ -729,6 +732,9 @@ export type Database = {
           created_by?: string | null
           group_member_id: string
           id?: string
+          is_confirmed?: boolean | null
+          is_declined?: boolean | null
+          is_tentative?: boolean | null
           last_modified_at?: string | null
           last_modified_by?: string | null
           role?: Database["public"]["Enums"]["trip_participant_role"]
@@ -740,6 +746,9 @@ export type Database = {
           created_by?: string | null
           group_member_id?: string
           id?: string
+          is_confirmed?: boolean | null
+          is_declined?: boolean | null
+          is_tentative?: boolean | null
           last_modified_at?: string | null
           last_modified_by?: string | null
           role?: Database["public"]["Enums"]["trip_participant_role"]
@@ -793,6 +802,7 @@ export type Database = {
           notes: string | null
           split_type: Database["public"]["Enums"]["acc_transaction_split_type"]
           status: Database["public"]["Enums"]["transaction_status"]
+          total_amount: number | null
           transaction_split: Json
           trip_id: string
         }
@@ -811,6 +821,7 @@ export type Database = {
           notes?: string | null
           split_type?: Database["public"]["Enums"]["acc_transaction_split_type"]
           status?: Database["public"]["Enums"]["transaction_status"]
+          total_amount?: number | null
           transaction_split?: Json
           trip_id: string
         }
@@ -829,6 +840,7 @@ export type Database = {
           notes?: string | null
           split_type?: Database["public"]["Enums"]["acc_transaction_split_type"]
           status?: Database["public"]["Enums"]["transaction_status"]
+          total_amount?: number | null
           transaction_split?: Json
           trip_id?: string
         }
@@ -1173,6 +1185,7 @@ export type Database = {
       v_trip_financial_summary: {
         Row: {
           financials: Json | null
+          financials_by_category: Json | null
           participants: Json | null
           trip_currency: string | null
           trip_id: string | null
@@ -1230,6 +1243,14 @@ export type Database = {
       trip_insert_owner_participant: {
         Args: { p_group_id: string; p_trip_id: string }
         Returns: string
+      }
+      trip_transaction_calculate_total: {
+        Args: {
+          p_calculation_type: Database["public"]["Enums"]["trip_transaction_calculation_type"]
+          p_trip_id: string
+          p_unit_amount: number
+        }
+        Returns: number
       }
     }
     Enums: {

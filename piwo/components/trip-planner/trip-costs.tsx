@@ -45,10 +45,10 @@ export default async function TripCosts({
                     {trip?.id && (
                         <>
                             <div className="grow-8 col-span-full lg:col-span-8">
-                                <div className="grid max-[350px]:grid-cols-1 grid-cols-2 md:grid-cols-4 gap-4">
+                                <div className="grid max-[350px]:grid-cols-1 grid-cols-2 md:grid-cols-4 gap-4 @container">
                                     <TripCostsSummary
                                         tripId={trip.id}
-                                        className="col-span-full grid-cols-subgrid grid gap-4"
+                                        className="col-span-full @max-[370px]:grid-cols-1 grid-cols-2 @lg:grid-cols-3 grid gap-4"
                                     />
                                     <TripCostsCard
                                         trip={trip}

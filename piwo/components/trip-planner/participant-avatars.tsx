@@ -103,10 +103,12 @@ function TripParticipantAvatars({
     participants,
     avatarSize = "default",
     maxDisplayCount = 5,
+    showStatusIcons = true,
 }: {
     participants: ParticipantResponseJson[];
     avatarSize?: "default" | "sm" | "lg";
     maxDisplayCount?: number;
+    showStatusIcons?: boolean;
 }) {
     return (
         <AvatarGroup>
@@ -116,11 +118,15 @@ function TripParticipantAvatars({
                         <TripParticipantAvatar
                             participant={participant}
                             avatarSize={avatarSize}
-                            showStatusIcon={true}
+                            showStatusIcon={showStatusIcons}
                         />
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>
+                        <p className="inline-flex gap-1">
+                            <TripParticipantStatusIcon
+                                status={participant.status}
+                                className="w-4 h-4"
+                            />
                             {participant.group_member?.nickname ||
                                 `${participant.user?.first_name}${participant.user?.last_name}`}
                         </p>

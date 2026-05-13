@@ -94,7 +94,10 @@ function TripTransactionStatusPill({
     }
 
     return (
-        <Badge className={twMerge("uppercase", classString, className)}>
+        <Badge
+            className={twMerge("uppercase", classString, className)}
+            {...props}
+        >
             {status}
         </Badge>
     );
@@ -131,7 +134,7 @@ export default function TripTransaction({
                                 style: "currency",
                                 currency: transactionState.currency_iso_code,
                             }).format(
-                                transactionState.amount /
+                                (transactionState?.total_amount || 0) /
                                     (
                                         trip.participants as ParticipantResponseJson[]
                                     ).filter(
@@ -150,7 +153,7 @@ export default function TripTransaction({
                         {Intl.NumberFormat(locale, {
                             style: "currency",
                             currency: transactionState?.currency_iso_code,
-                        }).format(transactionState.amount)}
+                        }).format(transactionState?.total_amount || 0)}
                     </p>
                     <ButtonGroup>
                         {transactionState.status !== "paid" && (

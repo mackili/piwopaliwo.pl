@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import {
     TripFinancialsJson,
     TripFinancialsParticipantsJson,
+    TripFinancialsPerCategoryJson,
 } from "./custom-schemas";
 
 export type ParticipantResponseJson = {
@@ -130,7 +131,25 @@ async function fetchPlannedFinanceStatistics(tripId: string) {
         .overrideTypes<{
             financials: TripFinancialsJson[];
             participants: TripFinancialsParticipantsJson[];
+            financials_by_category: TripFinancialsPerCategoryJson[];
         }>();
+}
+
+async function fetchTripTransactionTotalAmount({
+    tripId,
+    unitAmount,
+    calculationType,
+}: {
+    tripId: string;
+    unitAmount: number;
+    calculationType: Enums<"trip_transaction_calculation_type">;
+}) {
+    const supabase = await createClient();
+    return await supabase.rpc("trip_transaction_calculate_total", {
+        p_trip_id: tripId,
+        p_unit_amount: unitAmount,
+        p_calculation_type: calculationType,
+    });
 }
 
 export {
@@ -142,4 +161,5 @@ export {
     fetchTripTransactions,
     upsertTripTransaction,
     fetchPlannedFinanceStatistics,
+    fetchTripTransactionTotalAmount,
 };

@@ -128,6 +128,7 @@ export default async function TripBanner({
                         ).filter(
                             (participant) => participant.status !== "declined",
                         )}
+                        showStatusIcons={false}
                         avatarSize="lg"
                         maxDisplayCount={4}
                     />

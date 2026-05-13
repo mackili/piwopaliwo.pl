@@ -1,6 +1,6 @@
 "use client";
 
-import { Constants, Tables } from "@/database.types";
+import { Constants, Enums, Tables } from "@/database.types";
 import {
     Dialog,
     DialogContent,
@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { publicTripTransactionInsertSchema } from "@/database.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "../ui/form";
+import { Form, FormItem, FormLabel } from "../ui/form";
 import LoadingSpinner from "../ui/loading-spinner";
 import { useRouter } from "next/navigation";
 import FormInput from "../ui/form-input";
@@ -24,13 +24,15 @@ import {
     TripTransactionSplit,
     TripTransactionSplitSchema,
 } from "./custom-schemas";
-import { ParticipantResponseJson, upsertTripTransaction } from "./fetch";
+import {
+    fetchTripTransactionTotalAmount,
+    upsertTripTransaction,
+} from "./fetch";
 import { toast } from "sonner";
 import PostgrestErrorDisplay from "../ui/postgrest-error-display";
 import { VariantProps } from "class-variance-authority";
 import { GroupCurrency } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
-import { DataTable } from "../ui/datatable";
-import { ColumnDef } from "@tanstack/react-table";
+import { useCurrentLocale } from "@/locales/client";
 
 const formObject = publicTripTransactionInsertSchema.extend({
     transaction_split: z.array(TripTransactionSplitSchema),
@@ -42,6 +44,50 @@ const TRANSACTION_CALCULATION_METHODS =
     Constants.public.Enums.trip_transaction_calculation_type;
 const TRANSACTION_STATUSES = Constants.public.Enums.transaction_status;
 const TRANSACTION_CATEGORIES = Constants.public.Enums.trip_transaction_category;
+
+function TripTransactionTotalAmount({
+    tripId,
+    unitAmount,
+    calculationType,
+    currencyIsoCode,
+}: {
+    tripId: string;
+    unitAmount?: number;
+    calculationType?: Enums<"trip_transaction_calculation_type">;
+    currencyIsoCode?: string;
+}) {
+    const locale = useCurrentLocale();
+    const [isLoading, setLoading] = useState<boolean>(false);
+    const [totalAmount, setTotalAmount] = useState<number | null>();
+    useEffect(() => {
+        const handleCalculation = async () => {
+            if (!unitAmount || !calculationType) return;
+            setLoading(true);
+            const { data, error } = await fetchTripTransactionTotalAmount({
+                tripId,
+                unitAmount,
+                calculationType,
+            });
+            setTotalAmount(data);
+            console.log(data, error);
+            setLoading(false);
+        };
+        handleCalculation();
+    }, [tripId, unitAmount, calculationType]);
+    return (
+        <>
+            {isLoading ? (
+                <LoadingSpinner />
+            ) : (
+                totalAmount &&
+                Intl.NumberFormat(locale, {
+                    style: "currency",
+                    currency: currencyIsoCode,
+                }).format(totalAmount)
+            )}
+        </>
+    );
+}
 
 export default function TripTransactionEdit({
     trip,
@@ -118,105 +164,122 @@ export default function TripTransactionEdit({
         setDialogOpen(false);
     }
     return (
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-                <Button variant="default" {...props}>
-                    {buttonContent || (
-                        <>
-                            <PlusIcon /> Plan cost
-                        </>
-                    )}
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogTitle>Plan Trip Cost</DialogTitle>
-                <Form {...form}>
-                    <form
-                        id="edit-participants-form"
-                        onSubmit={form.handleSubmit(handleSubmit)}
-                    >
-                        <div className="space-y-4">
-                            <FormInput name="description" form={form} />
-                            <div className="flex flex-row gap-2">
-                                <FormInput
-                                    name="amount"
-                                    form={form}
-                                    type="number"
-                                    label="Amount"
-                                    step="0.01"
-                                    placeholder="0.00"
-                                    className="grow"
-                                />
-                                <FormInput
-                                    name="currency_iso_code"
-                                    form={form}
-                                    type="select"
-                                    label="Currency"
-                                    options={availableCurrencies.map(
-                                        (currency) => ({
-                                            value: currency.iso,
-                                        }),
-                                    )}
-                                />
-                            </div>
-                            {/* <FormInput
-                                name="split_type"
-                                form={form}
-                                type="select"
-                                label="Split Type"
-                                options={TRANSACTION_SPLIT_TYPES.map(
-                                    (split) => ({
-                                        value: split,
-                                    }),
-                                )}
-                            /> */}
-                            <FormInput
-                                name="category"
-                                form={form}
-                                type="select"
-                                label="Category"
-                                options={TRANSACTION_CATEGORIES.map(
-                                    (category) => ({
-                                        value: category,
-                                    }),
-                                )}
-                            />
-                            <FormInput
-                                name="status"
-                                form={form}
-                                type="select"
-                                label="Status"
-                                options={TRANSACTION_STATUSES.map((status) => ({
-                                    value: status,
-                                }))}
-                            />
-                            <FormInput
-                                name="notes"
-                                form={form}
-                                type="text"
-                                label="Notes"
-                            />
-                        </div>
-                    </form>
-                </Form>
-                <DialogFooter>
-                    <Button
-                        variant="default"
-                        type="submit"
-                        form="edit-participants-form"
-                        disabled={form.formState.isSubmitting}
-                    >
-                        {form.formState.isSubmitting ? (
-                            <LoadingSpinner />
-                        ) : (
+        trip?.id && (
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                    <Button variant="default" {...props}>
+                        {buttonContent || (
                             <>
-                                <SaveIcon />
-                                Save
+                                <PlusIcon /> Plan cost
                             </>
                         )}
                     </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogTitle>Plan Trip Cost</DialogTitle>
+                    <Form {...form}>
+                        <form
+                            id="edit-participants-form"
+                            onSubmit={form.handleSubmit(handleSubmit)}
+                        >
+                            <div className="space-y-4">
+                                <FormInput name="description" form={form} />
+                                <div className="flex flex-row gap-2">
+                                    <FormInput
+                                        name="amount"
+                                        form={form}
+                                        type="number"
+                                        label="Amount"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        className="grow"
+                                    />
+                                    <FormInput
+                                        name="currency_iso_code"
+                                        form={form}
+                                        type="select"
+                                        label="Currency"
+                                        options={availableCurrencies.map(
+                                            (currency) => ({
+                                                value: currency.iso,
+                                            }),
+                                        )}
+                                    />
+                                </div>
+                                <FormItem id="total_amount">
+                                    <FormLabel>Total Amount</FormLabel>
+                                    <p>
+                                        <TripTransactionTotalAmount
+                                            tripId={trip.id}
+                                            unitAmount={form.watch("amount")}
+                                            calculationType={form.watch(
+                                                "calculation_type",
+                                            )}
+                                            currencyIsoCode={form.watch(
+                                                "currency_iso_code",
+                                            )}
+                                        />
+                                    </p>
+                                </FormItem>
+                                <FormInput
+                                    name="calculation_type"
+                                    form={form}
+                                    type="select"
+                                    label="Calculation Type"
+                                    options={TRANSACTION_CALCULATION_METHODS.map(
+                                        (type) => ({ value: type }),
+                                    )}
+                                />
+                                <FormInput
+                                    name="category"
+                                    form={form}
+                                    type="select"
+                                    label="Category"
+                                    options={TRANSACTION_CATEGORIES.map(
+                                        (category) => ({
+                                            value: category,
+                                        }),
+                                    )}
+                                />
+                                <FormInput
+                                    name="status"
+                                    form={form}
+                                    type="select"
+                                    label="Status"
+                                    options={TRANSACTION_STATUSES.map(
+                                        (status) => ({
+                                            value: status,
+                                        }),
+                                    )}
+                                />
+                                <FormInput
+                                    name="notes"
+                                    form={form}
+                                    type="text"
+                                    label="Notes"
+                                />
+                            </div>
+                        </form>
+                    </Form>
+                    <DialogFooter>
+                        <Button
+                            variant="default"
+                            type="submit"
+                            form="edit-participants-form"
+                            disabled={form.formState.isSubmitting}
+                        >
+                            {form.formState.isSubmitting ? (
+                                <LoadingSpinner />
+                            ) : (
+                                <>
+                                    <SaveIcon />
+                                    Save
+                                </>
+                            )}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        )
     );
 }
