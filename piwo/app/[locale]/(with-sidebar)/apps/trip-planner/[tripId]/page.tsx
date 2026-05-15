@@ -1,13 +1,11 @@
-// import { fetchArticle } from "@/app/[locale]/(with-navbar)/blog/read/[article]/fetch";
 import { fetchTripDetails } from "@/components/trip-planner/fetch";
-import TripParticipantsCard from "@/components/trip-planner/participants-card";
+import TripParticipantsCard from "@/components/trip-planner/participant-management/participants-card";
 import TripBanner from "@/components/trip-planner/trip-banner";
-import TripCosts from "@/components/trip-planner/trip-costs";
+import TripCosts from "@/components/trip-planner/cost-planning/trip-costs";
 import TripOverview from "@/components/trip-planner/trip-overview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCurrentLocale } from "@/locales/server";
 import { createClient } from "@/utils/supabase/server";
-// import { getCurrentLocale } from "@/locales/server";
 import {
     ActivityIcon,
     BanknoteIcon,
@@ -18,6 +16,7 @@ import {
     UsersRoundIcon,
 } from "lucide-react";
 import { redirect } from "next/navigation";
+import TripAccomodationOverview from "@/components/trip-planner/accommodation/accommodation-overview";
 
 export default async function Page({
     params,
@@ -81,7 +80,7 @@ export default async function Page({
                                 <BanknoteIcon />
                                 Costs
                             </TabsTrigger>
-                            <TabsTrigger value="stay" disabled>
+                            <TabsTrigger value="accommodation">
                                 <BedIcon />
                                 Stay
                             </TabsTrigger>
@@ -105,6 +104,9 @@ export default async function Page({
                                 trip={tripData}
                                 variant="expanded"
                             />
+                        </TabsContent>
+                        <TabsContent value="accommodation">
+                            <TripAccomodationOverview tripId={tripId} />
                         </TabsContent>
                     </Tabs>
                 </>

@@ -1,17 +1,11 @@
 import { ComponentProps } from "react";
-import { fetchPlannedFinanceStatistics } from "./fetch";
-import PostgrestErrorDisplay from "../ui/postgrest-error-display";
-import TripStatistic from "./trip-statistic";
+import { fetchPlannedFinanceStatistics } from "../fetch";
+import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
+import TripStatistic from "../trip-statistic";
 import { getCurrentLocale } from "@/locales/server";
 import { Constants } from "@/database.types";
-import EstimateByCategory from "./charts/expenses-per-category";
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "../ui/card";
+import EstimateByCategory from "../charts/expenses-per-category";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function TripCostsSummary({
     tripId,
@@ -108,7 +102,6 @@ export default async function TripCostsSummary({
                 </>
             )}
             {data?.financials_by_category && (
-                // <EstimateByCategory data={data.financials_by_category} />
                 <Card className="col-span-full">
                     <CardHeader>
                         <CardTitle className="text-muted-foreground text-xs font-medium uppercase">
@@ -121,15 +114,6 @@ export default async function TripCostsSummary({
                         />
                     </CardContent>
                 </Card>
-                // <TripStatistic
-                //     className="col-span-full"
-                //     title="Planned spending per category"
-                //     value={
-                //         <EstimateByCategory
-                //             data={data.financials_by_category}
-                //         />
-                //     }
-                // />
             )}
         </div>
     );

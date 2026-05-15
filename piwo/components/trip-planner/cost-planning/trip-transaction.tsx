@@ -14,10 +14,10 @@ import {
 } from "lucide-react";
 import { ComponentProps, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { ButtonGroup } from "../ui/button-group";
+import { ButtonGroup } from "@/components/ui/button-group";
 import TripTransactionEdit from "./edit-transaction";
-import { Badge } from "../ui/badge";
-import { ParticipantResponseJson } from "./fetch";
+import { Badge } from "@/components/ui/badge";
+import { ParticipantResponseJson } from "../fetch";
 
 function TripTransactionCategoryIcon({
     category,
@@ -106,14 +106,19 @@ function TripTransactionStatusPill({
 export default function TripTransaction({
     trip,
     transaction,
+    className,
+    ...props
 }: {
     trip: Tables<"v_trip_details">;
     transaction: Tables<"trip_transaction">;
-}) {
+} & ComponentProps<"div">) {
     const locale = useCurrentLocale();
     const [transactionState, setTransaction] = useState(transaction);
     return (
-        <div className="flex flex-row flex-wrap gap-2">
+        <div
+            className={twMerge("flex flex-row flex-wrap gap-2", className)}
+            {...props}
+        >
             <TripTransactionCategoryIcon
                 category={transactionState.category}
                 className="shrink"

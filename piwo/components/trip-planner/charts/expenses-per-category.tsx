@@ -11,7 +11,7 @@ import {
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import { TripFinancialsPerCategoryJson } from "@/components/trip-planner/custom-schemas";
 import { twMerge } from "tailwind-merge";
-import { ComponentProps } from "react";
+import { ComponentProps, useMemo } from "react";
 
 const categories = [...Constants.public.Enums.trip_transaction_category].sort();
 
@@ -30,12 +30,18 @@ export default function EstimateByCategory({
     data,
     className,
 }: { data: TripFinancialsPerCategoryJson[] } & ComponentProps<"div">) {
-    const chartData = [
-        data.reduce<Record<string, number | string>>(
-            (acc, d) => ({ ...acc, [d.category]: d.total_in_trip_currency }),
-            { measure: "spending_category" },
-        ),
-    ];
+    const chartData = useMemo(
+        () => [
+            data.reduce<Record<string, number | string>>(
+                (acc, d) => ({
+                    ...acc,
+                    [d.category]: d.total_in_trip_currency,
+                }),
+                {},
+            ),
+        ],
+        [data],
+    );
     return (
         <ChartContainer
             config={categoryChartConfig}
@@ -54,19 +60,33 @@ export default function EstimateByCategory({
                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                 <YAxis type="category" tickLine={false} axisLine={false} hide />
                 <XAxis type="number" hide />
-                {Object.keys(categoryChartConfig).map((item, index) => (
-                    <Bar
-                        key={index}
-                        dataKey={item}
-                        stackId="spending"
-                        fill={
-                            categoryChartConfig[
-                                item as Enums<"trip_transaction_category">
-                            ]?.color
-                        }
-                        radius={0}
-                    />
-                ))}
+                {Object.keys(chartData[0])
+                    .sort(
+                        (a, b) =>
+                            (chartData[0][b] as number) -
+                            (chartData[0][a] as number),
+                    )
+                    .map((item, index, all) => {
+                        return (
+                            <Bar
+                                key={index}
+                                dataKey={item}
+                                stackId="spending"
+                                fill={
+                                    categoryChartConfig[
+                                        item as Enums<"trip_transaction_category">
+                                    ]?.color
+                                }
+                                radius={
+                                    index === 0
+                                        ? [4, 0, 0, 4]
+                                        : index === all.length - 1
+                                          ? [0, 4, 4, 0]
+                                          : 0
+                                }
+                            />
+                        );
+                    })}
             </BarChart>
         </ChartContainer>
         // </div>

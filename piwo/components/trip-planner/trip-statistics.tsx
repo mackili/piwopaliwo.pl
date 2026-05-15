@@ -1,8 +1,9 @@
 import { Tables } from "@/database.types";
 import TripStatistic from "./trip-statistic";
-import { getFormattedDates, getNumberOfDays } from "./trip-banner";
+import { getFormattedDates } from "./trip-banner";
 import { ParticipantResponseJson } from "./fetch";
 import { getCurrentLocale } from "@/locales/server";
+import { getTripLength } from "./reducers";
 
 export async function TripStatistics({
     trip,
@@ -15,7 +16,10 @@ export async function TripStatistics({
             {trip?.start_date && trip?.end_date && (
                 <TripStatistic
                     title="Days"
-                    value={getNumberOfDays(trip.start_date, trip.end_date)}
+                    value={getTripLength({
+                        startdate: new Date(trip?.start_date) || "",
+                        endDate: new Date(trip?.end_date || ""),
+                    })}
                     description={getFormattedDates(
                         trip.start_date,
                         trip.end_date,

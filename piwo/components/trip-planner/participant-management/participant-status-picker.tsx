@@ -6,7 +6,7 @@ import {
     useOptimistic,
     useState,
 } from "react";
-import { ParticipantResponseJson, updateParticipant } from "./fetch";
+import { ParticipantResponseJson, updateParticipant } from "../fetch";
 import {
     Select,
     SelectContent,
@@ -14,10 +14,10 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
 import { twMerge } from "tailwind-merge";
 import { Constants, Enums } from "@/database.types";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { TripParticipantStatusIcon } from "./participant-avatars";
 
 const participantStatuses = Constants.public.Enums.trip_participant_status;

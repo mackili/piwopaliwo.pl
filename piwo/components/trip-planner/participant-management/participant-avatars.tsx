@@ -10,9 +10,13 @@ import {
     AvatarGroup,
     AvatarGroupCount,
     AvatarImage,
-} from "../ui/avatar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { ParticipantResponseJson } from "./fetch";
+} from "@/components/ui/avatar";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ParticipantResponseJson } from "../fetch";
 import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 import { Enums } from "@/database.types";

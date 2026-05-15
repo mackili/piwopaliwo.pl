@@ -1,7 +1,7 @@
 import { TripStatistics } from "./trip-statistics";
 import { Tables } from "@/database.types";
 import { ComponentProps } from "react";
-import TripParticipantsCard from "./participants-card";
+import TripParticipantsCard from "./participant-management/participants-card";
 import { twMerge } from "tailwind-merge";
 
 export default function TripOverview({

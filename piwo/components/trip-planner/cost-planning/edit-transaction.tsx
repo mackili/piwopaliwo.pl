@@ -16,23 +16,25 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { publicTripTransactionInsertSchema } from "@/database.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormItem, FormLabel } from "../ui/form";
-import LoadingSpinner from "../ui/loading-spinner";
+import { Form, FormItem, FormLabel } from "@/components/ui/form";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useRouter } from "next/navigation";
-import FormInput from "../ui/form-input";
+import FormInput from "@/components/ui/form-input";
 import {
     TripTransactionSplit,
     TripTransactionSplitSchema,
-} from "./custom-schemas";
-import {
-    fetchTripTransactionTotalAmount,
-    upsertTripTransaction,
-} from "./fetch";
+} from "../custom-schemas";
+import { ParticipantResponseJson, upsertTripTransaction } from "../fetch";
 import { toast } from "sonner";
-import PostgrestErrorDisplay from "../ui/postgrest-error-display";
+import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { VariantProps } from "class-variance-authority";
 import { GroupCurrency } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
 import { useCurrentLocale } from "@/locales/client";
+import {
+    countPotentialParticipants,
+    getTripLength,
+    transactionTotalCostReducer,
+} from "../reducers";
 
 const formObject = publicTripTransactionInsertSchema.extend({
     transaction_split: z.array(TripTransactionSplitSchema),
@@ -46,46 +48,50 @@ const TRANSACTION_STATUSES = Constants.public.Enums.transaction_status;
 const TRANSACTION_CATEGORIES = Constants.public.Enums.trip_transaction_category;
 
 function TripTransactionTotalAmount({
-    tripId,
+    trip,
     unitAmount,
     calculationType,
     currencyIsoCode,
+    defaultCurrency,
 }: {
-    tripId: string;
+    trip: Tables<"v_trip_details">;
     unitAmount?: number;
     calculationType?: Enums<"trip_transaction_calculation_type">;
-    currencyIsoCode?: string;
+    currencyIsoCode?: string | null;
+    defaultCurrency: string;
 }) {
     const locale = useCurrentLocale();
-    const [isLoading, setLoading] = useState<boolean>(false);
     const [totalAmount, setTotalAmount] = useState<number | null>();
     useEffect(() => {
-        const handleCalculation = async () => {
-            if (!unitAmount || !calculationType) return;
-            setLoading(true);
-            const { data, error } = await fetchTripTransactionTotalAmount({
-                tripId,
-                unitAmount,
-                calculationType,
-            });
-            setTotalAmount(data);
-            console.log(data, error);
-            setLoading(false);
-        };
-        handleCalculation();
-    }, [tripId, unitAmount, calculationType]);
+        setTotalAmount(
+            transactionTotalCostReducer({
+                unitCost: unitAmount || 0,
+                calculationMethod: calculationType || "group_total",
+                participantCount: countPotentialParticipants({
+                    participants:
+                        (trip?.participants as
+                            | ParticipantResponseJson[]
+                            | null) || [],
+                }),
+                tripLength: getTripLength({
+                    startdate: new Date(trip?.start_date || ""),
+                    endDate: new Date(trip?.end_date || ""),
+                }),
+            }),
+        );
+    }, [
+        trip?.participants,
+        trip?.start_date,
+        trip?.end_date,
+        unitAmount,
+        calculationType,
+    ]);
     return (
-        <>
-            {isLoading ? (
-                <LoadingSpinner />
-            ) : (
-                totalAmount &&
-                Intl.NumberFormat(locale, {
-                    style: "currency",
-                    currency: currencyIsoCode,
-                }).format(totalAmount)
-            )}
-        </>
+        totalAmount &&
+        Intl.NumberFormat(locale, {
+            style: "currency",
+            currency: currencyIsoCode || defaultCurrency,
+        }).format(totalAmount)
     );
 }
 
@@ -133,14 +139,18 @@ export default function TripTransactionEdit({
                 (transaction?.transaction_split as TripTransactionSplit[]) ||
                 [],
             amount: transaction?.amount,
-            currency_iso_code: transaction?.currency_iso_code,
+            currency_iso_code:
+                transaction?.currency_iso_code ||
+                trip?.currency_iso_code ||
+                "PLN",
             id: transaction?.id,
-            status: transaction?.status,
-            category: transaction?.category,
+            status: transaction?.status || "idea",
+            category: transaction?.category || "other",
             notes: transaction?.notes,
             calculation_type:
                 transaction?.calculation_type ||
                 TRANSACTION_CALCULATION_METHODS[0],
+            total_amount: transaction?.total_amount || 0,
         },
     });
 
@@ -156,13 +166,13 @@ export default function TripTransactionEdit({
         toast("Transaction saved successfully", {
             position: "bottom-center",
         });
-        form.reset();
         router.refresh();
         if (onSuccess) {
             onSuccess(data);
         }
         setDialogOpen(false);
     }
+
     return (
         trip?.id && (
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -175,7 +185,7 @@ export default function TripTransactionEdit({
                         )}
                     </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="overflow-auto">
                     <DialogTitle>Plan Trip Cost</DialogTitle>
                     <Form {...form}>
                         <form
@@ -183,7 +193,11 @@ export default function TripTransactionEdit({
                             onSubmit={form.handleSubmit(handleSubmit)}
                         >
                             <div className="space-y-4">
-                                <FormInput name="description" form={form} />
+                                <FormInput
+                                    name="description"
+                                    label="Plan Description"
+                                    form={form}
+                                />
                                 <div className="flex flex-row gap-2">
                                     <FormInput
                                         name="amount"
@@ -210,7 +224,7 @@ export default function TripTransactionEdit({
                                     <FormLabel>Total Amount</FormLabel>
                                     <p>
                                         <TripTransactionTotalAmount
-                                            tripId={trip.id}
+                                            trip={trip}
                                             unitAmount={form.watch("amount")}
                                             calculationType={form.watch(
                                                 "calculation_type",
@@ -218,6 +232,9 @@ export default function TripTransactionEdit({
                                             currencyIsoCode={form.watch(
                                                 "currency_iso_code",
                                             )}
+                                            defaultCurrency={
+                                                trip.currency_iso_code || "PLN"
+                                            }
                                         />
                                     </p>
                                 </FormItem>

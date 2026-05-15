@@ -131,11 +131,27 @@ trip_ledger {
     number amount
 }
 
-accommodation
+accommodation {
+    uuid id PK
+    uuid trip_id FK
+    text name
+    text status
+    timestampz check_in_date
+    timestampz check_out_date
+    text description
+}
 
-accommodation_unit
+accommodation_unit {
+    uuid id PK
+    uuid accomodation_id FK
+    text name
+    int2 capacity
+}
 
-accommodation_unit_assignment
+accommodation_unit_assignment {
+    uuid accommodation_unit_id PK, FK
+    uuid trip_participant_id PK, FK
+}
 
 User ||--o{ group : owns
 group ||--o{ group_member: has

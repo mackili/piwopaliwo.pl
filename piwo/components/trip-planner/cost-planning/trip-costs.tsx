@@ -14,7 +14,7 @@ export default async function TripCosts({
 }: { trip: Tables<"v_trip_details"> } & ComponentProps<"div">) {
     return (
         <div>
-            <Tabs defaultValue="planning">
+            <Tabs defaultValue="planning" className="gap-4">
                 <div className="flex flex-row flex-wrap justify-between gap-4">
                     <div className="space-y-2">
                         <p className="font-serif text-2xl font-bold">Costs</p>

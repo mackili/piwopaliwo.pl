@@ -16,15 +16,20 @@ import { useFieldArray, useForm } from "react-hook-form";
 import z from "zod";
 import { publicTripParticipantInsertSchema } from "@/database.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { inviteParticipants, ParticipantResponseJson } from "./fetch";
-import { Form } from "../ui/form";
-import { Card, CardAction, CardContent, CardFooter } from "../ui/card";
-import FormInput from "../ui/form-input";
+import { inviteParticipants, ParticipantResponseJson } from "../fetch";
+import { Form } from "@/components/ui/form";
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardFooter,
+} from "@/components/ui/card";
+import FormInput from "@/components/ui/form-input";
 import { TripParticipantRoleDisplay } from "./participant-role-picker";
 import { TripParticipantAvatar } from "./participant-avatars";
-import LoadingSpinner from "../ui/loading-spinner";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 import { toast } from "sonner";
-import PostgrestErrorDisplay from "../ui/postgrest-error-display";
+import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { useRouter } from "next/navigation";
 
 const formObject = z.object({

@@ -6,12 +6,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { ParticipantResponseJson } from "./fetch";
+import { ParticipantResponseJson } from "../fetch";
 import { TripParticipantAvatar } from "./participant-avatars";
 import { createClient } from "@/utils/supabase/server";
 import TripParticipantsInvite from "./participants-invite";
 import { twMerge } from "tailwind-merge";
-import { getCurrentUserParticipant, permissionsReducer } from "./permissions";
+import { getCurrentUserParticipant, permissionsReducer } from "../permissions";
 import TripParticipantStatusPicker from "./participant-status-picker";
 import TripParticipantRolePicker from "./participant-role-picker";
 

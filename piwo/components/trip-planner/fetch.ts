@@ -2,6 +2,7 @@
 import { Enums, Tables, TablesInsert, TablesUpdate } from "@/database.types";
 import { createClient } from "@/utils/supabase/server";
 import {
+    TripAccommodationUnitSummary,
     TripFinancialsJson,
     TripFinancialsParticipantsJson,
     TripFinancialsPerCategoryJson,
@@ -152,6 +153,17 @@ async function fetchTripTransactionTotalAmount({
     });
 }
 
+async function fetchTripAccommodationSummary(tripId: string) {
+    const supabase = await createClient();
+    return await supabase
+        .from("v_trip_accommodation_summary")
+        .select("*")
+        .eq("trip_id", tripId)
+        .overrideTypes<
+            [{ accommodation_units: TripAccommodationUnitSummary[] }]
+        >();
+}
+
 export {
     fetchTrips,
     fetchTripDetails,
@@ -162,4 +174,5 @@ export {
     upsertTripTransaction,
     fetchPlannedFinanceStatistics,
     fetchTripTransactionTotalAmount,
+    fetchTripAccommodationSummary,
 };

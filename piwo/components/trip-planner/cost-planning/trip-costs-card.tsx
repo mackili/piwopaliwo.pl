@@ -2,7 +2,7 @@
 
 import { Tables } from "@/database.types";
 import { ComponentProps, useEffect, useReducer, useRef, useState } from "react";
-import { fetchTripTransactions } from "./fetch";
+import { fetchTripTransactions } from "../fetch";
 import { PostgrestError } from "@supabase/supabase-js";
 import {
     Card,
@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/card";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { Button } from "@/components/ui/button";
-import PostgrestErrorDisplay from "../ui/postgrest-error-display";
+import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import TripTransaction from "./trip-transaction";
+import { twMerge } from "tailwind-merge";
 
 const INITIAL_TRANSACTIONS_LIMIT = 20;
 
@@ -106,7 +107,7 @@ export default function TripCostsCard({
         setLoading(false);
     }
     return (
-        <Card className={className} {...props}>
+        <Card className={twMerge("pb-0", className)} {...props}>
             <CardHeader>
                 <CardTitle>Trip Costs</CardTitle>
                 <CardAction>
@@ -116,21 +117,22 @@ export default function TripCostsCard({
                     </p>
                 </CardAction>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4 px-0">
                 <PostgrestErrorDisplay error={errorMessage} />
                 {tripLineItems.map((transaction) => (
                     <TripTransaction
                         key={transaction.id}
                         transaction={transaction}
                         trip={trip}
+                        className="border-b pb-4 px-6 last:border-b-0 first:border-t first:pt-4"
                     />
                 ))}
             </CardContent>
-            <CardFooter className="flex justify-center">
-                {isLoading ? (
-                    <LoadingSpinner />
-                ) : (
-                    enableFetchMore && (
+            {enableFetchMore && (
+                <CardFooter className="flex justify-center pb-6">
+                    {isLoading ? (
+                        <LoadingSpinner />
+                    ) : (
                         <Button
                             variant="outline"
                             type="button"
@@ -138,9 +140,9 @@ export default function TripCostsCard({
                         >
                             Fetch More
                         </Button>
-                    )
-                )}
-            </CardFooter>
+                    )}
+                </CardFooter>
+            )}
         </Card>
     );
 }

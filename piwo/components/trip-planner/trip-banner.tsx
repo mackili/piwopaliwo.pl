@@ -12,29 +12,14 @@ import { CalendarDaysIcon, Dot, MapPinIcon } from "lucide-react";
 import { getCurrentLocale } from "@/locales/server";
 import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
-import { TripParticipantAvatars } from "./participant-avatars";
+import { TripParticipantAvatars } from "./participant-management/participant-avatars";
 import { ParticipantResponseJson } from "./fetch";
 import { ButtonGroup } from "@/components/ui/button-group";
 import EditTripForm from "./edit-trip";
-import TripParticipantsInvite from "./participants-invite";
+import TripParticipantsInvite from "./participant-management/participants-invite";
 import { createClient } from "@/utils/supabase/server";
 import { getCurrentUserParticipant, permissionsReducer } from "./permissions";
-
-export function getNumberOfDays(start: string, end: string) {
-    const date1 = new Date(start);
-    const date2 = new Date(end);
-
-    // One day in milliseconds
-    const oneDay = 1000 * 60 * 60 * 24;
-
-    // Calculating the time difference between two dates
-    const diffInTime = date2.getTime() - date1.getTime();
-
-    // Calculating the no. of days between two dates
-    const diffInDays = Math.round(diffInTime / oneDay);
-
-    return diffInDays;
-}
+import { getTripLength } from "./reducers";
 
 export function getFormattedDates(start: string, end: string, locale: string) {
     return `${new Intl.DateTimeFormat(locale).format(new Date(start))} - ${new Intl.DateTimeFormat(locale).format(new Date(end))}`;
@@ -85,7 +70,7 @@ export default async function TripBanner({
                                 locale,
                             )}
                             <Dot />
-                            {`${getNumberOfDays(trip.start_date, trip.end_date)} days`}
+                            {`${getTripLength({ startdate: new Date(trip?.start_date) || "", endDate: new Date(trip?.end_date || "") })} days`}
                         </Badge>
                     )}
                 </div>
