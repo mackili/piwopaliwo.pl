@@ -176,6 +176,13 @@ export type Database = {
             foreignKeyName: "accommodation_unit_assignment_trip_participant_id_fkey"
             columns: ["trip_participant_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accommodation_unit_assignment_trip_participant_id_fkey"
+            columns: ["trip_participant_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["id"]
           },
@@ -212,6 +219,13 @@ export type Database = {
             foreignKeyName: "balance_borrower_id_fkey"
             columns: ["borrower_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "balance_borrower_id_fkey"
+            columns: ["borrower_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -221,6 +235,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "balance_lender_id_fkey"
+            columns: ["lender_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "balance_lender_id_fkey"
@@ -263,6 +284,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "consumed_drink_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "consumed_drink_user_id_fkey"
@@ -343,6 +371,13 @@ export type Database = {
             foreignKeyName: "group_owner_id_fkey"
             columns: ["owner_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "group_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -382,6 +417,20 @@ export type Database = {
             foreignKeyName: "group_balance_borrower_id_fkey"
             columns: ["borrower_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["group_member_id"]
+          },
+          {
+            foreignKeyName: "group_balance_borrower_id_fkey"
+            columns: ["borrower_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_member_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_balance_borrower_id_fkey"
+            columns: ["borrower_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["group_member_id"]
           },
@@ -404,6 +453,20 @@ export type Database = {
             columns: ["lender_id"]
             isOneToOne: false
             referencedRelation: "group_member"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_balance_lender_id_fkey"
+            columns: ["lender_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["group_member_id"]
+          },
+          {
+            foreignKeyName: "group_balance_lender_id_fkey"
+            columns: ["lender_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_member_details"
             referencedColumns: ["id"]
           },
           {
@@ -466,6 +529,20 @@ export type Database = {
             foreignKeyName: "group_invitation_group_member_id_fkey"
             columns: ["group_member_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["group_member_id"]
+          },
+          {
+            foreignKeyName: "group_invitation_group_member_id_fkey"
+            columns: ["group_member_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_member_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_invitation_group_member_id_fkey"
+            columns: ["group_member_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["group_member_id"]
           },
@@ -475,6 +552,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "group_invitation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "group_invitation_user_id_fkey"
@@ -537,6 +621,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "group_member_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "group_member_user_id_fkey"
@@ -646,6 +737,13 @@ export type Database = {
             foreignKeyName: "TextDocument_author_fkey1"
             columns: ["author"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "TextDocument_author_fkey1"
+            columns: ["author"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -683,6 +781,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "TextDocumentComment_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "TextDocumentComment_author_id_fkey"
@@ -764,6 +869,20 @@ export type Database = {
             foreignKeyName: "transaction_paid_by_fkey"
             columns: ["paid_by_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["group_member_id"]
+          },
+          {
+            foreignKeyName: "transaction_paid_by_fkey"
+            columns: ["paid_by_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_member_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_paid_by_fkey"
+            columns: ["paid_by_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["group_member_id"]
           },
@@ -800,6 +919,20 @@ export type Database = {
             columns: ["borrower_id"]
             isOneToOne: false
             referencedRelation: "group_member"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_split_borrower_id_fkey"
+            columns: ["borrower_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["group_member_id"]
+          },
+          {
+            foreignKeyName: "transaction_split_borrower_id_fkey"
+            columns: ["borrower_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_member_details"
             referencedColumns: ["id"]
           },
           {
@@ -1025,6 +1158,20 @@ export type Database = {
             foreignKeyName: "trip_participant_group_member_id_fkey"
             columns: ["group_member_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["group_member_id"]
+          },
+          {
+            foreignKeyName: "trip_participant_group_member_id_fkey"
+            columns: ["group_member_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_member_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_participant_group_member_id_fkey"
+            columns: ["group_member_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["group_member_id"]
           },
@@ -1184,6 +1331,13 @@ export type Database = {
             foreignKeyName: "user_notification_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_notification_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -1244,6 +1398,13 @@ export type Database = {
             foreignKeyName: "UserScore_userId_fkey1"
             columns: ["userId"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "UserScore_userId_fkey1"
+            columns: ["userId"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -1251,6 +1412,49 @@ export type Database = {
       }
     }
     Views: {
+      v_accommodation_unassigned_trip_participants: {
+        Row: {
+          avatar_url: string | null
+          first_name: string | null
+          group_member_id: string | null
+          group_member_status:
+            | Database["public"]["Enums"]["acc_group_user_status"]
+            | null
+          id: string | null
+          is_confirmed: boolean | null
+          is_declined: boolean | null
+          is_tentative: boolean | null
+          last_name: string | null
+          nickname: string | null
+          role: Database["public"]["Enums"]["trip_participant_role"] | null
+          status: Database["public"]["Enums"]["trip_participant_status"] | null
+          trip_id: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_participant_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trip"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_participant_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_participant_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_financial_summary"
+            referencedColumns: ["trip_id"]
+          },
+        ]
+      }
       v_group_balance: {
         Row: {
           borrower: Json | null
@@ -1286,6 +1490,20 @@ export type Database = {
             foreignKeyName: "transaction_paid_by_fkey"
             columns: ["lender_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["group_member_id"]
+          },
+          {
+            foreignKeyName: "transaction_paid_by_fkey"
+            columns: ["lender_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_member_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_paid_by_fkey"
+            columns: ["lender_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["group_member_id"]
           },
@@ -1294,6 +1512,20 @@ export type Database = {
             columns: ["borrower_id"]
             isOneToOne: false
             referencedRelation: "group_member"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_split_borrower_id_fkey"
+            columns: ["borrower_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["group_member_id"]
+          },
+          {
+            foreignKeyName: "transaction_split_borrower_id_fkey"
+            columns: ["borrower_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_member_details"
             referencedColumns: ["id"]
           },
           {
@@ -1367,6 +1599,20 @@ export type Database = {
             foreignKeyName: "group_invitation_group_member_id_fkey"
             columns: ["group_member_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["group_member_id"]
+          },
+          {
+            foreignKeyName: "group_invitation_group_member_id_fkey"
+            columns: ["group_member_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_member_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_invitation_group_member_id_fkey"
+            columns: ["group_member_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["group_member_id"]
           },
@@ -1379,6 +1625,63 @@ export type Database = {
           },
           {
             foreignKeyName: "group_invitation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "group_invitation_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_participant_details"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      v_group_member_details: {
+        Row: {
+          added_at: string | null
+          assigned_at: string | null
+          group_id: string | null
+          id: string | null
+          nickname: string | null
+          removed_at: string | null
+          status: Database["public"]["Enums"]["acc_group_user_status"] | null
+          user: Json | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_member_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "group"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_member_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "v_group_membership"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_member_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "UserInfo"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "group_member_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "group_member_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "v_trip_participant_details"
@@ -1422,6 +1725,13 @@ export type Database = {
             foreignKeyName: "group_member_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "group_member_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -1431,6 +1741,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "group_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "group_owner_id_fkey"
@@ -1469,6 +1786,7 @@ export type Database = {
           accommodation_units: Json[] | null
           check_in_date: string | null
           check_out_date: string | null
+          description: string | null
           id: string | null
           name: string | null
           status: Database["public"]["Enums"]["trip_status"] | null
@@ -1626,6 +1944,14 @@ export type Database = {
         }
         Returns: string
       }
+      accommodation_unit_assignment_set: {
+        Args: { p_accommodation_unit_id: string; p_trip_participant_id: string }
+        Returns: undefined
+      }
+      check_table_rls_permissions: {
+        Args: { p_operations?: string[]; p_table_name: string }
+        Returns: Json
+      }
       count_accommodation_assignments: {
         Args: { p_accommodation_id: string }
         Returns: number
@@ -1651,8 +1977,16 @@ export type Database = {
         Args: { p_accommodation_id: string }
         Returns: boolean
       }
+      rls_modify_accommodation_unit_assignment: {
+        Args: { p_accommodation_unit_id: string }
+        Returns: boolean
+      }
       rls_read_accommodation_unit: {
         Args: { p_accommodation_id: string }
+        Returns: boolean
+      }
+      rls_read_accommodation_unit_assignment: {
+        Args: { p_accommodation_unit_id: string }
         Returns: boolean
       }
       send_notification: {

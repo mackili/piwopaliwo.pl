@@ -1,18 +1,34 @@
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { getCurrentLocale } from "@/locales/server";
-import { fetchTripAccommodationSummary } from "../fetch";
-import TripAccommodationCard from "./accommodation-card";
+import {
+    fetchCurrentTripParticipant,
+    fetchTripAccommodationSummary,
+    fetchTripParticipantDetails,
+} from "../fetch";
+import { permissionsReducer } from "../permissions";
+import UpsertAccommodation from "./upsert-accommodation";
+import TripAccommodationCardsOverview from "./accommodation-cards-overview";
 
-export default async function TripAccomodationOverview({
+export default async function TripAccommodationOverview({
     tripId,
 }: {
     tripId: string;
 }) {
-    const [locale, { data, error }] = await Promise.all([
+    const [
+        locale,
+        { data, error },
+        { data: currentTripParticipant },
+        { data: tripParticipantDetails },
+    ] = await Promise.all([
         getCurrentLocale(),
         fetchTripAccommodationSummary(tripId),
+        fetchCurrentTripParticipant(tripId),
+        fetchTripParticipantDetails(tripId, [
+            "confirmed",
+            "invited",
+            "tentative",
+        ]),
     ]);
-    console.log(data);
     return (
         <div className="space-y-4">
             <div className="flex flex-row flex-wrap justify-between gap-4">
@@ -28,12 +44,26 @@ export default async function TripAccomodationOverview({
             </div>
             <div className="space-y-4">
                 <PostgrestErrorDisplay error={error} />
-                {data?.map((accommodation, index) => (
-                    <TripAccommodationCard
-                        key={index}
-                        accommodation={accommodation}
+                {currentTripParticipant && (
+                    <TripAccommodationCardsOverview
+                        currentTripParticipant={currentTripParticipant}
+                        accommodations={data || []}
+                        potentialParticipants={tripParticipantDetails || []}
                     />
-                ))}
+                )}
+                {/* {currentTripParticipant &&
+                    data?.map((accommodation, index) => (
+                        <TripAccommodationCard
+                            key={index}
+                            accommodation={accommodation}
+                            currentTripParticipant={currentTripParticipant}
+                        />
+                    ))} */}
+                {currentTripParticipant?.role &&
+                    permissionsReducer({
+                        tripParticipantRole: currentTripParticipant.role,
+                        permission: "modify_accommodation",
+                    }) && <UpsertAccommodation tripId={tripId} />}
             </div>
         </div>
     );

@@ -5,6 +5,7 @@ export function UserAvatar({
     className,
     avatarUrl,
     name,
+    ...props
 }: { avatarUrl?: string | null; name?: string | null } & React.ComponentProps<
     typeof AvatarPrimitive.Root
 >) {
@@ -15,7 +16,7 @@ export function UserAvatar({
         ?.toUpperCase();
 
     return (
-        <Avatar className={className}>
+        <Avatar className={className} {...props}>
             {avatarUrl && (
                 <AvatarImage
                     src={avatarUrl}

@@ -16,7 +16,7 @@ import {
     UsersRoundIcon,
 } from "lucide-react";
 import { redirect } from "next/navigation";
-import TripAccomodationOverview from "@/components/trip-planner/accommodation/accommodation-overview";
+import TripAccommodationOverview from "@/components/trip-planner/accommodation/accommodation-overview";
 
 export default async function Page({
     params,
@@ -106,7 +106,7 @@ export default async function Page({
                             />
                         </TabsContent>
                         <TabsContent value="accommodation">
-                            <TripAccomodationOverview tripId={tripId} />
+                            <TripAccommodationOverview tripId={tripId} />
                         </TabsContent>
                     </Tabs>
                 </>

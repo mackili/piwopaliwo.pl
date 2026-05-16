@@ -5,7 +5,9 @@ export type TripParticipantPermissions =
     | "edit_info"
     | "invite_participants"
     | "modify_permissions"
-    | "change_others_statuses";
+    | "change_others_statuses"
+    | "modify_accommodation"
+    | "assign_accommodation";
 
 const PARTICIPANT_PERMISSIONS_MATRIX: {
     role: Enums<"trip_participant_role">;
@@ -18,6 +20,8 @@ const PARTICIPANT_PERMISSIONS_MATRIX: {
             "invite_participants",
             "modify_permissions",
             "change_others_statuses",
+            "modify_accommodation",
+            "assign_accommodation",
         ],
     },
     {
@@ -27,6 +31,8 @@ const PARTICIPANT_PERMISSIONS_MATRIX: {
             "invite_participants",
             "modify_permissions",
             "change_others_statuses",
+            "modify_accommodation",
+            "assign_accommodation",
         ],
     },
     {
@@ -45,15 +51,15 @@ function getCurrentUserParticipant(
 }
 
 function permissionsReducer({
-    tripParticipant,
+    tripParticipantRole,
     permission,
 }: {
-    tripParticipant: ParticipantResponseJson;
+    tripParticipantRole: Enums<"trip_participant_role">;
     permission: TripParticipantPermissions;
 }) {
     return (
         PARTICIPANT_PERMISSIONS_MATRIX.find(
-            (element) => element.role === tripParticipant.role,
+            (element) => element.role === tripParticipantRole,
         )?.permissions?.includes(permission) || false
     );
 }

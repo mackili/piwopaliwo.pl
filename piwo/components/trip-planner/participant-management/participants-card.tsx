@@ -91,8 +91,8 @@ export default async function TripParticipantsCard({
                                         canEdit={
                                             currentUserParticipant &&
                                             permissionsReducer({
-                                                tripParticipant:
-                                                    currentUserParticipant,
+                                                tripParticipantRole:
+                                                    currentUserParticipant.role,
                                                 permission:
                                                     "modify_permissions",
                                             })
@@ -106,8 +106,8 @@ export default async function TripParticipantsCard({
                                         (currentUserParticipant.id ===
                                             participant.id ||
                                             permissionsReducer({
-                                                tripParticipant:
-                                                    currentUserParticipant,
+                                                tripParticipantRole:
+                                                    currentUserParticipant.role,
                                                 permission:
                                                     "change_others_statuses",
                                             }))

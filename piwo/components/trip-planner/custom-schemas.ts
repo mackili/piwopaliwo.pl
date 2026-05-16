@@ -2,6 +2,7 @@ import {
     publicTransactionStatusSchema,
     publicTripParticipantStatusSchema,
     publicTripTransactionCategorySchema,
+    publicVTripAccommodationSummaryRowSchema,
     publicVTripParticipantDetailsRowSchema,
 } from "@/database.schemas";
 import z from "zod";
@@ -28,14 +29,25 @@ const TripFinancialsParticipantsJsonSchema = z.object({
 });
 
 const TripAccommodationUnitSummarySchema = z.object({
-    accommodation_unit_id: z.string(),
-    accommodation_unit_name: z.string(),
-    accommodation_unit_capacity: z.int().nullable(),
+    accommodation_id: z.string(),
+    id: z.string(),
+    name: z.string(),
+    capacity: z.int().nullable(),
     assigned_participants: z.int(),
     assignments: z.array(publicVTripParticipantDetailsRowSchema),
 });
+
+const TripAccommodationSummaryViewSchema =
+    publicVTripAccommodationSummaryRowSchema.extend({
+        accommodation_units: z.array(TripAccommodationUnitSummarySchema),
+    });
+
 export type TripAccommodationUnitSummary = z.infer<
     typeof TripAccommodationUnitSummarySchema
+>;
+
+export type TripAccommodationSummaryView = z.infer<
+    typeof TripAccommodationSummaryViewSchema
 >;
 
 export type TripFinancialsJson = z.infer<typeof TripFinancialsJsonSchema>;
@@ -54,4 +66,5 @@ export {
     TripFinancialsParticipantsJsonSchema,
     TripFinancialsPerCategoryJsonSchema,
     TripAccommodationUnitSummarySchema,
+    TripAccommodationSummaryViewSchema,
 };

@@ -2,7 +2,7 @@
 import { Enums, Tables, TablesInsert, TablesUpdate } from "@/database.types";
 import { createClient } from "@/utils/supabase/server";
 import {
-    TripAccommodationUnitSummary,
+    TripAccommodationSummaryView,
     TripFinancialsJson,
     TripFinancialsParticipantsJson,
     TripFinancialsPerCategoryJson,
@@ -159,9 +159,108 @@ async function fetchTripAccommodationSummary(tripId: string) {
         .from("v_trip_accommodation_summary")
         .select("*")
         .eq("trip_id", tripId)
-        .overrideTypes<
-            [{ accommodation_units: TripAccommodationUnitSummary[] }]
-        >();
+        .order("check_in_date", { ascending: true })
+        .order("name", { ascending: true })
+        .overrideTypes<Array<TripAccommodationSummaryView>>();
+}
+
+async function upsertTripAccommodationUnit(
+    accommodationUnit: TablesInsert<"accommodation_unit">,
+) {
+    const supabase = await createClient();
+    return await supabase
+        .from("accommodation_unit")
+        .upsert(accommodationUnit, { onConflict: "id" })
+        .select()
+        .single();
+}
+
+async function deleteTripAccommodationUnit(accommodationUnitId: string) {
+    const supabase = await createClient();
+    return await supabase
+        .from("accommodation_unit")
+        .delete()
+        .eq("id", accommodationUnitId);
+}
+
+async function fetchCurrentTripParticipant(tripId: string) {
+    const supabase = await createClient();
+    const { data: claims } = await supabase.auth.getClaims();
+    const userId = claims?.claims.sub;
+    if (!userId) return { data: null, error: null };
+    return await supabase
+        .from("v_trip_participant_details")
+        .select()
+        .eq("user_id", userId)
+        .eq("trip_id", tripId)
+        .limit(1)
+        .single();
+}
+
+async function upsertAccommodation(data: TablesInsert<"accommodation">) {
+    const supabase = await createClient();
+    return await supabase
+        .from("accommodation")
+        .upsert(data, { onConflict: "id" })
+        .select()
+        .limit(1)
+        .single();
+}
+
+async function deleteAccommodation(accommodationId: string) {
+    const supabase = await createClient();
+    return await supabase
+        .from("accommodation")
+        .delete()
+        .eq("id", accommodationId);
+}
+
+async function fetchAccommodationUnassignedTripParticipants(tripId: string) {
+    const supabase = await createClient();
+    return await supabase
+        .from("v_accommodation_unassigned_trip_participants")
+        .select("*")
+        .eq("trip_id", tripId)
+        .eq("is_declinded", false)
+        .order("nickname", { ascending: true })
+        .order("last_name", { ascending: true });
+}
+
+async function fetchTripParticipantDetails(
+    tripId: string,
+    includeStatuses: Enums<"trip_participant_status">[],
+) {
+    const supabase = await createClient();
+    return await supabase
+        .from("v_trip_participant_details")
+        .select("*")
+        .eq("trip_id", tripId)
+        .in("status", includeStatuses)
+        .order("nickname", { ascending: true })
+        .order("last_name", { ascending: true });
+}
+
+async function upsertAccommodationAssignments(
+    tripParticipantId: string,
+    accommodationUnitId: string,
+) {
+    const supabase = await createClient();
+    return await supabase.rpc("accommodation_unit_assignment_set", {
+        p_trip_participant_id: tripParticipantId,
+        p_accommodation_unit_id: accommodationUnitId,
+    });
+}
+
+async function removeAccommodationAssignment(
+    tripParticipantId: string,
+    accommodationUnitId: string,
+) {
+    const supabase = await createClient();
+    return await supabase
+        .from("accommodation_unit_assignment")
+        .delete()
+        .eq("trip_participant_id", tripParticipantId)
+        .eq("accommodation_unit_id", accommodationUnitId);
 }
 
 export {
@@ -175,4 +274,13 @@ export {
     fetchPlannedFinanceStatistics,
     fetchTripTransactionTotalAmount,
     fetchTripAccommodationSummary,
+    upsertTripAccommodationUnit,
+    deleteTripAccommodationUnit,
+    fetchCurrentTripParticipant,
+    upsertAccommodation,
+    deleteAccommodation,
+    fetchAccommodationUnassignedTripParticipants,
+    fetchTripParticipantDetails,
+    upsertAccommodationAssignments,
+    removeAccommodationAssignment,
 };

@@ -78,7 +78,8 @@ export default async function TripBanner({
                     <CardAction>
                         <ButtonGroup>
                             {permissionsReducer({
-                                tripParticipant: currentUserGroupParticipant,
+                                tripParticipantRole:
+                                    currentUserGroupParticipant.role,
                                 permission: "edit_info",
                             }) && (
                                 <EditTripForm
@@ -89,7 +90,8 @@ export default async function TripBanner({
                                 />
                             )}
                             {permissionsReducer({
-                                tripParticipant: currentUserGroupParticipant,
+                                tripParticipantRole:
+                                    currentUserGroupParticipant.role,
                                 permission: "invite_participants",
                             }) && <TripParticipantsInvite trip={trip} />}
                         </ButtonGroup>
