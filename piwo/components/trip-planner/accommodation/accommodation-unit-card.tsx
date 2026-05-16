@@ -18,10 +18,14 @@ import AccommodationUnitAssignment from "./accommodation-unit-assignment";
 export default function AccommodationUnitCard({
     accommodationUnit,
     onAccommodationUnitChange,
+    onOptimisticAccommodationUnitChange,
     currentParticipantRole,
 }: {
     accommodationUnit: TripAccommodationUnitSummary;
     onAccommodationUnitChange: (
+        action: AccommodationModificationChangeAction,
+    ) => void;
+    onOptimisticAccommodationUnitChange: (
         action: AccommodationModificationChangeAction,
     ) => void;
     currentParticipantRole: Enums<"trip_participant_role">;
@@ -63,12 +67,15 @@ export default function AccommodationUnitCard({
             </CardHeader>
             <CardContent>
                 <div className="flex flex-col gap-4">
-                    {accommodationUnit.assignments.map((assignment, index) => (
+                    {accommodationUnit.assignments.map((assignment) => (
                         <AccommodationUnitAssignment
-                            key={index}
+                            key={assignment.id}
                             assignment={assignment}
                             accommodationUnitId={accommodationUnit.id}
                             onChange={onAccommodationUnitChange}
+                            onOptimisticChange={
+                                onOptimisticAccommodationUnitChange
+                            }
                         />
                     ))}
                     {permissionsReducer({
@@ -81,6 +88,9 @@ export default function AccommodationUnitCard({
                             <AccommodationUnitAssignment
                                 accommodationUnitId={accommodationUnit.id}
                                 onChange={onAccommodationUnitChange}
+                                onOptimisticChange={
+                                    onOptimisticAccommodationUnitChange
+                                }
                             />
                         )}
                 </div>

@@ -3,7 +3,7 @@
 import TripAccommodationCard from "./accommodation-card";
 import { TripAccommodationSummaryView } from "../custom-schemas";
 import { Tables } from "@/database.types";
-import { createContext, useReducer } from "react";
+import { createContext, useOptimistic, useReducer } from "react";
 import { accommodationModificationReducer } from "../reducers";
 
 export const TripParticipantsContext = createContext<
@@ -43,15 +43,20 @@ export default function TripAccommodationCardsOverview({
             usedCapacity: 0,
         })),
     );
+    const [optimisticAccommodationData, setOptimisticAccommodationData] =
+        useOptimistic(accommodationData, accommodationModificationReducer);
     return (
         <TripParticipantsContext value={potentialParticipants}>
             {currentTripParticipant &&
-                accommodationData?.map((accommodation, index) => (
+                optimisticAccommodationData?.map((accommodation, index) => (
                     <TripAccommodationCard
                         key={index}
                         accommodationData={accommodation}
                         currentTripParticipant={currentTripParticipant}
                         setAccommodationData={setAccommodationData}
+                        setOptimisticAccommodationData={
+                            setOptimisticAccommodationData
+                        }
                     />
                 ))}
         </TripParticipantsContext>

@@ -10,12 +10,16 @@ import {
     TramFrontIcon,
 } from "lucide-react";
 import { ComponentProps } from "react";
+import { twMerge } from "tailwind-merge";
 
 export default function TransportTypeIcon({
     transportType,
+    useColor = true,
+    className,
     ...props
 }: {
     transportType?: Enums<"transportation_type"> | null;
+    useColor?: boolean;
 } & ComponentProps<"svg">) {
     let Icon = LuggageIcon;
     switch (transportType) {
@@ -44,5 +48,10 @@ export default function TransportTypeIcon({
             break;
     }
 
-    return <Icon {...props} />;
+    return (
+        <Icon
+            className={twMerge(useColor ? "stroke-accent-2" : "", className)}
+            {...props}
+        />
+    );
 }

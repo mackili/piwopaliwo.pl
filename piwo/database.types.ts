@@ -25,9 +25,10 @@ export type Database = {
           last_modified_at: string | null
           last_modified_by: string | null
           name: string
-          status: Database["public"]["Enums"]["trip_status"]
+          status: Database["public"]["Enums"]["transaction_status"]
           stay_duration_days: number | null
           trip_id: string
+          trip_transaction_id: string | null
         }
         Insert: {
           check_in_date: string
@@ -39,9 +40,10 @@ export type Database = {
           last_modified_at?: string | null
           last_modified_by?: string | null
           name: string
-          status?: Database["public"]["Enums"]["trip_status"]
+          status?: Database["public"]["Enums"]["transaction_status"]
           stay_duration_days?: number | null
           trip_id: string
+          trip_transaction_id?: string | null
         }
         Update: {
           check_in_date?: string
@@ -53,9 +55,10 @@ export type Database = {
           last_modified_at?: string | null
           last_modified_by?: string | null
           name?: string
-          status?: Database["public"]["Enums"]["trip_status"]
+          status?: Database["public"]["Enums"]["transaction_status"]
           stay_duration_days?: number | null
           trip_id?: string
+          trip_transaction_id?: string | null
         }
         Relationships: [
           {
@@ -78,6 +81,27 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_trip_financial_summary"
             referencedColumns: ["trip_id"]
+          },
+          {
+            foreignKeyName: "accommodation_trip_transaction_id_fkey"
+            columns: ["trip_transaction_id"]
+            isOneToOne: true
+            referencedRelation: "trip_transaction"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accommodation_trip_transaction_id_fkey"
+            columns: ["trip_transaction_id"]
+            isOneToOne: true
+            referencedRelation: "v_trip_accommodation_summary"
+            referencedColumns: ["trip_transaction_id"]
+          },
+          {
+            foreignKeyName: "accommodation_trip_transaction_id_fkey"
+            columns: ["trip_transaction_id"]
+            isOneToOne: true
+            referencedRelation: "v_trip_travel_summary"
+            referencedColumns: ["trip_transaction_id"]
           },
         ]
       }
@@ -1212,6 +1236,8 @@ export type Database = {
           last_modified_at: string | null
           last_modified_by: string | null
           notes: string | null
+          related_record_id: string | null
+          related_record_type: string | null
           split_type: Database["public"]["Enums"]["acc_transaction_split_type"]
           status: Database["public"]["Enums"]["transaction_status"]
           total_amount: number | null
@@ -1231,6 +1257,8 @@ export type Database = {
           last_modified_at?: string | null
           last_modified_by?: string | null
           notes?: string | null
+          related_record_id?: string | null
+          related_record_type?: string | null
           split_type?: Database["public"]["Enums"]["acc_transaction_split_type"]
           status?: Database["public"]["Enums"]["transaction_status"]
           total_amount?: number | null
@@ -1250,6 +1278,8 @@ export type Database = {
           last_modified_at?: string | null
           last_modified_by?: string | null
           notes?: string | null
+          related_record_id?: string | null
+          related_record_type?: string | null
           split_type?: Database["public"]["Enums"]["acc_transaction_split_type"]
           status?: Database["public"]["Enums"]["transaction_status"]
           total_amount?: number | null
@@ -1312,6 +1342,7 @@ export type Database = {
           origin: string
           status: Database["public"]["Enums"]["transaction_status"]
           trip_id: string
+          trip_transaction_id: string | null
         }
         Insert: {
           capacity?: number | null
@@ -1330,6 +1361,7 @@ export type Database = {
           origin: string
           status?: Database["public"]["Enums"]["transaction_status"]
           trip_id: string
+          trip_transaction_id?: string | null
         }
         Update: {
           capacity?: number | null
@@ -1348,6 +1380,7 @@ export type Database = {
           origin?: string
           status?: Database["public"]["Enums"]["transaction_status"]
           trip_id?: string
+          trip_transaction_id?: string | null
         }
         Relationships: [
           {
@@ -1370,6 +1403,27 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_trip_financial_summary"
             referencedColumns: ["trip_id"]
+          },
+          {
+            foreignKeyName: "trip_travel_trip_transaction_id_fkey"
+            columns: ["trip_transaction_id"]
+            isOneToOne: true
+            referencedRelation: "trip_transaction"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_travel_trip_transaction_id_fkey"
+            columns: ["trip_transaction_id"]
+            isOneToOne: true
+            referencedRelation: "v_trip_accommodation_summary"
+            referencedColumns: ["trip_transaction_id"]
+          },
+          {
+            foreignKeyName: "trip_travel_trip_transaction_id_fkey"
+            columns: ["trip_transaction_id"]
+            isOneToOne: true
+            referencedRelation: "v_trip_travel_summary"
+            referencedColumns: ["trip_transaction_id"]
           },
         ]
       }
@@ -1928,12 +1982,15 @@ export type Database = {
           accommodation_units: Json[] | null
           check_in_date: string | null
           check_out_date: string | null
+          currency_iso_code: string | null
           description: string | null
           id: string | null
           name: string | null
-          status: Database["public"]["Enums"]["trip_status"] | null
+          status: Database["public"]["Enums"]["transaction_status"] | null
           stay_duration_days: number | null
+          total_amount: number | null
           trip_id: string | null
+          trip_transaction_id: string | null
         }
         Relationships: [
           {
@@ -2054,6 +2111,7 @@ export type Database = {
       v_trip_travel_summary: {
         Row: {
           capacity: number | null
+          currency_iso_code: string | null
           description: string | null
           destination: string | null
           duration: number | null
@@ -2066,7 +2124,9 @@ export type Database = {
           name: string | null
           origin: string | null
           status: Database["public"]["Enums"]["transaction_status"] | null
+          total_amount: number | null
           trip_id: string | null
+          trip_transaction_id: string | null
           trip_travel_assignments: Json[] | null
         }
         Relationships: [
@@ -2130,6 +2190,14 @@ export type Database = {
       }
       accommodation_unit_assignment_set: {
         Args: { p_accommodation_unit_id: string; p_trip_participant_id: string }
+        Returns: undefined
+      }
+      associate_trip_transaction: {
+        Args: {
+          p_related_record_id: string
+          p_related_record_type: string
+          p_trip_transaction_id: string
+        }
         Returns: undefined
       }
       check_table_rls_permissions: {

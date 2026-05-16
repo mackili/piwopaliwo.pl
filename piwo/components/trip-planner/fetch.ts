@@ -1,5 +1,11 @@
 "use server";
-import { Enums, Tables, TablesInsert, TablesUpdate } from "@/database.types";
+import {
+    Database,
+    Enums,
+    Tables,
+    TablesInsert,
+    TablesUpdate,
+} from "@/database.types";
 import { createClient } from "@/utils/supabase/server";
 import {
     TripAccommodationSummaryView,
@@ -119,6 +125,14 @@ async function upsertTripTransaction(
         .upsert(transaction, { onConflict: "id" })
         .select()
         .single();
+}
+
+async function deleteTripTransaction(transactionId: string) {
+    const supabase = await createClient();
+    return await supabase
+        .from("trip_transaction")
+        .delete()
+        .eq("id", transactionId);
 }
 
 async function fetchPlannedFinanceStatistics(tripId: string) {
@@ -321,6 +335,46 @@ async function deleteTravelAssignment(
         .eq("trip_participant_id", tripParticipantId);
 }
 
+async function fetchUnlinkedTransactions(tripId: string) {
+    const supabase = await createClient();
+    return await supabase
+        .from("trip_transaction")
+        .select("id,description,total_amount,currency_iso_code")
+        .eq("trip_id", tripId)
+        .is("related_record_id", null)
+        .order("description", { ascending: true });
+}
+
+async function fetchTransactionById(transactionId: string) {
+    const supabase = await createClient();
+    return await supabase
+        .from("trip_transaction")
+        .select(
+            "id,description,total_amount,currency_iso_code,related_record_id",
+        )
+        .eq("id", transactionId)
+        .limit(1)
+        .single();
+}
+
+async function updateLinkedTransaction({
+    transactionId,
+    recordId,
+    recordType,
+}: {
+    transactionId: string | null;
+    recordId: string;
+    recordType: keyof Database["public"]["Tables"];
+}) {
+    const supabase = await createClient();
+    const updateResponse = await supabase
+        .from(recordType)
+        .update({ trip_transaction_id: transactionId })
+        .eq("id", recordId);
+    if (!transactionId || updateResponse.error) return updateResponse;
+    return await fetchTransactionById(transactionId);
+}
+
 export {
     fetchTrips,
     fetchTripDetails,
@@ -329,6 +383,7 @@ export {
     inviteParticipants,
     fetchTripTransactions,
     upsertTripTransaction,
+    deleteTripTransaction,
     fetchPlannedFinanceStatistics,
     fetchTripTransactionTotalAmount,
     fetchTripAccommodationSummary,
@@ -346,4 +401,7 @@ export {
     deleteTransport,
     upsertTravelAssignment,
     deleteTravelAssignment,
+    fetchUnlinkedTransactions,
+    fetchTransactionById,
+    updateLinkedTransaction,
 };

@@ -1,4 +1,4 @@
-import { ComponentProps } from "react";
+import { ComponentProps, ReactElement } from "react";
 import { twMerge } from "tailwind-merge";
 
 export default function DetailField({
@@ -9,7 +9,7 @@ export default function DetailField({
     ...props
 }: {
     detailName: string;
-    detailValue: string;
+    detailValue: string | ReactElement;
     detailLabel?: string;
 } & ComponentProps<"div">) {
     return (

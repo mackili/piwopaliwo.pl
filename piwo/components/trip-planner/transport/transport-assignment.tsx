@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/combobox";
 import { UserAvatar } from "@/components/user-avatar";
 import { Tables } from "@/database.types";
-import { ComponentProps, useContext, useState } from "react";
+import { ComponentProps, startTransition, useContext, useState } from "react";
 import { TransportChangeAction, TransportChangeEventType } from "../reducers";
 import { deleteTravelAssignment, upsertTravelAssignment } from "../fetch";
 import { twMerge } from "tailwind-merge";
@@ -121,15 +121,16 @@ export default function TransportAssignment({
     assignment,
     tripTravelId,
     onChange,
+    optimisticOnChange,
 }: {
     assignment?: Tables<"v_trip_participant_details">;
     tripTravelId: string;
     onChange: (action: TransportChangeAction) => void;
+    optimisticOnChange: (action: TransportChangeAction) => void;
 }) {
     const [mode, setMode] = useState<TravelAssignmentModes>(
         assignment ? TravelAssignmentModes.READ : TravelAssignmentModes.SET,
     );
-    const [isPending, setPending] = useState<boolean>(false);
     const handleEdit = () => {
         setMode(TravelAssignmentModes.EDIT);
     };
@@ -137,37 +138,64 @@ export default function TransportAssignment({
     const handleChange = async (
         value: Tables<"v_trip_participant_details"> | null,
     ) => {
-        setPending(true);
-        if (value?.id) {
-            const previousValue = assignment;
-            if (previousValue?.id) {
-                await deleteTravelAssignment(tripTravelId, previousValue.id);
-            }
-            await upsertTravelAssignment(tripTravelId, value.id);
-            onChange({
-                type: TransportChangeEventType.PARTICIPANT_ASSIGNED,
-                payload: {
-                    assigned: { ...value, trip_travel_id: tripTravelId },
-                    removed: previousValue
-                        ? {
-                              ...previousValue,
-                          }?.id
-                        : null,
-                },
-            });
-            setMode(TravelAssignmentModes.READ);
-        } else {
-            const previousValue = { ...assignment };
-            if (previousValue && previousValue?.id) {
-                await deleteTravelAssignment(tripTravelId, previousValue.id);
-                onChange({
-                    type: TransportChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED,
-                    payload: previousValue.id,
+        startTransition(async () => {
+            if (value?.id) {
+                const previousValue = assignment;
+                optimisticOnChange({
+                    type: TransportChangeEventType.PARTICIPANT_ASSIGNED,
+                    payload: {
+                        assigned: {
+                            ...value,
+                            trip_travel_id: tripTravelId,
+                        },
+                        removed: previousValue
+                            ? {
+                                  ...previousValue,
+                              }?.id
+                            : null,
+                    },
                 });
+                setMode(TravelAssignmentModes.READ);
+                if (previousValue?.id) {
+                    await deleteTravelAssignment(
+                        tripTravelId,
+                        previousValue.id,
+                    );
+                }
+                await upsertTravelAssignment(tripTravelId, value.id);
+                onChange({
+                    type: TransportChangeEventType.PARTICIPANT_ASSIGNED,
+                    payload: {
+                        assigned: {
+                            ...value,
+                            trip_travel_id: tripTravelId,
+                        },
+                        removed: previousValue
+                            ? {
+                                  ...previousValue,
+                              }?.id
+                            : null,
+                    },
+                });
+            } else {
+                setMode(TravelAssignmentModes.SET);
+                const previousValue = { ...assignment };
+                if (previousValue && previousValue?.id) {
+                    optimisticOnChange({
+                        type: TransportChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED,
+                        payload: previousValue.id,
+                    });
+                    await deleteTravelAssignment(
+                        tripTravelId,
+                        previousValue.id,
+                    );
+                    onChange({
+                        type: TransportChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED,
+                        payload: previousValue.id,
+                    });
+                }
             }
-            setMode(TravelAssignmentModes.SET);
-        }
-        setPending(false);
+        });
     };
 
     return assignment && mode === TravelAssignmentModes.READ ? (
@@ -181,13 +209,11 @@ export default function TransportAssignment({
             accommodationUnitId={tripTravelId}
             selectedParticipant={assignment}
             onChange={handleChange}
-            disabled={isPending}
         />
     ) : (
         <SetAccommodationUnitAssignment
             accommodationUnitId={tripTravelId}
             onChange={handleChange}
-            disabled={isPending}
         />
     );
 }

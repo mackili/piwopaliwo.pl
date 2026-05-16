@@ -131,9 +131,10 @@ export const publicAccommodationRowSchema = z.object({
   last_modified_at: z.string().nullable(),
   last_modified_by: z.string().nullable(),
   name: z.string(),
-  status: publicTripStatusSchema,
+  status: publicTransactionStatusSchema,
   stay_duration_days: z.number().nullable(),
   trip_id: z.string(),
+  trip_transaction_id: z.string().nullable(),
 });
 
 export const publicAccommodationInsertSchema = z.object({
@@ -146,9 +147,10 @@ export const publicAccommodationInsertSchema = z.object({
   last_modified_at: z.string().optional().nullable(),
   last_modified_by: z.string().optional().nullable(),
   name: z.string(),
-  status: publicTripStatusSchema.optional(),
+  status: publicTransactionStatusSchema.optional(),
   stay_duration_days: z.number().optional().nullable(),
   trip_id: z.string(),
+  trip_transaction_id: z.string().optional().nullable(),
 });
 
 export const publicAccommodationUpdateSchema = z.object({
@@ -161,9 +163,10 @@ export const publicAccommodationUpdateSchema = z.object({
   last_modified_at: z.string().optional().nullable(),
   last_modified_by: z.string().optional().nullable(),
   name: z.string().optional(),
-  status: publicTripStatusSchema.optional(),
+  status: publicTransactionStatusSchema.optional(),
   stay_duration_days: z.number().optional().nullable(),
   trip_id: z.string().optional(),
+  trip_transaction_id: z.string().optional().nullable(),
 });
 
 export const publicAccommodationRelationshipsSchema = z.tuple([
@@ -187,6 +190,27 @@ export const publicAccommodationRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_financial_summary"),
     referencedColumns: z.tuple([z.literal("trip_id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("accommodation_trip_transaction_id_fkey"),
+    columns: z.tuple([z.literal("trip_transaction_id")]),
+    isOneToOne: z.literal(true),
+    referencedRelation: z.literal("trip_transaction"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("accommodation_trip_transaction_id_fkey"),
+    columns: z.tuple([z.literal("trip_transaction_id")]),
+    isOneToOne: z.literal(true),
+    referencedRelation: z.literal("v_trip_accommodation_summary"),
+    referencedColumns: z.tuple([z.literal("trip_transaction_id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("accommodation_trip_transaction_id_fkey"),
+    columns: z.tuple([z.literal("trip_transaction_id")]),
+    isOneToOne: z.literal(true),
+    referencedRelation: z.literal("v_trip_travel_summary"),
+    referencedColumns: z.tuple([z.literal("trip_transaction_id")]),
   }),
 ]);
 
@@ -1386,6 +1410,8 @@ export const publicTripTransactionRowSchema = z.object({
   last_modified_at: z.string().nullable(),
   last_modified_by: z.string().nullable(),
   notes: z.string().nullable(),
+  related_record_id: z.string().nullable(),
+  related_record_type: z.string().nullable(),
   split_type: publicAccTransactionSplitTypeSchema,
   status: publicTransactionStatusSchema,
   total_amount: z.number().nullable(),
@@ -1406,6 +1432,8 @@ export const publicTripTransactionInsertSchema = z.object({
   last_modified_at: z.string().optional().nullable(),
   last_modified_by: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
+  related_record_id: z.string().optional().nullable(),
+  related_record_type: z.string().optional().nullable(),
   split_type: publicAccTransactionSplitTypeSchema.optional(),
   status: publicTransactionStatusSchema.optional(),
   total_amount: z.number().optional().nullable(),
@@ -1426,6 +1454,8 @@ export const publicTripTransactionUpdateSchema = z.object({
   last_modified_at: z.string().optional().nullable(),
   last_modified_by: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
+  related_record_id: z.string().optional().nullable(),
+  related_record_type: z.string().optional().nullable(),
   split_type: publicAccTransactionSplitTypeSchema.optional(),
   status: publicTransactionStatusSchema.optional(),
   total_amount: z.number().optional().nullable(),
@@ -1488,6 +1518,7 @@ export const publicTripTravelRowSchema = z.object({
   origin: z.string(),
   status: publicTransactionStatusSchema,
   trip_id: z.string(),
+  trip_transaction_id: z.string().nullable(),
 });
 
 export const publicTripTravelInsertSchema = z.object({
@@ -1507,6 +1538,7 @@ export const publicTripTravelInsertSchema = z.object({
   origin: z.string(),
   status: publicTransactionStatusSchema.optional(),
   trip_id: z.string(),
+  trip_transaction_id: z.string().optional().nullable(),
 });
 
 export const publicTripTravelUpdateSchema = z.object({
@@ -1526,6 +1558,7 @@ export const publicTripTravelUpdateSchema = z.object({
   origin: z.string().optional(),
   status: publicTransactionStatusSchema.optional(),
   trip_id: z.string().optional(),
+  trip_transaction_id: z.string().optional().nullable(),
 });
 
 export const publicTripTravelRelationshipsSchema = z.tuple([
@@ -1549,6 +1582,27 @@ export const publicTripTravelRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_financial_summary"),
     referencedColumns: z.tuple([z.literal("trip_id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_travel_trip_transaction_id_fkey"),
+    columns: z.tuple([z.literal("trip_transaction_id")]),
+    isOneToOne: z.literal(true),
+    referencedRelation: z.literal("trip_transaction"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_travel_trip_transaction_id_fkey"),
+    columns: z.tuple([z.literal("trip_transaction_id")]),
+    isOneToOne: z.literal(true),
+    referencedRelation: z.literal("v_trip_accommodation_summary"),
+    referencedColumns: z.tuple([z.literal("trip_transaction_id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_travel_trip_transaction_id_fkey"),
+    columns: z.tuple([z.literal("trip_transaction_id")]),
+    isOneToOne: z.literal(true),
+    referencedRelation: z.literal("v_trip_travel_summary"),
+    referencedColumns: z.tuple([z.literal("trip_transaction_id")]),
   }),
 ]);
 
@@ -2135,12 +2189,15 @@ export const publicVTripAccommodationSummaryRowSchema = z.object({
   accommodation_units: z.array(jsonSchema).nullable(),
   check_in_date: z.string().nullable(),
   check_out_date: z.string().nullable(),
+  currency_iso_code: z.string().nullable(),
   description: z.string().nullable(),
   id: z.string().nullable(),
   name: z.string().nullable(),
-  status: publicTripStatusSchema.nullable(),
+  status: publicTransactionStatusSchema.nullable(),
   stay_duration_days: z.number().nullable(),
+  total_amount: z.number().nullable(),
   trip_id: z.string().nullable(),
+  trip_transaction_id: z.string().nullable(),
 });
 
 export const publicVTripAccommodationSummaryRelationshipsSchema = z.tuple([
@@ -2257,6 +2314,7 @@ export const publicVTripParticipantDetailsRelationshipsSchema = z.tuple([
 
 export const publicVTripTravelSummaryRowSchema = z.object({
   capacity: z.number().nullable(),
+  currency_iso_code: z.string().nullable(),
   description: z.string().nullable(),
   destination: z.string().nullable(),
   duration: z.number().nullable(),
@@ -2267,7 +2325,9 @@ export const publicVTripTravelSummaryRowSchema = z.object({
   name: z.string().nullable(),
   origin: z.string().nullable(),
   status: publicTransactionStatusSchema.nullable(),
+  total_amount: z.number().nullable(),
   trip_id: z.string().nullable(),
+  trip_transaction_id: z.string().nullable(),
   trip_travel_assignments: z.array(jsonSchema).nullable(),
 });
 
@@ -2340,6 +2400,14 @@ export const publicAccommodationUnitAssignmentSetArgsSchema = z.object({
 });
 
 export const publicAccommodationUnitAssignmentSetReturnsSchema = z.undefined();
+
+export const publicAssociateTripTransactionArgsSchema = z.object({
+  p_related_record_id: z.string(),
+  p_related_record_type: z.string(),
+  p_trip_transaction_id: z.string(),
+});
+
+export const publicAssociateTripTransactionReturnsSchema = z.undefined();
 
 export const publicCheckTableRlsPermissionsArgsSchema = z.object({
   p_operations: z.array(z.string()).optional(),

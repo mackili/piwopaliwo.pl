@@ -9,7 +9,8 @@ export type TripParticipantPermissions =
     | "modify_accommodation"
     | "assign_accommodation"
     | "modify_transport"
-    | "assign_transport";
+    | "assign_transport"
+    | "plan_budget";
 
 const PARTICIPANT_PERMISSIONS_MATRIX: {
     role: Enums<"trip_participant_role">;
@@ -26,6 +27,7 @@ const PARTICIPANT_PERMISSIONS_MATRIX: {
             "assign_accommodation",
             "modify_transport",
             "assign_transport",
+            "plan_budget",
         ],
     },
     {
@@ -39,6 +41,7 @@ const PARTICIPANT_PERMISSIONS_MATRIX: {
             "assign_accommodation",
             "modify_transport",
             "assign_transport",
+            "plan_budget",
         ],
     },
     {

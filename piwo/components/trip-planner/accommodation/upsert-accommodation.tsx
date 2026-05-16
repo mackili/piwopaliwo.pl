@@ -33,7 +33,7 @@ export enum UpsertAccommodationVariant {
     EDIT = "EDIT",
 }
 
-const ACCOMMODATION_STATUSES = Constants.public.Enums.trip_status;
+const ACCOMMODATION_STATUSES = Constants.public.Enums.transaction_status;
 
 export default function UpsertAccommodation({
     tripId,

@@ -13,6 +13,7 @@ import AccommodationUnitCard from "./accommodation-unit-card";
 import { useMemo } from "react";
 import {
     AccommodationModificationChangeAction,
+    AccommodationModificationSplitChangeEventType,
     calculateAccommodationTotalCapacity,
     calculateAccommodationUsedCapacity,
 } from "../reducers";
@@ -23,15 +24,21 @@ import UpsertAccommodation, {
 } from "./upsert-accommodation";
 import DeleteAccommodation from "./delete-accommodation";
 import DetailField from "@/components/ui/detail-field";
+import LinkTransaction from "../cost-planning/link-transaction";
+import { TripTransactionStatusPill } from "../icon-factories";
 
 export default function TripAccommodationCard({
     accommodationData,
     currentTripParticipant,
     setAccommodationData,
+    setOptimisticAccommodationData,
 }: {
     accommodationData: TripAccommodationSummaryView;
     currentTripParticipant: Tables<"v_trip_participant_details">;
     setAccommodationData: (
+        action: AccommodationModificationChangeAction,
+    ) => void;
+    setOptimisticAccommodationData: (
         action: AccommodationModificationChangeAction,
     ) => void;
 }) {
@@ -47,6 +54,29 @@ export default function TripAccommodationCard({
         ],
         [accommodationData.accommodation_units],
     );
+    const handleTransactionLinkUnlink = (
+        payload: null | {
+            id: string;
+            description: string;
+            total_amount: number | null;
+            currency_iso_code: string;
+            related_record_id: string | null;
+        },
+    ) => {
+        if (payload) {
+            setAccommodationData({
+                type: AccommodationModificationSplitChangeEventType.TRANSACTION_LINKED,
+                payload: payload,
+            });
+        } else {
+            if (accommodationData?.id) {
+                setAccommodationData({
+                    type: AccommodationModificationSplitChangeEventType.TRANSACTION_UNLINKED,
+                    payload: accommodationData.id,
+                });
+            }
+        }
+    };
     return (
         <Card>
             <CardHeader>
@@ -62,6 +92,25 @@ export default function TripAccommodationCard({
                             permission: "modify_accommodation",
                         }) && (
                             <>
+                                {permissionsReducer({
+                                    tripParticipantRole:
+                                        currentTripParticipant.role,
+                                    permission: "plan_budget",
+                                }) &&
+                                    accommodationData?.trip_id &&
+                                    accommodationData?.id && (
+                                        <LinkTransaction
+                                            tripId={accommodationData.trip_id}
+                                            recordId={accommodationData.id}
+                                            recordType="accommodation"
+                                            transactionId={
+                                                accommodationData.trip_transaction_id
+                                            }
+                                            onSuccess={
+                                                handleTransactionLinkUnlink
+                                            }
+                                        />
+                                    )}
                                 <UpsertAccommodation
                                     variant={UpsertAccommodationVariant.EDIT}
                                     tripId={accommodationData.trip_id}
@@ -81,7 +130,11 @@ export default function TripAccommodationCard({
                     {accommodationData?.status && (
                         <DetailField
                             detailName="Status"
-                            detailValue={accommodationData.status}
+                            detailValue={
+                                <TripTransactionStatusPill
+                                    status={accommodationData.status}
+                                />
+                            }
                         />
                     )}
                     {accommodationData?.check_in_date && (
@@ -120,12 +173,17 @@ export default function TripAccommodationCard({
                         detailName="Capacity Available"
                         detailValue={String(totalCapacity - usedCapacity)}
                     />
-                    {/* {accommodation?.total && (
-                        <DetailField
-                            detailName="Total"
-                            detailValue={accommodation.total}
-                        />
-                    )} */}
+                    {accommodationData?.total_amount &&
+                        accommodationData?.currency_iso_code && (
+                            <DetailField
+                                detailName="Total Amount"
+                                detailValue={Intl.NumberFormat(locale, {
+                                    style: "currency",
+                                    currency:
+                                        accommodationData.currency_iso_code,
+                                }).format(accommodationData.total_amount)}
+                            />
+                        )}
                 </div>
                 <div className="pt-4 space-y-4 @container">
                     <div className="font-semibold">
@@ -140,6 +198,9 @@ export default function TripAccommodationCard({
                                         accommodationUnit={accommodationUnit}
                                         onAccommodationUnitChange={
                                             setAccommodationData
+                                        }
+                                        onOptimisticAccommodationUnitChange={
+                                            setOptimisticAccommodationData
                                         }
                                         currentParticipantRole={
                                             currentTripParticipant.role

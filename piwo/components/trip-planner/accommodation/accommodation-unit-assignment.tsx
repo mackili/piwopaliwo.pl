@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/combobox";
 import { UserAvatar } from "@/components/user-avatar";
 import { Tables } from "@/database.types";
-import { ComponentProps, useContext, useState } from "react";
+import { ComponentProps, startTransition, useContext, useState } from "react";
 import { TripParticipantsContext } from "./accommodation-cards-overview";
 import {
     AccommodationModificationChangeAction,
@@ -119,17 +119,18 @@ export default function AccommodationUnitAssignment({
     assignment,
     accommodationUnitId,
     onChange,
+    onOptimisticChange,
 }: {
     assignment?: Tables<"v_trip_participant_details">;
     accommodationUnitId: string;
     onChange: (action: AccommodationModificationChangeAction) => void;
+    onOptimisticChange: (action: AccommodationModificationChangeAction) => void;
 }) {
     const [mode, setMode] = useState<AccommodationUnitAssignmentModes>(
         assignment
             ? AccommodationUnitAssignmentModes.READ
             : AccommodationUnitAssignmentModes.SET,
     );
-    const [isPending, setPending] = useState<boolean>(false);
     const handleEdit = () => {
         setMode(AccommodationUnitAssignmentModes.EDIT);
     };
@@ -137,47 +138,69 @@ export default function AccommodationUnitAssignment({
     const handleChange = async (
         value: Tables<"v_trip_participant_details"> | null,
     ) => {
-        setPending(true);
-        if (value?.id) {
-            const previousValue = assignment;
-            if (previousValue?.id) {
-                await removeAccommodationAssignment(
-                    previousValue.id,
-                    accommodationUnitId,
-                );
-            }
-            await upsertAccommodationAssignments(value.id, accommodationUnitId);
-            onChange({
-                type: AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNED,
-                payload: {
-                    assigned: {
-                        ...value,
-                        accommodation_unit_id: accommodationUnitId,
+        startTransition(async () => {
+            if (value?.id) {
+                const previousValue = assignment;
+                onOptimisticChange({
+                    type: AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNED,
+                    payload: {
+                        assigned: {
+                            ...value,
+                            accommodation_unit_id: accommodationUnitId,
+                        },
+                        removed: previousValue
+                            ? {
+                                  ...previousValue,
+                                  accommodation_unit_id: accommodationUnitId,
+                              }
+                            : null,
                     },
-                    removed: previousValue
-                        ? {
-                              ...previousValue,
-                              accommodation_unit_id: accommodationUnitId,
-                          }
-                        : null,
-                },
-            });
-            setMode(AccommodationUnitAssignmentModes.READ);
-        } else {
-            const previousValue = { ...assignment };
-            if (previousValue && previousValue?.id) {
-                await removeAccommodationAssignment(
-                    previousValue.id,
+                });
+                if (previousValue?.id) {
+                    await removeAccommodationAssignment(
+                        previousValue.id,
+                        accommodationUnitId,
+                    );
+                }
+                await upsertAccommodationAssignments(
+                    value.id,
                     accommodationUnitId,
                 );
                 onChange({
-                    type: AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED,
-                    payload: previousValue.id,
+                    type: AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNED,
+                    payload: {
+                        assigned: {
+                            ...value,
+                            accommodation_unit_id: accommodationUnitId,
+                        },
+                        removed: previousValue
+                            ? {
+                                  ...previousValue,
+                                  accommodation_unit_id: accommodationUnitId,
+                              }
+                            : null,
+                    },
                 });
+                setMode(AccommodationUnitAssignmentModes.READ);
+            } else {
+                const previousValue = { ...assignment };
+                if (previousValue && previousValue?.id) {
+                    onOptimisticChange({
+                        type: AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED,
+                        payload: previousValue.id,
+                    });
+                    await removeAccommodationAssignment(
+                        previousValue.id,
+                        accommodationUnitId,
+                    );
+                    onChange({
+                        type: AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED,
+                        payload: previousValue.id,
+                    });
+                }
+                setMode(AccommodationUnitAssignmentModes.SET);
             }
-            setMode(AccommodationUnitAssignmentModes.SET);
-        }
-        setPending(false);
+        });
     };
 
     return assignment && mode === AccommodationUnitAssignmentModes.READ ? (
@@ -191,13 +214,11 @@ export default function AccommodationUnitAssignment({
             accommodationUnitId={accommodationUnitId}
             selectedParticipant={assignment}
             onChange={handleChange}
-            disabled={isPending}
         />
     ) : (
         <SetAccommodationUnitAssignment
             accommodationUnitId={accommodationUnitId}
             onChange={handleChange}
-            disabled={isPending}
         />
     );
 }

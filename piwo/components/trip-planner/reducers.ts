@@ -120,7 +120,7 @@ function transactionSplitTableReducer(
     state: TransactionSplitChangePayload,
     action: TransactionSplitChangeAction,
 ) {
-    let result = state;
+    const result = state;
     switch (action.type) {
         case "CHECK":
             break;
@@ -157,6 +157,8 @@ export enum AccommodationModificationSplitChangeEventType {
     PARTICIPANT_ASSIGNMENT_REMOVED = "PARTICIPANT_ASSIGNMENT_REMOVED",
     ACCOMMODATION_DETAILS_CHANGED = "ACCOMMODATION_DETAILS_CHANGED",
     ACCOMMODATION_DELETED = "ACCOMMODATION_DELETED",
+    TRANSACTION_LINKED = "TRANSACTION_LINKED",
+    TRANSACTION_UNLINKED = "TRANSACTION_UNLINKED",
 }
 
 // Mapped type for better readability and maintainability
@@ -177,6 +179,14 @@ export type AccommodationModificationChangePayloadMap = {
     [AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED]: string;
     [AccommodationModificationSplitChangeEventType.ACCOMMODATION_DETAILS_CHANGED]: Tables<"accommodation">;
     [AccommodationModificationSplitChangeEventType.ACCOMMODATION_DELETED]: string;
+    [AccommodationModificationSplitChangeEventType.TRANSACTION_LINKED]: {
+        id: string;
+        description: string;
+        total_amount: number | null;
+        currency_iso_code: string;
+        related_record_id: string | null;
+    };
+    [AccommodationModificationSplitChangeEventType.TRANSACTION_UNLINKED]: string;
 };
 
 // Conditional type for payload
@@ -194,7 +204,6 @@ function accommodationModificationReducer(
     action: AccommodationModificationChangeAction,
 ) {
     const resultArray = [...state];
-    // let result = { ...state };
     return resultArray.map((result) => {
         switch (action.type) {
             case AccommodationModificationSplitChangeEventType.UNIT_ADDED:
@@ -297,13 +306,31 @@ function accommodationModificationReducer(
                     result.accommodation_units,
                 );
                 break;
+            case AccommodationModificationSplitChangeEventType.TRANSACTION_LINKED:
+                return result?.id === action.payload.related_record_id
+                    ? {
+                          ...result,
+                          currency_iso_code: action.payload.currency_iso_code,
+                          total_amount: action.payload.total_amount,
+                          trip_transaction_id: action.payload.id,
+                      }
+                    : result;
+                break;
+            case AccommodationModificationSplitChangeEventType.TRANSACTION_UNLINKED:
+                return result?.id === action.payload
+                    ? {
+                          ...result,
+                          currency_iso_code: null,
+                          total_amount: null,
+                          trip_transaction_id: null,
+                      }
+                    : result;
+                break;
             default:
                 break;
         }
         return result;
     });
-    // console.log(resultArray);
-    // return resultArray;
 }
 
 function calculateAccommodationTotalCapacity(
@@ -328,6 +355,8 @@ export enum TransportChangeEventType {
     PARTICIPANT_ASSIGNED = "PARTICIPANT_ASSIGNED",
     PARTICIPANT_ASSIGNMENT_REMOVED = "PARTICIPANT_ASSIGNMENT_REMOVED",
     TRANSPORT_DETAILS_CHANGED = "TRANSPORT_DETAILS_CHANGED",
+    TRANSACTION_LINKED = "TRANSACTION_LINKED",
+    TRANSACTION_UNLINKED = "TRANSACTION_UNLINKED",
 }
 
 // Mapped type for better readability and maintainability
@@ -340,6 +369,14 @@ export type TransportChangePayloadMap = {
     };
     [TransportChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED]: string;
     [TransportChangeEventType.TRANSPORT_DETAILS_CHANGED]: Tables<"trip_travel">;
+    [TransportChangeEventType.TRANSACTION_LINKED]: {
+        id: string;
+        description: string;
+        total_amount: number | null;
+        currency_iso_code: string;
+        related_record_id: string | null;
+    };
+    [TransportChangeEventType.TRANSACTION_UNLINKED]: null;
 };
 
 // Conditional type for payload
@@ -379,6 +416,22 @@ function transportChangeReducer(
                         []) as Tables<"v_trip_participant_details">[]
                 ).filter((assignment) => assignment.id !== action.payload),
             ];
+            break;
+        case TransportChangeEventType.TRANSACTION_LINKED:
+            result = {
+                ...state,
+                total_amount: action.payload.total_amount,
+                currency_iso_code: action.payload.currency_iso_code,
+                trip_transaction_id: action.payload.id,
+            };
+            break;
+        case TransportChangeEventType.TRANSACTION_UNLINKED:
+            result = {
+                ...state,
+                total_amount: null,
+                currency_iso_code: null,
+                trip_transaction_id: null,
+            };
             break;
         default:
             break;
