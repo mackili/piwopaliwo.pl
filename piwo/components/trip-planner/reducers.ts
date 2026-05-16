@@ -47,20 +47,35 @@ function countPotentialParticipants({
 function getTripLength({
     startdate,
     endDate,
+    unit = "days",
 }: {
     startdate: Date;
     endDate: Date;
+    unit?: "days" | "hours" | "minutes";
 }) {
     // One day in milliseconds
     const oneDay = 1000 * 60 * 60 * 24;
+    const oneHour = 1000 * 60 * 60;
+    const oneMinute = 1000 * 60;
 
     // Calculating the time difference between two dates
     const diffInTime = endDate.getTime() - startdate.getTime();
 
     // Calculating the no. of days between two dates
-    const diffInDays = Math.round(diffInTime / oneDay);
-
-    return diffInDays;
+    switch (unit) {
+        case "days":
+            return Math.floor(diffInTime / oneDay);
+            break;
+        case "hours":
+            return Math.floor(diffInTime / oneHour);
+            break;
+        case "minutes":
+            return Math.floor(diffInTime / oneMinute);
+            break;
+        default:
+            return diffInTime;
+            break;
+    }
 }
 
 function transactionSplitAmountLabelReducer(
@@ -350,7 +365,9 @@ function transportChangeReducer(
                     (result.trip_travel_assignments ||
                         []) as Tables<"v_trip_participant_details">[]
                 ).filter(
-                    (assignment) => assignment.id !== action.payload?.removed,
+                    (assignment) =>
+                        assignment.id !== action.payload?.removed &&
+                        assignment.id !== action.payload.assigned?.id,
                 ),
                 action.payload.assigned,
             ];

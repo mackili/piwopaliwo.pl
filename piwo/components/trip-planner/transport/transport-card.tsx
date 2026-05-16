@@ -12,7 +12,6 @@ import { Enums, Tables, TablesInsert } from "@/database.types";
 import TransportTypeIcon from "./transport-type-icon";
 import DetailField from "@/components/ui/detail-field";
 import { useCurrentLocale } from "@/locales/client";
-import { ParticipantRow } from "../accommodation/accommodation-unit-assignment";
 import { permissionsReducer } from "../permissions";
 import UpsertTransport, { UpsertTransportVariant } from "./upsert-transport";
 import { useReducer } from "react";
@@ -159,9 +158,12 @@ export default function TransportCard({
                                         onChange={setTransportData}
                                     />
                                 ))}
-                                {(transportData?.capacity || 0) >
-                                    (transportData?.trip_travel_assignments
-                                        ?.length || 0) && (
+                                {(!transport?.capacity ||
+                                    (transport?.capacity &&
+                                        transport?.trip_travel_assignments &&
+                                        transport.capacity >
+                                            transport.trip_travel_assignments
+                                                .length)) && (
                                     <TransportAssignment
                                         tripTravelId={transportData.id}
                                         onChange={setTransportData}

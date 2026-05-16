@@ -269,6 +269,7 @@ async function fetchTripTransportSummary(tripId: string) {
         .from("v_trip_travel_summary")
         .select("*")
         .eq("trip_id", tripId)
+        .order("estimated_departure", { ascending: true })
         .overrideTypes<
             Array<{ assignments: Tables<"v_trip_participant_details"> }>
         >();

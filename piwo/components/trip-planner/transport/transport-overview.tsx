@@ -42,13 +42,17 @@ export default async function TransportOverview({
             </div>
             <div className="space-y-4">
                 <PostgrestErrorDisplay error={error} />
-                {data?.map((travel) => (
-                    <TransportCard
-                        transport={travel}
-                        key={travel.id}
-                        currentParticipantRole={currentTripParticipant?.role}
-                        potentialParticipants={potentialParticipants || []}
-                    />
+                {data?.map((travel, index) => (
+                    <>
+                        <TransportCard
+                            transport={travel}
+                            key={travel.id}
+                            currentParticipantRole={
+                                currentTripParticipant?.role
+                            }
+                            potentialParticipants={potentialParticipants || []}
+                        />
+                    </>
                 ))}
                 {currentTripParticipant?.role &&
                     permissionsReducer({
