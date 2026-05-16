@@ -15,6 +15,7 @@ import { TransportChangeAction, TransportChangeEventType } from "../reducers";
 import { deleteTravelAssignment, upsertTravelAssignment } from "../fetch";
 import { twMerge } from "tailwind-merge";
 import { TripParticipantsContext } from "../accommodation/accommodation-cards-overview";
+import { TravelAssignedParticipantContext } from "./transport-card";
 
 export enum TravelAssignmentModes {
     READ = "READ",
@@ -36,14 +37,21 @@ export function SetAccommodationUnitAssignment({
     disabled?: boolean;
 }) {
     const participants = useContext(TripParticipantsContext);
+    const assignedParticipants = useContext(TravelAssignedParticipantContext);
     const handleSelect = (
         value: Tables<"v_trip_participant_details"> | null,
     ) => {
         if (onChange) onChange(value);
     };
+    const availableParticipants = participants.filter(
+        (participant) =>
+            participant?.id &&
+            (!assignedParticipants.includes(participant.id) ||
+                selectedParticipant?.id === participant.id),
+    );
     return (
         <Combobox
-            items={participants}
+            items={availableParticipants}
             itemToStringLabel={(
                 participant: Tables<"v_trip_participant_details">,
             ) =>

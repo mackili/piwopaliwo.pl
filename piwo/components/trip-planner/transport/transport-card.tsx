@@ -14,11 +14,14 @@ import DetailField from "@/components/ui/detail-field";
 import { useCurrentLocale } from "@/locales/client";
 import { permissionsReducer } from "../permissions";
 import UpsertTransport, { UpsertTransportVariant } from "./upsert-transport";
-import { useReducer } from "react";
+import { createContext, useReducer } from "react";
 import { transportChangeReducer } from "../reducers";
 import DeleteTransport from "./delete-transport";
 import { TripParticipantsContext } from "../accommodation/accommodation-cards-overview";
 import TransportAssignment from "./transport-assignment";
+
+export const TravelAssignedParticipantContext = createContext<string[]>([]);
+
 export default function TransportCard({
     transport,
     currentParticipantRole,
@@ -142,36 +145,46 @@ export default function TransportCard({
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <div className="flex flex-row flex-wrap gap-8">
-                        {transportData?.id && (
-                            <>
-                                {(
-                                    (transportData?.trip_travel_assignments ||
-                                        []) as Tables<"v_trip_participant_details">[]
-                                ).map((assignment, index) => (
-                                    <TransportAssignment
-                                        key={index}
-                                        assignment={assignment}
-                                        tripTravelId={
-                                            transportData.id as string
-                                        }
-                                        onChange={setTransportData}
-                                    />
-                                ))}
-                                {(!transport?.capacity ||
-                                    (transport?.capacity &&
-                                        transport?.trip_travel_assignments &&
-                                        transport.capacity >
-                                            transport.trip_travel_assignments
-                                                .length)) && (
-                                    <TransportAssignment
-                                        tripTravelId={transportData.id}
-                                        onChange={setTransportData}
-                                    />
-                                )}
-                            </>
-                        )}
-                    </div>
+                    <TravelAssignedParticipantContext
+                        value={(
+                            (transportData?.trip_travel_assignments ||
+                                []) as Tables<"v_trip_participant_details">[]
+                        )
+                            .map((participant) => participant?.id)
+                            .filter((id) => id !== null)}
+                    >
+                        <div className="flex flex-row flex-wrap gap-8">
+                            {transportData?.id && (
+                                <>
+                                    {(
+                                        (transportData?.trip_travel_assignments ||
+                                            []) as Tables<"v_trip_participant_details">[]
+                                    ).map((assignment, index) => (
+                                        <TransportAssignment
+                                            key={index}
+                                            assignment={assignment}
+                                            tripTravelId={
+                                                transportData.id as string
+                                            }
+                                            onChange={setTransportData}
+                                        />
+                                    ))}
+                                    {(!transport?.capacity ||
+                                        (transport?.capacity &&
+                                            transport?.trip_travel_assignments &&
+                                            transport.capacity >
+                                                transport
+                                                    .trip_travel_assignments
+                                                    .length)) && (
+                                        <TransportAssignment
+                                            tripTravelId={transportData.id}
+                                            onChange={setTransportData}
+                                        />
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    </TravelAssignedParticipantContext>
                 </CardFooter>
             </Card>
         </TripParticipantsContext>
