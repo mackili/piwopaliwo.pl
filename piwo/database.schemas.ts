@@ -51,6 +51,16 @@ export const publicTransactionStatusSchema = z.enum([
   "paid",
 ]);
 
+export const publicTransportationTypeSchema = z.enum([
+  "tram",
+  "subway",
+  "rail",
+  "bus",
+  "ferry",
+  "lift",
+  "car",
+]);
+
 export const publicTripFeedItemTypeSchema = z.enum(["post", "announcement"]);
 
 export const publicTripParticipantRoleSchema = z.enum([
@@ -1461,6 +1471,160 @@ export const publicTripTransactionRelationshipsSchema = z.tuple([
   }),
 ]);
 
+export const publicTripTravelRowSchema = z.object({
+  capacity: z.number().nullable(),
+  created_at: z.string(),
+  created_by: z.string().nullable(),
+  description: z.string().nullable(),
+  destination: z.string().nullable(),
+  duration: z.number().nullable(),
+  estimated_arrival: z.string().nullable(),
+  estimated_departure: z.string().nullable(),
+  id: z.string(),
+  last_modified_at: z.string().nullable(),
+  last_modified_by: z.string().nullable(),
+  mode_of_transport: publicTransportationTypeSchema,
+  name: z.string().nullable(),
+  origin: z.string(),
+  status: publicTransactionStatusSchema,
+  trip_id: z.string(),
+});
+
+export const publicTripTravelInsertSchema = z.object({
+  capacity: z.number().optional().nullable(),
+  created_at: z.string().optional(),
+  created_by: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  destination: z.string().optional().nullable(),
+  duration: z.number().optional().nullable(),
+  estimated_arrival: z.string().optional().nullable(),
+  estimated_departure: z.string().optional().nullable(),
+  id: z.string().optional(),
+  last_modified_at: z.string().optional().nullable(),
+  last_modified_by: z.string().optional().nullable(),
+  mode_of_transport: publicTransportationTypeSchema.optional(),
+  name: z.string().optional().nullable(),
+  origin: z.string(),
+  status: publicTransactionStatusSchema.optional(),
+  trip_id: z.string(),
+});
+
+export const publicTripTravelUpdateSchema = z.object({
+  capacity: z.number().optional().nullable(),
+  created_at: z.string().optional(),
+  created_by: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  destination: z.string().optional().nullable(),
+  duration: z.number().optional().nullable(),
+  estimated_arrival: z.string().optional().nullable(),
+  estimated_departure: z.string().optional().nullable(),
+  id: z.string().optional(),
+  last_modified_at: z.string().optional().nullable(),
+  last_modified_by: z.string().optional().nullable(),
+  mode_of_transport: publicTransportationTypeSchema.optional(),
+  name: z.string().optional().nullable(),
+  origin: z.string().optional(),
+  status: publicTransactionStatusSchema.optional(),
+  trip_id: z.string().optional(),
+});
+
+export const publicTripTravelRelationshipsSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("trip_travel_trip_id_fkey"),
+    columns: z.tuple([z.literal("trip_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("trip"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_travel_trip_id_fkey"),
+    columns: z.tuple([z.literal("trip_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("v_trip_details"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_travel_trip_id_fkey"),
+    columns: z.tuple([z.literal("trip_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("v_trip_financial_summary"),
+    referencedColumns: z.tuple([z.literal("trip_id")]),
+  }),
+]);
+
+export const publicTripTravelAssignmentRowSchema = z.object({
+  created_at: z.string(),
+  created_by: z.string().nullable(),
+  last_modified_at: z.string().nullable(),
+  last_modified_by: z.string().nullable(),
+  trip_participant_id: z.string(),
+  trip_travel_id: z.string(),
+});
+
+export const publicTripTravelAssignmentInsertSchema = z.object({
+  created_at: z.string().optional(),
+  created_by: z.string().optional().nullable(),
+  last_modified_at: z.string().optional().nullable(),
+  last_modified_by: z.string().optional().nullable(),
+  trip_participant_id: z.string().optional(),
+  trip_travel_id: z.string().optional(),
+});
+
+export const publicTripTravelAssignmentUpdateSchema = z.object({
+  created_at: z.string().optional(),
+  created_by: z.string().optional().nullable(),
+  last_modified_at: z.string().optional().nullable(),
+  last_modified_by: z.string().optional().nullable(),
+  trip_participant_id: z.string().optional(),
+  trip_travel_id: z.string().optional(),
+});
+
+export const publicTripTravelAssignmentRelationshipsSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal(
+      "trip_travel_assignment_trip_participant_id_fkey",
+    ),
+    columns: z.tuple([z.literal("trip_participant_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("trip_participant"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal(
+      "trip_travel_assignment_trip_participant_id_fkey",
+    ),
+    columns: z.tuple([z.literal("trip_participant_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal(
+      "v_accommodation_unassigned_trip_participants",
+    ),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal(
+      "trip_travel_assignment_trip_participant_id_fkey",
+    ),
+    columns: z.tuple([z.literal("trip_participant_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("v_trip_participant_details"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_travel_assignment_trip_travel_id_fkey"),
+    columns: z.tuple([z.literal("trip_travel_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("trip_travel"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_travel_assignment_trip_travel_id_fkey"),
+    columns: z.tuple([z.literal("trip_travel_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("v_trip_travel_summary"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+]);
+
 export const publicUserNotificationRowSchema = z.object({
   created_at: z.string(),
   details: jsonSchema.nullable(),
@@ -2091,6 +2255,46 @@ export const publicVTripParticipantDetailsRelationshipsSchema = z.tuple([
   }),
 ]);
 
+export const publicVTripTravelSummaryRowSchema = z.object({
+  capacity: z.number().nullable(),
+  description: z.string().nullable(),
+  destination: z.string().nullable(),
+  duration: z.number().nullable(),
+  estimated_arrival: z.string().nullable(),
+  estimated_departure: z.string().nullable(),
+  id: z.string().nullable(),
+  mode_of_transport: publicTransportationTypeSchema.nullable(),
+  name: z.string().nullable(),
+  origin: z.string().nullable(),
+  status: publicTransactionStatusSchema.nullable(),
+  trip_id: z.string().nullable(),
+  trip_travel_assignments: z.array(jsonSchema).nullable(),
+});
+
+export const publicVTripTravelSummaryRelationshipsSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("trip_travel_trip_id_fkey"),
+    columns: z.tuple([z.literal("trip_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("trip"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_travel_trip_id_fkey"),
+    columns: z.tuple([z.literal("trip_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("v_trip_details"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_travel_trip_id_fkey"),
+    columns: z.tuple([z.literal("trip_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("v_trip_financial_summary"),
+    referencedColumns: z.tuple([z.literal("trip_id")]),
+  }),
+]);
+
 export const publicAccGetTransactionCurrencyArgsSchema = z.object({
   p_transaction_id: z.string(),
 });
@@ -2129,6 +2333,13 @@ export const publicAccUpsertTransactionWithSplitsArgsSchema = z.object({
 });
 
 export const publicAccUpsertTransactionWithSplitsReturnsSchema = z.string();
+
+export const publicAccommodationUnitAssignmentSetArgsSchema = z.object({
+  p_accommodation_unit_id: z.string(),
+  p_trip_participant_id: z.string(),
+});
+
+export const publicAccommodationUnitAssignmentSetReturnsSchema = z.undefined();
 
 export const publicCheckTableRlsPermissionsArgsSchema = z.object({
   p_operations: z.array(z.string()).optional(),
@@ -2217,6 +2428,20 @@ export const publicRlsReadAccommodationUnitAssignmentArgsSchema = z.object({
 
 export const publicRlsReadAccommodationUnitAssignmentReturnsSchema =
   z.boolean();
+
+export const publicRlsReadTripTravelArgsSchema = z.object({
+  p_trip_id: z.string().optional(),
+  p_trip_travel_id: z.string().optional(),
+});
+
+export const publicRlsReadTripTravelReturnsSchema = z.boolean();
+
+export const publicRlsUpdateTripTravelArgsSchema = z.object({
+  p_trip_id: z.string().optional(),
+  p_trip_travel_id: z.string().optional(),
+});
+
+export const publicRlsUpdateTripTravelReturnsSchema = z.boolean();
 
 export const publicSendNotificationArgsSchema = z.object({
   p_details: jsonSchema,

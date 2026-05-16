@@ -1294,6 +1294,148 @@ export type Database = {
           },
         ]
       }
+      trip_travel: {
+        Row: {
+          capacity: number | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          destination: string | null
+          duration: number | null
+          estimated_arrival: string | null
+          estimated_departure: string | null
+          id: string
+          last_modified_at: string | null
+          last_modified_by: string | null
+          mode_of_transport: Database["public"]["Enums"]["transportation_type"]
+          name: string | null
+          origin: string
+          status: Database["public"]["Enums"]["transaction_status"]
+          trip_id: string
+        }
+        Insert: {
+          capacity?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          destination?: string | null
+          duration?: number | null
+          estimated_arrival?: string | null
+          estimated_departure?: string | null
+          id?: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          mode_of_transport?: Database["public"]["Enums"]["transportation_type"]
+          name?: string | null
+          origin: string
+          status?: Database["public"]["Enums"]["transaction_status"]
+          trip_id: string
+        }
+        Update: {
+          capacity?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          destination?: string | null
+          duration?: number | null
+          estimated_arrival?: string | null
+          estimated_departure?: string | null
+          id?: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          mode_of_transport?: Database["public"]["Enums"]["transportation_type"]
+          name?: string | null
+          origin?: string
+          status?: Database["public"]["Enums"]["transaction_status"]
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_travel_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trip"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_travel_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_travel_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_financial_summary"
+            referencedColumns: ["trip_id"]
+          },
+        ]
+      }
+      trip_travel_assignment: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          last_modified_at: string | null
+          last_modified_by: string | null
+          trip_participant_id: string
+          trip_travel_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          trip_participant_id?: string
+          trip_travel_id?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          trip_participant_id?: string
+          trip_travel_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_travel_assignment_trip_participant_id_fkey"
+            columns: ["trip_participant_id"]
+            isOneToOne: false
+            referencedRelation: "trip_participant"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_travel_assignment_trip_participant_id_fkey"
+            columns: ["trip_participant_id"]
+            isOneToOne: false
+            referencedRelation: "v_accommodation_unassigned_trip_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_travel_assignment_trip_participant_id_fkey"
+            columns: ["trip_participant_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_participant_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_travel_assignment_trip_travel_id_fkey"
+            columns: ["trip_travel_id"]
+            isOneToOne: false
+            referencedRelation: "trip_travel"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_travel_assignment_trip_travel_id_fkey"
+            columns: ["trip_travel_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_travel_summary"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_notification: {
         Row: {
           created_at: string
@@ -1909,6 +2051,48 @@ export type Database = {
           },
         ]
       }
+      v_trip_travel_summary: {
+        Row: {
+          capacity: number | null
+          description: string | null
+          destination: string | null
+          duration: number | null
+          estimated_arrival: string | null
+          estimated_departure: string | null
+          id: string | null
+          mode_of_transport:
+            | Database["public"]["Enums"]["transportation_type"]
+            | null
+          name: string | null
+          origin: string | null
+          status: Database["public"]["Enums"]["transaction_status"] | null
+          trip_id: string | null
+          trip_travel_assignments: Json[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_travel_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trip"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_travel_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_travel_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_financial_summary"
+            referencedColumns: ["trip_id"]
+          },
+        ]
+      }
     }
     Functions: {
       acc_get_transaction_currency: {
@@ -1989,6 +2173,14 @@ export type Database = {
         Args: { p_accommodation_unit_id: string }
         Returns: boolean
       }
+      rls_read_trip_travel: {
+        Args: { p_trip_id?: string; p_trip_travel_id?: string }
+        Returns: boolean
+      }
+      rls_update_trip_travel: {
+        Args: { p_trip_id?: string; p_trip_travel_id?: string }
+        Returns: boolean
+      }
       send_notification: {
         Args: { p_details: Json; p_title: string; p_user_id: string }
         Returns: undefined
@@ -2015,6 +2207,14 @@ export type Database = {
       TextDocumentStatus: "draft" | "published" | "unpublished"
       TrackerGameStatus: "paused" | "active" | "finished"
       transaction_status: "idea" | "quoted" | "committed" | "paid"
+      transportation_type:
+        | "tram"
+        | "subway"
+        | "rail"
+        | "bus"
+        | "ferry"
+        | "lift"
+        | "car"
       trip_feed_item_type: "post" | "announcement"
       trip_participant_role: "admin" | "member" | "owner"
       trip_participant_status:
@@ -2178,6 +2378,15 @@ export const Constants = {
       TextDocumentStatus: ["draft", "published", "unpublished"],
       TrackerGameStatus: ["paused", "active", "finished"],
       transaction_status: ["idea", "quoted", "committed", "paid"],
+      transportation_type: [
+        "tram",
+        "subway",
+        "rail",
+        "bus",
+        "ferry",
+        "lift",
+        "car",
+      ],
       trip_feed_item_type: ["post", "announcement"],
       trip_participant_role: ["admin", "member", "owner"],
       trip_participant_status: [

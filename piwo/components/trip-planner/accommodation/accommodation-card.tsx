@@ -10,9 +10,9 @@ import { useCurrentLocale } from "@/locales/client";
 import UpsertAccommodationUnit from "./upsert-accommodation-unit";
 import { TripAccommodationSummaryView } from "../custom-schemas";
 import AccommodationUnitCard from "./accommodation-unit-card";
-import { useMemo, useReducer } from "react";
+import { useMemo } from "react";
 import {
-    accommodationModificationReducer,
+    AccommodationModificationChangeAction,
     calculateAccommodationTotalCapacity,
     calculateAccommodationUsedCapacity,
 } from "../reducers";
@@ -22,50 +22,30 @@ import UpsertAccommodation, {
     UpsertAccommodationVariant,
 } from "./upsert-accommodation";
 import DeleteAccommodation from "./delete-accommodation";
-
-function TripAccommodationDetail({
-    detailName,
-    detailValue,
-}: {
-    detailName: string;
-    detailValue: string;
-}) {
-    return (
-        <div className="space-y-1">
-            <p className="font-medium text-xs text-muted-foreground">
-                {detailName}
-            </p>
-            <p className="font-semibold text-sm text-primary">{detailValue}</p>
-        </div>
-    );
-}
+import DetailField from "@/components/ui/detail-field";
 
 export default function TripAccommodationCard({
-    accommodation,
+    accommodationData,
     currentTripParticipant,
+    setAccommodationData,
 }: {
-    accommodation: TripAccommodationSummaryView;
+    accommodationData: TripAccommodationSummaryView;
     currentTripParticipant: Tables<"v_trip_participant_details">;
+    setAccommodationData: (
+        action: AccommodationModificationChangeAction,
+    ) => void;
 }) {
     const locale = useCurrentLocale();
     const [totalCapacity, usedCapacity] = useMemo(
         () => [
             calculateAccommodationTotalCapacity(
-                accommodation.accommodation_units,
+                accommodationData.accommodation_units,
             ),
             calculateAccommodationUsedCapacity(
-                accommodation.accommodation_units,
+                accommodationData.accommodation_units,
             ),
         ],
-        [accommodation.accommodation_units],
-    );
-    const [accommodationData, setAccommodationData] = useReducer(
-        accommodationModificationReducer,
-        {
-            ...accommodation,
-            totalCapacity: totalCapacity,
-            usedCapacity: usedCapacity,
-        },
+        [accommodationData.accommodation_units],
     );
     return (
         <Card>
@@ -74,8 +54,8 @@ export default function TripAccommodationCard({
                     <p>{accommodationData.name}</p>
                 </CardTitle>
                 <CardAction className="gap-1 flex flex-row flex-wrap">
-                    {accommodation &&
-                        accommodation?.trip_id &&
+                    {accommodationData &&
+                        accommodationData?.trip_id &&
                         currentTripParticipant?.role &&
                         permissionsReducer({
                             tripParticipantRole: currentTripParticipant.role,
@@ -84,8 +64,8 @@ export default function TripAccommodationCard({
                             <>
                                 <UpsertAccommodation
                                     variant={UpsertAccommodationVariant.EDIT}
-                                    tripId={accommodation.trip_id}
-                                    accommodation={accommodation}
+                                    tripId={accommodationData.trip_id}
+                                    accommodation={accommodationData}
                                     onSave={setAccommodationData}
                                 />
                                 <DeleteAccommodation
@@ -99,13 +79,13 @@ export default function TripAccommodationCard({
             <CardContent>
                 <div className="w-full pb-4 flex flex-row flex-wrap gap-8 border-b border-muted">
                     {accommodationData?.status && (
-                        <TripAccommodationDetail
+                        <DetailField
                             detailName="Status"
                             detailValue={accommodationData.status}
                         />
                     )}
                     {accommodationData?.check_in_date && (
-                        <TripAccommodationDetail
+                        <DetailField
                             detailName="Check-in"
                             detailValue={Intl.DateTimeFormat(locale).format(
                                 new Date(accommodationData.check_in_date),
@@ -113,7 +93,7 @@ export default function TripAccommodationCard({
                         />
                     )}
                     {accommodationData?.check_out_date && (
-                        <TripAccommodationDetail
+                        <DetailField
                             detailName="Check-out"
                             detailValue={Intl.DateTimeFormat(locale).format(
                                 new Date(accommodationData.check_out_date),
@@ -121,30 +101,27 @@ export default function TripAccommodationCard({
                         />
                     )}
                     {accommodationData?.stay_duration_days && (
-                        <TripAccommodationDetail
+                        <DetailField
                             detailName="Nights"
                             detailValue={String(
                                 accommodationData.stay_duration_days,
                             )}
                         />
                     )}
-                    <TripAccommodationDetail
+                    <DetailField
                         detailName="Capacity"
-                        detailValue={String(accommodationData.totalCapacity)}
+                        detailValue={String(totalCapacity)}
                     />
-                    <TripAccommodationDetail
+                    <DetailField
                         detailName="Capacity Used"
-                        detailValue={String(accommodationData.usedCapacity)}
+                        detailValue={String(usedCapacity)}
                     />
-                    <TripAccommodationDetail
+                    <DetailField
                         detailName="Capacity Available"
-                        detailValue={String(
-                            accommodationData.totalCapacity -
-                                accommodationData.usedCapacity,
-                        )}
+                        detailValue={String(totalCapacity - usedCapacity)}
                     />
                     {/* {accommodation?.total && (
-                        <TripAccommodationDetail
+                        <DetailField
                             detailName="Total"
                             detailValue={accommodation.total}
                         />

@@ -263,6 +263,63 @@ async function removeAccommodationAssignment(
         .eq("accommodation_unit_id", accommodationUnitId);
 }
 
+async function fetchTripTransportSummary(tripId: string) {
+    const supabase = await createClient();
+    return await supabase
+        .from("v_trip_travel_summary")
+        .select("*")
+        .eq("trip_id", tripId)
+        .overrideTypes<
+            Array<{ assignments: Tables<"v_trip_participant_details"> }>
+        >();
+}
+
+async function upsertTransport(data: TablesInsert<"trip_travel">) {
+    delete data["estimated_arrival"];
+    delete data["name"];
+    const supabase = await createClient();
+    return await supabase
+        .from("trip_travel")
+        .upsert(data, { onConflict: "id" })
+        .select("*")
+        .limit(1)
+        .single();
+}
+
+async function deleteTransport(transportId: string) {
+    const supabase = await createClient();
+    return await supabase.from("trip_travel").delete().eq("id", transportId);
+}
+
+async function upsertTravelAssignment(
+    travelId: string,
+    tripParticipantId: string,
+) {
+    const supabase = await createClient();
+    return await supabase
+        .from("trip_travel_assignment")
+        .upsert(
+            {
+                trip_participant_id: tripParticipantId,
+                trip_travel_id: travelId,
+            },
+            { onConflict: "trip_travel_id,trip_participant_id" },
+        )
+        .select()
+        .single();
+}
+async function deleteTravelAssignment(
+    travelId: string,
+    tripParticipantId: string,
+) {
+    const supabase = await createClient();
+    return await supabase
+        .from("trip_travel_assignment")
+        .delete()
+        .eq("trip_travel_id", travelId)
+        .eq("trip_participant_id", tripParticipantId);
+}
+
 export {
     fetchTrips,
     fetchTripDetails,
@@ -283,4 +340,9 @@ export {
     fetchTripParticipantDetails,
     upsertAccommodationAssignments,
     removeAccommodationAssignment,
+    fetchTripTransportSummary,
+    upsertTransport,
+    deleteTransport,
+    upsertTravelAssignment,
+    deleteTravelAssignment,
 };

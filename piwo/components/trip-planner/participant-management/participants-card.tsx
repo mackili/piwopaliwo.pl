@@ -38,7 +38,7 @@ export default async function TripParticipantsCard({
                 <CardAction>
                     {currentUserParticipant &&
                         permissionsReducer({
-                            tripParticipant: currentUserParticipant,
+                            tripParticipantRole: currentUserParticipant.role,
                             permission: "invite_participants",
                         }) && <TripParticipantsInvite trip={trip} />}
                 </CardAction>

@@ -42,7 +42,8 @@ export default function FormInput<T extends FieldValues>({
         | "tel"
         | "text"
         | "select"
-        | "url";
+        | "url"
+        | "date-time";
     options?: { value: string; label?: string | React.ReactNode }[]; // For select fields
     step?: string;
     placeholder?: string;
@@ -152,6 +153,78 @@ export default function FormInput<T extends FieldValues>({
                                 </PopoverContent>
                             </Popover>
                         </>
+                    )}
+                    {type === "date-time" && (
+                        <div className="flex-row gap-2 flex w-full">
+                            <Input type="hidden" {...field} />
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        data-empty={!field.value}
+                                        className="grow min-w-64 justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
+                                    >
+                                        <CalendarIcon />
+                                        {field.value ? (
+                                            Intl.DateTimeFormat(locale, {
+                                                dateStyle: "short",
+                                            }).format(new Date(field.value))
+                                        ) : (
+                                            <span>Pick a date</span>
+                                        )}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent>
+                                    <Calendar
+                                        mode="single"
+                                        selected={
+                                            field.value
+                                                ? new Date(field.value)
+                                                : undefined
+                                        }
+                                        onSelect={(date) => {
+                                            if (!date)
+                                                return field.onChange(
+                                                    undefined,
+                                                );
+                                            const time = field.value
+                                                ? new Date(field.value)
+                                                      .toTimeString()
+                                                      .slice(0, 8)
+                                                : "00:00:00";
+                                            const merged = new Date(
+                                                `${date.toDateString()} ${time}`,
+                                            );
+                                            field.onChange(
+                                                merged.toISOString(),
+                                            );
+                                        }}
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            <Input
+                                type="time"
+                                step="1"
+                                className="shrink"
+                                value={
+                                    field.value
+                                        ? new Date(field.value)
+                                              .toTimeString()
+                                              .slice(0, 8)
+                                        : ""
+                                }
+                                onChange={(e) => {
+                                    const time = e.target.value; // "HH:mm:ss"
+                                    const base = field.value
+                                        ? new Date(field.value)
+                                        : new Date();
+                                    const merged = new Date(
+                                        `${base.toDateString()} ${time}`,
+                                    );
+                                    field.onChange(merged.toISOString());
+                                }}
+                            />
+                        </div>
                     )}
                     {fieldState?.error?.message && (
                         <FormMessage>{fieldState?.error?.message}</FormMessage>

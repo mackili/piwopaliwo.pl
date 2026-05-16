@@ -172,115 +172,123 @@ export type AccommodationModificationChangeAction = {
     };
 }[AccommodationModificationSplitChangeEventType];
 function accommodationModificationReducer(
-    state: TripAccommodationSummaryView & {
+    state: (TripAccommodationSummaryView & {
         totalCapacity: number;
         usedCapacity: number;
-    },
+    })[],
     action: AccommodationModificationChangeAction,
 ) {
-    let result = { ...state };
-    switch (action.type) {
-        case AccommodationModificationSplitChangeEventType.UNIT_ADDED:
-            result.accommodation_units = [
-                ...result.accommodation_units.filter(
-                    (unit) => unit.id !== action.payload.id,
-                ),
-                {
-                    ...action.payload,
-                    assignments: [],
-                },
-            ];
-            result.totalCapacity = calculateAccommodationTotalCapacity(
-                result.accommodation_units,
-            );
-            result.usedCapacity = calculateAccommodationUsedCapacity(
-                result.accommodation_units,
-            );
-            break;
-        case AccommodationModificationSplitChangeEventType.UNIT_MODIFIED:
-            result.accommodation_units = [...result.accommodation_units].map(
-                (unit) => {
+    const resultArray = [...state];
+    // let result = { ...state };
+    return resultArray.map((result) => {
+        switch (action.type) {
+            case AccommodationModificationSplitChangeEventType.UNIT_ADDED:
+                result.accommodation_units = [
+                    ...result.accommodation_units.filter(
+                        (unit) => unit.id !== action.payload.id,
+                    ),
+                    {
+                        ...action.payload,
+                        assignments: [],
+                    },
+                ];
+                result.totalCapacity = calculateAccommodationTotalCapacity(
+                    result.accommodation_units,
+                );
+                result.usedCapacity = calculateAccommodationUsedCapacity(
+                    result.accommodation_units,
+                );
+                break;
+            case AccommodationModificationSplitChangeEventType.UNIT_MODIFIED:
+                result.accommodation_units = [
+                    ...result.accommodation_units,
+                ].map((unit) => {
                     return unit.id === action.payload.id
                         ? { ...unit, ...action.payload }
                         : unit;
-                },
-            );
-            result.totalCapacity = calculateAccommodationTotalCapacity(
-                result.accommodation_units,
-            );
-            result.usedCapacity = calculateAccommodationUsedCapacity(
-                result.accommodation_units,
-            );
-            break;
-        case AccommodationModificationSplitChangeEventType.UNIT_REMOVED:
-            result.accommodation_units = [...result.accommodation_units].filter(
-                (unit) => unit.id !== action.payload,
-            );
-            result.totalCapacity = calculateAccommodationTotalCapacity(
-                result.accommodation_units,
-            );
-            result.usedCapacity = calculateAccommodationUsedCapacity(
-                result.accommodation_units,
-            );
-            break;
-        case AccommodationModificationSplitChangeEventType.ACCOMMODATION_DETAILS_CHANGED:
-            result = { ...state, ...action.payload };
-            break;
-        case AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNED:
-            const accommodationUnits = [...result.accommodation_units].map(
-                (unit) => ({
-                    ...unit,
-                    assignments: unit.assignments.filter(
-                        (assignment) =>
-                            assignment.id !== action.payload.assigned.id &&
-                            assignment.id !== action.payload.removed?.id,
-                    ),
-                }),
-            );
-            accommodationUnits
-                .find(
-                    (unit) =>
-                        unit.id ===
-                        action.payload.assigned.accommodation_unit_id,
-                )
-                ?.assignments.push(action.payload.assigned);
-            result.accommodation_units = accommodationUnits.map((unit) => ({
-                ...unit,
-                assigned_participants: unit.assignments.length,
-            }));
-            result.totalCapacity = calculateAccommodationTotalCapacity(
-                result.accommodation_units,
-            );
-            result.usedCapacity = calculateAccommodationUsedCapacity(
-                result.accommodation_units,
-            );
-            break;
-        case AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED:
-            const modifiedAccommodationUnits = [
-                ...result.accommodation_units,
-            ].map((unit) => ({
-                ...unit,
-                assignments: unit.assignments.filter(
-                    (assignment) => assignment.id !== action.payload,
-                ),
-            }));
-            result.accommodation_units = modifiedAccommodationUnits.map(
-                (unit) => ({
+                });
+                result.totalCapacity = calculateAccommodationTotalCapacity(
+                    result.accommodation_units,
+                );
+                result.usedCapacity = calculateAccommodationUsedCapacity(
+                    result.accommodation_units,
+                );
+                break;
+            case AccommodationModificationSplitChangeEventType.UNIT_REMOVED:
+                result.accommodation_units = [
+                    ...result.accommodation_units,
+                ].filter((unit) => unit.id !== action.payload);
+                result.totalCapacity = calculateAccommodationTotalCapacity(
+                    result.accommodation_units,
+                );
+                result.usedCapacity = calculateAccommodationUsedCapacity(
+                    result.accommodation_units,
+                );
+                break;
+            case AccommodationModificationSplitChangeEventType.ACCOMMODATION_DETAILS_CHANGED:
+                return result?.id === action.payload.id
+                    ? { ...result, ...action.payload }
+                    : result;
+                // result = { ...state, ...action.payload };
+                break;
+            case AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNED:
+                const accommodationUnits = [...result.accommodation_units].map(
+                    (unit) => ({
+                        ...unit,
+                        assignments: unit.assignments.filter(
+                            (assignment) =>
+                                assignment.id !== action.payload.assigned.id &&
+                                assignment.id !== action.payload.removed?.id,
+                        ),
+                    }),
+                );
+                accommodationUnits
+                    .find(
+                        (unit) =>
+                            unit.id ===
+                            action.payload.assigned.accommodation_unit_id,
+                    )
+                    ?.assignments.push(action.payload.assigned);
+                result.accommodation_units = accommodationUnits.map((unit) => ({
                     ...unit,
                     assigned_participants: unit.assignments.length,
-                }),
-            );
-            result.totalCapacity = calculateAccommodationTotalCapacity(
-                result.accommodation_units,
-            );
-            result.usedCapacity = calculateAccommodationUsedCapacity(
-                result.accommodation_units,
-            );
-            break;
-        default:
-            break;
-    }
-    return result;
+                }));
+                result.totalCapacity = calculateAccommodationTotalCapacity(
+                    result.accommodation_units,
+                );
+                result.usedCapacity = calculateAccommodationUsedCapacity(
+                    result.accommodation_units,
+                );
+                break;
+            case AccommodationModificationSplitChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED:
+                const modifiedAccommodationUnits = [
+                    ...result.accommodation_units,
+                ].map((unit) => ({
+                    ...unit,
+                    assignments: unit.assignments.filter(
+                        (assignment) => assignment.id !== action.payload,
+                    ),
+                }));
+                result.accommodation_units = modifiedAccommodationUnits.map(
+                    (unit) => ({
+                        ...unit,
+                        assigned_participants: unit.assignments.length,
+                    }),
+                );
+                result.totalCapacity = calculateAccommodationTotalCapacity(
+                    result.accommodation_units,
+                );
+                result.usedCapacity = calculateAccommodationUsedCapacity(
+                    result.accommodation_units,
+                );
+                break;
+            default:
+                break;
+        }
+        return result;
+    });
+    // console.log(resultArray);
+    // return resultArray;
 }
 
 function calculateAccommodationTotalCapacity(
@@ -301,6 +309,66 @@ function calculateAccommodationUsedCapacity(
     );
 }
 
+export enum TransportChangeEventType {
+    PARTICIPANT_ASSIGNED = "PARTICIPANT_ASSIGNED",
+    PARTICIPANT_ASSIGNMENT_REMOVED = "PARTICIPANT_ASSIGNMENT_REMOVED",
+    TRANSPORT_DETAILS_CHANGED = "TRANSPORT_DETAILS_CHANGED",
+}
+
+// Mapped type for better readability and maintainability
+export type TransportChangePayloadMap = {
+    [TransportChangeEventType.PARTICIPANT_ASSIGNED]: {
+        assigned: Tables<"v_trip_participant_details"> & {
+            trip_travel_id: string;
+        };
+        removed: string | null;
+    };
+    [TransportChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED]: string;
+    [TransportChangeEventType.TRANSPORT_DETAILS_CHANGED]: Tables<"trip_travel">;
+};
+
+// Conditional type for payload
+export type TransportChangeAction = {
+    [T in TransportChangeEventType]: {
+        type: T;
+        payload: TransportChangePayloadMap[T];
+    };
+}[TransportChangeEventType];
+
+function transportChangeReducer(
+    state: Tables<"v_trip_travel_summary">,
+    action: TransportChangeAction,
+) {
+    let result = { ...state };
+    switch (action.type) {
+        case TransportChangeEventType.TRANSPORT_DETAILS_CHANGED:
+            result = { ...state, ...action.payload };
+            break;
+        case TransportChangeEventType.PARTICIPANT_ASSIGNED:
+            result.trip_travel_assignments = [
+                ...(
+                    (result.trip_travel_assignments ||
+                        []) as Tables<"v_trip_participant_details">[]
+                ).filter(
+                    (assignment) => assignment.id !== action.payload?.removed,
+                ),
+                action.payload.assigned,
+            ];
+            break;
+        case TransportChangeEventType.PARTICIPANT_ASSIGNMENT_REMOVED:
+            result.trip_travel_assignments = [
+                ...(
+                    (result.trip_travel_assignments ||
+                        []) as Tables<"v_trip_participant_details">[]
+                ).filter((assignment) => assignment.id !== action.payload),
+            ];
+            break;
+        default:
+            break;
+    }
+    return result;
+}
+
 export {
     transactionTotalCostReducer,
     countPotentialParticipants,
@@ -311,4 +379,5 @@ export {
     accommodationModificationReducer,
     calculateAccommodationTotalCapacity,
     calculateAccommodationUsedCapacity,
+    transportChangeReducer,
 };

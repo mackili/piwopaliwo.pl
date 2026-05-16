@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { redirect } from "next/navigation";
 import TripAccommodationOverview from "@/components/trip-planner/accommodation/accommodation-overview";
+import TransportOverview from "@/components/trip-planner/transport/transport-overview";
 
 export default async function Page({
     params,
@@ -84,7 +85,7 @@ export default async function Page({
                                 <BedIcon />
                                 Stay
                             </TabsTrigger>
-                            <TabsTrigger value="transport" disabled>
+                            <TabsTrigger value="transport">
                                 <PlaneIcon />
                                 Transport
                             </TabsTrigger>
@@ -107,6 +108,9 @@ export default async function Page({
                         </TabsContent>
                         <TabsContent value="accommodation">
                             <TripAccommodationOverview tripId={tripId} />
+                        </TabsContent>
+                        <TabsContent value="transport">
+                            <TransportOverview tripId={tripId} />
                         </TabsContent>
                     </Tabs>
                 </>
