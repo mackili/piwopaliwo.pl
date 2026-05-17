@@ -222,6 +222,19 @@ export default function TransportCard({
                                 }
                             />
                         )}
+                        {optimisticTransportData?.total_amount &&
+                            optimisticTransportData?.currency_iso_code && (
+                                <DetailField
+                                    detailName="Total Amount"
+                                    detailValue={Intl.NumberFormat(locale, {
+                                        style: "currency",
+                                        currency:
+                                            optimisticTransportData.currency_iso_code,
+                                    }).format(
+                                        optimisticTransportData.total_amount,
+                                    )}
+                                />
+                            )}
                     </div>
                 </CardContent>
                 <CardFooter>
