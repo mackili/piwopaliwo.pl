@@ -66,6 +66,7 @@ export default function EditTripForm({
             start_date: trip?.start_date || "",
             type: trip?.type || "other",
             location: trip?.location || undefined,
+            slug: "",
         },
     });
     async function onSubmit(values: z.infer<typeof publicTripInsertSchema>) {

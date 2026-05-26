@@ -18,7 +18,7 @@ import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import TripTransaction from "./trip-transaction";
 import { twMerge } from "tailwind-merge";
 
-const INITIAL_TRANSACTIONS_LIMIT = 10;
+export const INITIAL_TRANSACTIONS_LIMIT = 10 as const;
 
 enum TransactionFetchActionType {
     FETCH = "FETCH",

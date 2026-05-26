@@ -1168,6 +1168,7 @@ export const publicTripRowSchema = z.object({
   last_modified_by: z.string().nullable(),
   location: z.string().nullable(),
   name: z.string(),
+  slug: z.string(),
   start_date: z.string(),
   status: publicTripStatusSchema,
   text_document_id: z.string().nullable(),
@@ -1186,6 +1187,7 @@ export const publicTripInsertSchema = z.object({
   last_modified_by: z.string().optional().nullable(),
   location: z.string().optional().nullable(),
   name: z.string(),
+  slug: z.string(),
   start_date: z.string(),
   status: publicTripStatusSchema.optional(),
   text_document_id: z.string().optional().nullable(),
@@ -1204,6 +1206,7 @@ export const publicTripUpdateSchema = z.object({
   last_modified_by: z.string().optional().nullable(),
   location: z.string().optional().nullable(),
   name: z.string().optional(),
+  slug: z.string().optional(),
   start_date: z.string().optional(),
   status: publicTripStatusSchema.optional(),
   text_document_id: z.string().optional().nullable(),
@@ -2404,17 +2407,11 @@ export const publicAccommodationUnitAssignmentSetReturnsSchema = z.undefined();
 export const publicAssociateTripTransactionArgsSchema = z.object({
   p_related_record_id: z.string(),
   p_related_record_type: z.string(),
+  p_transaction_status: publicTransactionStatusSchema,
   p_trip_transaction_id: z.string(),
 });
 
 export const publicAssociateTripTransactionReturnsSchema = z.undefined();
-
-export const publicCheckTableRlsPermissionsArgsSchema = z.object({
-  p_operations: z.array(z.string()).optional(),
-  p_table_name: z.string(),
-});
-
-export const publicCheckTableRlsPermissionsReturnsSchema = jsonSchema;
 
 export const publicCountAccommodationAssignmentsArgsSchema = z.object({
   p_accommodation_id: z.string(),
@@ -2429,88 +2426,6 @@ export const publicDbSetAuditMechanismArgsSchema = z.object({
 
 export const publicDbSetAuditMechanismReturnsSchema = z.undefined();
 
-export const publicIsAccGroupMemberArgsSchema = z.object({
-  p_group_id: z.string(),
-});
-
-export const publicIsAccGroupMemberReturnsSchema = z.boolean();
-
-export const publicIsAccGroupOwnerArgsSchema = z.object({
-  p_group_id: z.string(),
-});
-
-export const publicIsAccGroupOwnerReturnsSchema = z.boolean();
-
-export const publicIsTripAdminArgsSchema = z.object({
-  p_trip_id: z.string(),
-});
-
-export const publicIsTripAdminReturnsSchema = z.boolean();
-
-export const publicIsTripCreatorArgsSchema = z.object({
-  p_trip_id: z.string(),
-});
-
-export const publicIsTripCreatorReturnsSchema = z.boolean();
-
-export const publicIsTripParticipantArgsSchema = z.object({
-  p_trip_id: z.string(),
-});
-
-export const publicIsTripParticipantReturnsSchema = z.boolean();
-
-export const publicRlsCreateAccommodationUnitArgsSchema = z.object({
-  p_accommodation_id: z.string(),
-});
-
-export const publicRlsCreateAccommodationUnitReturnsSchema = z.boolean();
-
-export const publicRlsDeleteAccommodationUnitArgsSchema = z.object({
-  p_accommodation_id: z.string(),
-});
-
-export const publicRlsDeleteAccommodationUnitReturnsSchema = z.boolean();
-
-export const publicRlsEditAccommodationUnitArgsSchema = z.object({
-  p_accommodation_id: z.string(),
-});
-
-export const publicRlsEditAccommodationUnitReturnsSchema = z.boolean();
-
-export const publicRlsModifyAccommodationUnitAssignmentArgsSchema = z.object({
-  p_accommodation_unit_id: z.string(),
-});
-
-export const publicRlsModifyAccommodationUnitAssignmentReturnsSchema =
-  z.boolean();
-
-export const publicRlsReadAccommodationUnitArgsSchema = z.object({
-  p_accommodation_id: z.string(),
-});
-
-export const publicRlsReadAccommodationUnitReturnsSchema = z.boolean();
-
-export const publicRlsReadAccommodationUnitAssignmentArgsSchema = z.object({
-  p_accommodation_unit_id: z.string(),
-});
-
-export const publicRlsReadAccommodationUnitAssignmentReturnsSchema =
-  z.boolean();
-
-export const publicRlsReadTripTravelArgsSchema = z.object({
-  p_trip_id: z.string().optional(),
-  p_trip_travel_id: z.string().optional(),
-});
-
-export const publicRlsReadTripTravelReturnsSchema = z.boolean();
-
-export const publicRlsUpdateTripTravelArgsSchema = z.object({
-  p_trip_id: z.string().optional(),
-  p_trip_travel_id: z.string().optional(),
-});
-
-export const publicRlsUpdateTripTravelReturnsSchema = z.boolean();
-
 export const publicSendNotificationArgsSchema = z.object({
   p_details: jsonSchema,
   p_title: z.string(),
@@ -2518,6 +2433,12 @@ export const publicSendNotificationArgsSchema = z.object({
 });
 
 export const publicSendNotificationReturnsSchema = z.undefined();
+
+export const publicSlugifyArgsSchema = z.object({
+  value: z.string(),
+});
+
+export const publicSlugifyReturnsSchema = z.string();
 
 export const publicTripInsertOwnerParticipantArgsSchema = z.object({
   p_group_id: z.string(),

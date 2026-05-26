@@ -42,25 +42,42 @@ async function fetchTrips() {
         .from("group")
         .select(
             `id, name, thumbnail_url, trips:trip(
-            id,name,description,type,start_date,end_date,currency_iso_code,status,created_at, created_by, group_id, last_modified_at,last_modified_by, text_document_id
+            id,name,description,type,start_date,end_date,currency_iso_code,status,created_at, created_by, group_id, last_modified_at,last_modified_by, text_document_id, location, slug
             )`,
         )
         .order("name", { ascending: true });
     return response;
 }
 
-async function fetchTripDetails(tripId: string) {
+async function fetchTripDetails({
+    tripId,
+    tripSlug,
+}: {
+    tripId?: string;
+    tripSlug?: string;
+}) {
     const supabase = await createClient();
-
-    return await supabase
-        .from("v_trip_details")
-        .select("*")
-        .eq("id", tripId)
-        .single()
-        .overrideTypes<{
-            participants: [ParticipantResponseJson];
-            // text_document: TripTextDocument;
-        }>();
+    if (tripId) {
+        return await supabase
+            .from("v_trip_details")
+            .select("*")
+            .eq("id", tripId)
+            .single()
+            .overrideTypes<{
+                participants: [ParticipantResponseJson];
+                // text_document: TripTextDocument;
+            }>();
+    } else {
+        return await supabase
+            .from("v_trip_details")
+            .select("*")
+            .eq("slug", tripSlug || "")
+            .single()
+            .overrideTypes<{
+                participants: [ParticipantResponseJson];
+                // text_document: TripTextDocument;
+            }>();
+    }
 }
 async function upsertTrips(trips: TablesInsert<"trip">[]) {
     const supabase = await createClient();

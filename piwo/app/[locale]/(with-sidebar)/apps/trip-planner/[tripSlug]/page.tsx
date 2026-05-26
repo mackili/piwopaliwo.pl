@@ -5,13 +5,13 @@ import { TRIP_PLANNER_TABS } from "./[tab]/page";
 export default async function Page({
     params,
 }: {
-    params: Promise<{ tripId: string }>;
+    params: Promise<{ tripSlug: string }>;
 }) {
-    const [{ tripId }, locale] = await Promise.all([
+    const [{ tripSlug }, locale] = await Promise.all([
         params,
         getCurrentLocale(),
     ]);
     redirect(
-        `/${locale}/apps/trip-planner/${tripId}/${TRIP_PLANNER_TABS.OVERVIEW}`,
+        `/${locale}/apps/trip-planner/${tripSlug}/${TRIP_PLANNER_TABS.OVERVIEW}`,
     );
 }

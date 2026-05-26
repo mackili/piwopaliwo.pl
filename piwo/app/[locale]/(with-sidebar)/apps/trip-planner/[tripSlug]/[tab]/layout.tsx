@@ -25,16 +25,16 @@ export default async function Layout({
     children,
     params,
 }: {
-    params: Promise<{ tripId: string; tab: TRIP_PLANNER_TABS }>;
+    params: Promise<{ tripSlug: string; tab: TRIP_PLANNER_TABS }>;
 } & Readonly<{
     children: React.ReactNode;
 }>) {
-    const [{ tripId, tab }, locale] = await Promise.all([
+    const [{ tripSlug, tab }, locale] = await Promise.all([
         params,
         getCurrentLocale(),
     ]);
     const hrefFactory = (tab: TRIP_PLANNER_TABS) => {
-        return `/${locale}/apps/trip-planner/${tripId}/${tab}`;
+        return `/${locale}/apps/trip-planner/${tripSlug}/${tab}`;
     };
     return (
         <Tabs value={tab} className="w-full">

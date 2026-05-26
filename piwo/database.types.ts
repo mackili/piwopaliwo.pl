@@ -1002,6 +1002,7 @@ export type Database = {
           last_modified_by: string | null
           location: string | null
           name: string
+          slug: string
           start_date: string
           status: Database["public"]["Enums"]["trip_status"]
           text_document_id: string | null
@@ -1019,6 +1020,7 @@ export type Database = {
           last_modified_by?: string | null
           location?: string | null
           name: string
+          slug: string
           start_date: string
           status?: Database["public"]["Enums"]["trip_status"]
           text_document_id?: string | null
@@ -1036,6 +1038,7 @@ export type Database = {
           last_modified_by?: string | null
           location?: string | null
           name?: string
+          slug?: string
           start_date?: string
           status?: Database["public"]["Enums"]["trip_status"]
           text_document_id?: string | null
@@ -2196,13 +2199,10 @@ export type Database = {
         Args: {
           p_related_record_id: string
           p_related_record_type: string
+          p_transaction_status: Database["public"]["Enums"]["transaction_status"]
           p_trip_transaction_id: string
         }
         Returns: undefined
-      }
-      check_table_rls_permissions: {
-        Args: { p_operations?: string[]; p_table_name: string }
-        Returns: Json
       }
       count_accommodation_assignments: {
         Args: { p_accommodation_id: string }
@@ -2212,47 +2212,11 @@ export type Database = {
         Args: { p_schema: string; p_table: string }
         Returns: undefined
       }
-      is_acc_group_member: { Args: { p_group_id: string }; Returns: boolean }
-      is_acc_group_owner: { Args: { p_group_id: string }; Returns: boolean }
-      is_trip_admin: { Args: { p_trip_id: string }; Returns: boolean }
-      is_trip_creator: { Args: { p_trip_id: string }; Returns: boolean }
-      is_trip_participant: { Args: { p_trip_id: string }; Returns: boolean }
-      rls_create_accommodation_unit: {
-        Args: { p_accommodation_id: string }
-        Returns: boolean
-      }
-      rls_delete_accommodation_unit: {
-        Args: { p_accommodation_id: string }
-        Returns: boolean
-      }
-      rls_edit_accommodation_unit: {
-        Args: { p_accommodation_id: string }
-        Returns: boolean
-      }
-      rls_modify_accommodation_unit_assignment: {
-        Args: { p_accommodation_unit_id: string }
-        Returns: boolean
-      }
-      rls_read_accommodation_unit: {
-        Args: { p_accommodation_id: string }
-        Returns: boolean
-      }
-      rls_read_accommodation_unit_assignment: {
-        Args: { p_accommodation_unit_id: string }
-        Returns: boolean
-      }
-      rls_read_trip_travel: {
-        Args: { p_trip_id?: string; p_trip_travel_id?: string }
-        Returns: boolean
-      }
-      rls_update_trip_travel: {
-        Args: { p_trip_id?: string; p_trip_travel_id?: string }
-        Returns: boolean
-      }
       send_notification: {
         Args: { p_details: Json; p_title: string; p_user_id: string }
         Returns: undefined
       }
+      slugify: { Args: { value: string }; Returns: string }
       trip_insert_owner_participant: {
         Args: { p_group_id: string; p_trip_id: string }
         Returns: string

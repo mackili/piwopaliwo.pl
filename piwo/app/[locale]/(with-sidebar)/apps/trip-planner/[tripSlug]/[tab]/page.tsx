@@ -22,13 +22,15 @@ export enum TRIP_PLANNER_TABS {
 export default async function Page({
     params,
 }: {
-    params: Promise<{ tripId: string; tab: TRIP_PLANNER_TABS }>;
+    params: Promise<{ tripSlug: string; tab: TRIP_PLANNER_TABS }>;
 }) {
-    const [{ tripId, tab }, locale] = await Promise.all([
+    const [{ tripSlug, tab }, locale] = await Promise.all([
         params,
         getCurrentLocale(),
     ]);
-    const [{ data: tripData }] = await Promise.all([fetchTripDetails(tripId)]);
+    const [{ data: tripData }] = await Promise.all([
+        fetchTripDetails({ tripSlug: tripSlug }),
+    ]);
     if (!tripData) {
         redirect(`/${locale}/apps/trip-planner`);
     }
@@ -38,7 +40,7 @@ export default async function Page({
             Result = <TripOverview trip={tripData} />;
             break;
         case TRIP_PLANNER_TABS.ACCOMMODATION:
-            Result = <TripAccommodationOverview tripId={tripId} />;
+            Result = <TripAccommodationOverview tripId={tripData.id || ""} />;
             break;
         case TRIP_PLANNER_TABS.COSTS:
             Result = <TripCosts trip={tripData} />;
@@ -49,7 +51,7 @@ export default async function Page({
             );
             break;
         case TRIP_PLANNER_TABS.TRANSPORT:
-            Result = <TransportOverview tripId={tripId} />;
+            Result = <TransportOverview tripId={tripData.id || ""} />;
             break;
         default:
             Result = (

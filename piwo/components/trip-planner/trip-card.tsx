@@ -10,14 +10,13 @@ import {
 } from "@/components/ui/card";
 import { ArrowRightIcon, CalendarDaysIcon } from "lucide-react";
 import { getCurrentLocale } from "@/locales/server";
-import { TripIcon, TripStatus, tripStatusColor } from "./icon-factories";
-import { twMerge } from "tailwind-merge";
+import { TripIcon, TripStatus } from "./icon-factories";
 import Link from "next/link";
 
 export default async function TripCard({ trip }: { trip: Tables<"trip"> }) {
     const locale = await getCurrentLocale();
     return (
-        <Link href={`/${locale}/apps/trip-planner/${trip.id}`}>
+        <Link href={`/${locale}/apps/trip-planner/${trip.slug}/overview`}>
             <Card>
                 <CardHeader>
                     <CardTitle>{trip.name}</CardTitle>

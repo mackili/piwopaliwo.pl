@@ -16,15 +16,17 @@ export default async function Layout({
     children,
     params,
 }: {
-    params: Promise<{ tripId: string }>;
+    params: Promise<{ tripSlug: string }>;
 } & Readonly<{
     children: React.ReactNode;
 }>) {
-    const [{ tripId }, locale] = await Promise.all([
+    const [{ tripSlug }, locale] = await Promise.all([
         params,
         getCurrentLocale(),
     ]);
-    const [data] = await Promise.all([fetchTripDetails(tripId)]);
+    const [data] = await Promise.all([
+        fetchTripDetails({ tripSlug: tripSlug }),
+    ]);
     const tripData = data.data;
     if (!tripData) {
         redirect(`/${locale}/apps/trip-planner`);
