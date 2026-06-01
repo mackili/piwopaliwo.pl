@@ -1,3 +1,7 @@
+# Trip Planning feature of PiwoPaliwo.pl
+
+## ER Diagram
+
 ```mermaid
 ---
 title: Trip Planner Application's Entity Relationship Diagram - Stage 3
@@ -178,4 +182,46 @@ classDef phase3 fill:#4a0921
 class trip,trip_participant,trip_feed_item phase1
 class trip_event,trip_event_participant phase2
 class accommodation,accommodation_unit,accommodation_unit_assignment phase3
+```
+
+## Generating timeline of a trip
+
+Each trip will have a timeline generated for it. A timeline consists of:
+
+-   Travels
+    -   Departure time - information on origin + mode of transport + description
+    -   Arrival time - information on destination
+-   Accommodation booked
+    -   Check in date and time
+    -   Description
+    -   Check out date and time
+-   Activities per day
+
+The timeline is retrieved as a view from Supabase. The view combines `v_trip_travel_summary`, `v_trip_accommodation_summary`.
+
+The resulting type is as following
+
+```typescript
+interface v_trip_timeline = {
+    id: string;
+    trip_id: string;
+    record_type: 'accommodation' | 'travel';
+    type: string;
+    name: string;
+    description: string | null;
+    start_date: string | null;
+    end_date: string | null;
+    status: string;
+    details: object;
+}
+```
+
+Query for the view is:
+
+```sql
+select id, trip_id, 'trip' record_type, mode_of_transport::text type, name, estimated_departure start_date, estimated_arrival end_date, status, description, trip_travel_assignments details, trip_transaction_id
+from v_trip_travel_summary;
+union
+select id, trip_id, 'accommodation' record_type, type = 'other', name, check_in_date start_date, check_out_date end_date, status, description, accommodation_units details, trip_transaction_id
+from v_trip_travel_summary;
 ```

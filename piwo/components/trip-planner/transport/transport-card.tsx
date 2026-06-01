@@ -9,7 +9,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Enums, Tables, TablesInsert } from "@/database.types";
-import TransportTypeIcon from "./transport-type-icon";
+import TransportTypeIcon from "../icon-factories";
 import DetailField from "@/components/ui/detail-field";
 import { useCurrentLocale } from "@/locales/client";
 import { permissionsReducer } from "../permissions";

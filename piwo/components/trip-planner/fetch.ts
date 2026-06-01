@@ -392,6 +392,29 @@ async function updateLinkedTransaction({
     return await fetchTransactionById(transactionId);
 }
 
+export interface TripTimelineResponseRow
+    extends Omit<Tables<"v_trip_timeline">, "details"> {
+    details:
+        | TripAccommodationSummaryView["accommodation_units"]
+        | Tables<"v_trip_participant_details">;
+}
+
+async function fetchTripTimeline(
+    tripId: string,
+    // limit: number = 60,
+    // offset: number = 0,
+) {
+    const supabase = await createClient();
+    const { data, count, error } = await supabase
+        .from("v_trip_timeline")
+        .select("*", { count: "exact", head: false })
+        .eq("trip_id", tripId)
+        .order("start_date,end_date,type", { ascending: true })
+        .overrideTypes<Array<TripTimelineResponseRow>>();
+    // .range(offset, offset + limit - 1);
+    return { data, count, error };
+}
+
 export {
     fetchTrips,
     fetchTripDetails,
@@ -421,4 +444,5 @@ export {
     fetchUnlinkedTransactions,
     fetchTransactionById,
     updateLinkedTransaction,
+    fetchTripTimeline,
 };

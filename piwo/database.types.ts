@@ -2029,6 +2029,7 @@ export type Database = {
           location: string | null
           name: string | null
           participants: Json | null
+          slug: string | null
           start_date: string | null
           status: Database["public"]["Enums"]["trip_status"] | null
           text_document_id: string | null
@@ -2110,6 +2111,24 @@ export type Database = {
             referencedColumns: ["trip_id"]
           },
         ]
+      }
+      v_trip_timeline: {
+        Row: {
+          description: string | null
+          details: Json[] | null
+          end_date: string | null
+          id: string | null
+          name: string | null
+          record_type:
+            | Database["public"]["Enums"]["trip_timeline_item_type"]
+            | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["transaction_status"] | null
+          trip_id: string | null
+          trip_transaction_id: string | null
+          type: string | null
+        }
+        Relationships: []
       }
       v_trip_travel_summary: {
         Row: {
@@ -2229,6 +2248,10 @@ export type Database = {
         }
         Returns: number
       }
+      trip_travel_make_transaction_split: {
+        Args: { p_trip_travel_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       acc_group_user_status: "invited" | "accepted" | "rejected" | "owner"
@@ -2255,6 +2278,7 @@ export type Database = {
         | "confirmed"
         | "tentative"
       trip_status: "proposed" | "confirmed" | "cancelled" | "past"
+      trip_timeline_item_type: "accommodation" | "travel"
       trip_transaction_calculation_type:
         | "group_total"
         | "per_day"
@@ -2428,6 +2452,7 @@ export const Constants = {
         "tentative",
       ],
       trip_status: ["proposed", "confirmed", "cancelled", "past"],
+      trip_timeline_item_type: ["accommodation", "travel"],
       trip_transaction_calculation_type: [
         "group_total",
         "per_day",

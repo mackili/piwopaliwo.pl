@@ -55,10 +55,9 @@ export default async function Layout({
                 <Link
                     href={hrefFactory(TRIP_PLANNER_TABS.TIMELINE)}
                     scroll={false}
-                    aria-disabled
                     replace
                 >
-                    <TabsTrigger value="timeline" disabled>
+                    <TabsTrigger value="timeline">
                         <CalendarIcon />
                         Timeline
                     </TabsTrigger>

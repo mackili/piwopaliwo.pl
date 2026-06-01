@@ -439,6 +439,62 @@ function transportChangeReducer(
     return result;
 }
 
+export enum TransactionFetchActionType {
+    FETCH = "FETCH",
+    APPEND = "APPEND",
+    UPDATE = "UPDATE",
+    DELETE = "DELETE",
+}
+
+export interface TransactionFetchPayloadMap {
+    [TransactionFetchActionType.APPEND]: Tables<"trip_transaction">[];
+    [TransactionFetchActionType.FETCH]: Tables<"trip_transaction">[];
+    [TransactionFetchActionType.UPDATE]: Tables<"trip_transaction">;
+    [TransactionFetchActionType.DELETE]: string[];
+}
+
+// export interface TransactionFetchAction {
+//     type: TransactionFetchActionType;
+//     payload: TransactionFetchPayloadMap;
+// }
+
+export type TransactionFetchAction = {
+    [T in TransactionFetchActionType]: {
+        type: T;
+        payload: TransactionFetchPayloadMap[T];
+    };
+}[TransactionFetchActionType];
+
+function tripTransactionsReducer(
+    state: Tables<"trip_transaction">[],
+    action: TransactionFetchAction,
+) {
+    let result = state;
+    switch (action.type) {
+        case TransactionFetchActionType.APPEND:
+            result = [...state, ...action.payload];
+            break;
+        case TransactionFetchActionType.FETCH:
+            result = action.payload;
+            break;
+        case TransactionFetchActionType.UPDATE:
+            result = [...state].map((transaction) =>
+                transaction.id === action.payload.id
+                    ? { ...transaction, ...action.payload }
+                    : transaction,
+            );
+            break;
+        case TransactionFetchActionType.DELETE:
+            result = [...state].filter(
+                (transaction) => !action.payload.includes(transaction.id),
+            );
+            break;
+        default:
+            break;
+    }
+    return result;
+}
+
 export {
     transactionTotalCostReducer,
     countPotentialParticipants,
@@ -450,4 +506,5 @@ export {
     calculateAccommodationTotalCapacity,
     calculateAccommodationUsedCapacity,
     transportChangeReducer,
+    tripTransactionsReducer,
 };

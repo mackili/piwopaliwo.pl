@@ -1,7 +1,14 @@
 "use client";
 
 import { Tables } from "@/database.types";
-import { ComponentProps, useEffect, useReducer, useRef, useState } from "react";
+import {
+    ComponentProps,
+    useEffect,
+    useMemo,
+    useReducer,
+    useRef,
+    useState,
+} from "react";
 import { fetchTripTransactions } from "../fetch";
 import { PostgrestError } from "@supabase/supabase-js";
 import {
@@ -17,36 +24,12 @@ import { Button } from "@/components/ui/button";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import TripTransaction from "./trip-transaction";
 import { twMerge } from "tailwind-merge";
+import {
+    TransactionFetchActionType,
+    tripTransactionsReducer,
+} from "../reducers";
 
 export const INITIAL_TRANSACTIONS_LIMIT = 10 as const;
-
-enum TransactionFetchActionType {
-    FETCH = "FETCH",
-    APPEND = "APPEND",
-}
-
-interface TransactionFetchAction {
-    type: TransactionFetchActionType;
-    payload: Tables<"trip_transaction">[];
-}
-
-function tripTransactionsReducer(
-    state: Tables<"trip_transaction">[],
-    action: TransactionFetchAction,
-) {
-    let result = state;
-    switch (action.type) {
-        case TransactionFetchActionType.APPEND:
-            result = [...state, ...action.payload];
-            break;
-        case TransactionFetchActionType.FETCH:
-            result = action.payload;
-            break;
-        default:
-            break;
-    }
-    return result;
-}
 
 export default function TripCostsCard({
     trip,
@@ -86,9 +69,13 @@ export default function TripCostsCard({
         };
         handleLineItemsFetch();
     }, [trip?.id, mode]);
-    const enableFetchMore = totalTransactionsCount.current
-        ? tripLineItems.length < totalTransactionsCount.current
-        : false;
+    const enableFetchMore = useMemo(
+        () =>
+            totalTransactionsCount.current
+                ? tripLineItems.length < totalTransactionsCount.current
+                : false,
+        [totalTransactionsCount, tripLineItems],
+    );
 
     async function handleFetchMore() {
         if (!trip?.id) return;
@@ -124,6 +111,7 @@ export default function TripCostsCard({
                         key={transaction.id}
                         transaction={transaction}
                         trip={trip}
+                        onSuccess={setTripLineItems}
                         className="border-b pb-4 px-6 last:border-b-0 first:border-t first:pt-4"
                     />
                 ))}

@@ -18,6 +18,13 @@ import {
     BedIcon,
     ActivityIcon,
     MoreHorizontalIcon,
+    FlagTriangleRightIcon,
+    BusIcon,
+    LuggageIcon,
+    ShipIcon,
+    TrainFrontTunnelIcon,
+    TrainTrackIcon,
+    TramFrontIcon,
 } from "lucide-react";
 import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
@@ -156,4 +163,80 @@ export function TripTransactionStatusPill({
             {status}
         </Badge>
     );
+}
+
+export default function TransportTypeIcon({
+    transportType,
+    useColor = true,
+    className,
+    ...props
+}: {
+    transportType?: Enums<"transportation_type"> | null;
+    useColor?: boolean;
+} & ComponentProps<"svg">) {
+    let Icon = LuggageIcon;
+    switch (transportType) {
+        case "bus":
+            Icon = BusIcon;
+            break;
+        case "car":
+            Icon = CarIcon;
+            break;
+        case "ferry":
+            Icon = ShipIcon;
+            break;
+        case "lift":
+            Icon = CableCarIcon;
+            break;
+        case "rail":
+            Icon = TrainTrackIcon;
+            break;
+        case "subway":
+            Icon = TrainFrontTunnelIcon;
+            break;
+        case "tram":
+            Icon = TramFrontIcon;
+        default:
+            Icon = LuggageIcon;
+            break;
+    }
+
+    return (
+        <Icon
+            className={twMerge(useColor ? "stroke-accent-2" : "", className)}
+            {...props}
+        />
+    );
+}
+
+type TripTimelineItemType = {
+    recordType: Enums<"trip_timeline_item_type">;
+    type: string;
+};
+
+export function TripTimelineItemIcon({
+    data,
+    className,
+    ...props
+}: {
+    data: TripTimelineItemType;
+} & ComponentProps<"svg">) {
+    let icon = (
+        <FlagTriangleRightIcon className={twMerge(className)} {...props} />
+    );
+    switch (data.recordType) {
+        case "accommodation":
+            icon = <BedIcon className={twMerge(className)} {...props} />;
+            break;
+        case "travel":
+            icon = (
+                <TransportTypeIcon
+                    transportType={data.type as Enums<"transportation_type">}
+                />
+            );
+            break;
+        default:
+            break;
+    }
+    return icon;
 }

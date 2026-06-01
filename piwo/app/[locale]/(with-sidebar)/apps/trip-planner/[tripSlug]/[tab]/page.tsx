@@ -8,6 +8,7 @@ import TripAccommodationOverview from "@/components/trip-planner/accommodation/a
 import TransportOverview from "@/components/trip-planner/transport/transport-overview";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import TripTimeline from "@/components/trip-planner/timeline/trip-timeline";
 
 export enum TRIP_PLANNER_TABS {
     OVERVIEW = "overview",
@@ -52,6 +53,9 @@ export default async function Page({
             break;
         case TRIP_PLANNER_TABS.TRANSPORT:
             Result = <TransportOverview tripId={tripData.id || ""} />;
+            break;
+        case TRIP_PLANNER_TABS.TIMELINE:
+            Result = <TripTimeline tripId={tripData.id || ""} />;
             break;
         default:
             Result = (

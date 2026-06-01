@@ -83,6 +83,11 @@ export const publicTripStatusSchema = z.enum([
   "past",
 ]);
 
+export const publicTripTimelineItemTypeSchema = z.enum([
+  "accommodation",
+  "travel",
+]);
+
 export const publicTripTransactionCalculationTypeSchema = z.enum([
   "group_total",
   "per_day",
@@ -2236,6 +2241,7 @@ export const publicVTripDetailsRowSchema = z.object({
   location: z.string().nullable(),
   name: z.string().nullable(),
   participants: jsonSchema.nullable(),
+  slug: z.string().nullable(),
   start_date: z.string().nullable(),
   status: publicTripStatusSchema.nullable(),
   text_document_id: z.string().nullable(),
@@ -2314,6 +2320,20 @@ export const publicVTripParticipantDetailsRelationshipsSchema = z.tuple([
     referencedColumns: z.tuple([z.literal("trip_id")]),
   }),
 ]);
+
+export const publicVTripTimelineRowSchema = z.object({
+  description: z.string().nullable(),
+  details: z.array(jsonSchema).nullable(),
+  end_date: z.string().nullable(),
+  id: z.string().nullable(),
+  name: z.string().nullable(),
+  record_type: publicTripTimelineItemTypeSchema.nullable(),
+  start_date: z.string().nullable(),
+  status: publicTransactionStatusSchema.nullable(),
+  trip_id: z.string().nullable(),
+  trip_transaction_id: z.string().nullable(),
+  type: z.string().nullable(),
+});
 
 export const publicVTripTravelSummaryRowSchema = z.object({
   capacity: z.number().nullable(),
@@ -2454,3 +2474,9 @@ export const publicTripTransactionCalculateTotalArgsSchema = z.object({
 });
 
 export const publicTripTransactionCalculateTotalReturnsSchema = z.number();
+
+export const publicTripTravelMakeTransactionSplitArgsSchema = z.object({
+  p_trip_travel_id: z.string(),
+});
+
+export const publicTripTravelMakeTransactionSplitReturnsSchema = jsonSchema;

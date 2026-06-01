@@ -33,6 +33,8 @@ import { useCurrentLocale } from "@/locales/client";
 import {
     countPotentialParticipants,
     getTripLength,
+    TransactionFetchAction,
+    TransactionFetchActionType,
     transactionTotalCostReducer,
 } from "../reducers";
 
@@ -105,7 +107,7 @@ export default function TripTransactionEdit({
     trip: Tables<"v_trip_details">;
     transaction?: Tables<"trip_transaction">;
     buttonContent?: ReactElement;
-    onSuccess?: (transaction: Tables<"trip_transaction">) => void;
+    onSuccess?: (action: TransactionFetchAction) => void;
 } & ComponentProps<"button"> &
     VariantProps<typeof buttonVariants>) {
     const router = useRouter();
@@ -168,7 +170,10 @@ export default function TripTransactionEdit({
         });
         router.refresh();
         if (onSuccess) {
-            onSuccess(data);
+            onSuccess({
+                type: TransactionFetchActionType.UPDATE,
+                payload: data,
+            });
         }
         setDialogOpen(false);
     }

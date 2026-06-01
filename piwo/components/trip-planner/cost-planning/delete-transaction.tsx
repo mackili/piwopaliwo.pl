@@ -14,18 +14,22 @@ import { PostgrestError } from "@supabase/supabase-js";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { Trash2Icon } from "lucide-react";
 import { deleteTripTransaction } from "../fetch";
-import { useRouter } from "next/navigation";
 import { Tables } from "@/database.types";
+import {
+    TransactionFetchAction,
+    TransactionFetchActionType,
+} from "../reducers";
 
 export default function DeleteTransaction({
     transaction,
+    onSuccess,
 }: {
     transaction: Tables<"trip_transaction">;
+    onSuccess?: (action: TransactionFetchAction) => void;
 }) {
     const [saveError, setSaveError] = useState<PostgrestError | null>();
     const [isPending, setPending] = useState<boolean>(false);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-    const router = useRouter();
 
     const handleDelete = async () => {
         if (!transaction?.id) return;
@@ -33,7 +37,11 @@ export default function DeleteTransaction({
         const { error } = await deleteTripTransaction(transaction.id);
         setSaveError(error);
         if (!error) {
-            router.refresh();
+            if (onSuccess)
+                onSuccess({
+                    type: TransactionFetchActionType.DELETE,
+                    payload: [transaction.id],
+                });
             setDialogOpen(false);
         }
         setPending(false);

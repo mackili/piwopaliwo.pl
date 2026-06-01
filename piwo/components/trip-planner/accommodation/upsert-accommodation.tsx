@@ -129,13 +129,13 @@ export default function UpsertAccommodation({
                                 name="check_in_date"
                                 label="Check-In"
                                 form={form}
-                                type="date"
+                                type="date-time"
                             />
                             <FormInput
                                 name="check_out_date"
                                 label="Check-Out"
                                 form={form}
-                                type="date"
+                                type="date-time"
                             />
                             <FormInput
                                 name="description"
