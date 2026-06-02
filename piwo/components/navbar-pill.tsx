@@ -71,21 +71,19 @@ export const menuItems: MainMenuItem[] = [
         description: "NavMenu.games_description",
         id: "NavMenu.games",
         order: 10,
-        link: "#",
         status: "disabled",
         icon: Gamepad2Icon,
         children: [
             {
                 id: "NavMenu.piwopol",
                 icon: BadgeCentIcon,
-                link: "#",
+                // link: "#",
             },
         ],
     },
     {
         id: "NavMenu.apps",
         order: 20,
-        link: "#",
         description: "NavMenu.apps_description",
         status: "active",
         icon: TerminalIcon,
@@ -230,7 +228,7 @@ export function NavItemDialog({
             defaultOpen={isDialogOpen}
         >
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="max-h-160">
+            <DialogContent className="overflow-hidden">
                 <DialogHeader>
                     <DialogTitle>
                         <div className="flex flex-row gap-4 flex-nowrap items-center text-wrap">
@@ -250,7 +248,7 @@ export function NavItemDialog({
                         </DialogDescription>
                     )}
                 </DialogHeader>
-                <div className="flex flex-col gap-4 flex-wrap">
+                <div className="flex flex-col gap-4 flex-nowrap max-h-120 overflow-y-scroll overflow-x-clip">
                     {item?.link && (
                         <Link href={item.link}>
                             <NavChildItem
