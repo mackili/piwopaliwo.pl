@@ -151,6 +151,7 @@ export default function NavBarPill() {
             className={twMerge(
                 "fixed left-4 bottom-4 z-100 antialiased backdrop-blur-xs shadow-xs rounded-l-full rounded-r-full flex bg-sidebar/50",
                 isMobile ? "flex-col-reverse" : "flex-row",
+                isNavOpen ? "outline outline-sidebar/20" : "",
             )}
         >
             <button
