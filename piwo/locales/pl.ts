@@ -14,6 +14,7 @@ const translations = {
         blog: "Blog",
         blog_description: "Główny kanał komunikacji ze światem",
         games: "Gry",
+        games_description: "Gry, które przygotowaliśmy w ramach platformy",
         piwopol: "Piwopol",
         apps: "Aplikacje",
         apps_description:
@@ -26,6 +27,7 @@ const translations = {
         accountant: "BeerWise",
         accountant_description:
             "Śledź i dziel wydatki swojej grupy w trakcie wyjazdu",
+        tripPlanner: "Planer wyjazdów",
     },
     ScoreTracker: {
         title: "Licznik punktów",
@@ -149,4 +151,14 @@ const translations = {
     firstName: "Imię",
     lastName: "Nazwisko",
 } as const;
+
+type FlattenObjectKeys<
+    T extends Record<string, unknown>,
+    Key = keyof T,
+> = Key extends string
+    ? T[Key] extends Record<string, unknown>
+        ? `${Key}.${FlattenObjectKeys<T[Key]>}`
+        : `${Key}`
+    : never;
+export type TranslationKey = FlattenObjectKeys<typeof translations>;
 export default translations;

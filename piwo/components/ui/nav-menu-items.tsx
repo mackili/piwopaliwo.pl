@@ -29,7 +29,7 @@ const listItemCSS =
     "flex flex-col flex-wrap gap-1 w-full justify-start justify-items-start rounded-md p-2 outline-hidden select-none hover-effect";
 interface MenuItem {
     title?: string;
-    description?: string;
+    description?: boolean;
     id: string;
     order?: number;
     link: string;
@@ -47,12 +47,12 @@ export const menuItems: MainMenuItem[] = [
     {
         id: "home",
         order: 0,
-        link: "",
+        link: "/",
         status: "active",
         icon: HomeIcon,
         children: [
             {
-                description: `PiwoPaliwo's communication channel`,
+                description: true,
                 id: "blog",
                 icon: NewspaperIcon,
                 link: "/blog",
@@ -60,7 +60,7 @@ export const menuItems: MainMenuItem[] = [
         ],
     },
     {
-        description: "Find all games offered on the platform here",
+        description: true,
         id: "games",
         order: 10,
         link: "#",
@@ -68,7 +68,7 @@ export const menuItems: MainMenuItem[] = [
         icon: Gamepad2Icon,
         children: [
             {
-                description: `PiwoPaliwo's version of the famous economic game`,
+                description: false,
                 id: "piwopol",
                 icon: BadgeCentIcon,
                 link: "#",
@@ -79,36 +79,37 @@ export const menuItems: MainMenuItem[] = [
         id: "apps",
         order: 20,
         link: "#",
+        description: true,
         status: "active",
         icon: TerminalIcon,
         children: [
             {
-                description: "NavMenu.accountant_description",
+                description: true,
                 id: "accountant",
                 link: "/apps/accountant",
                 icon: EqualApproximatelyIcon,
             },
             {
-                description: "NavMenu.scoreTracker_description",
+                description: true,
                 id: "scoreTracker",
                 link: "/apps/scoretracker",
                 icon: VolleyballIcon,
             },
             {
-                description: "NavMenu.beerCounter_description",
+                description: true,
                 id: "beerCounter",
                 link: "/apps/beercounter",
                 icon: BeerIcon,
             },
             {
-                description: "Plan your group's trip",
+                description: true,
                 id: "tripPlanner",
                 link: "/apps/trip-planner",
                 icon: SailboatIcon,
             },
         ],
     },
-];
+] as const;
 
 export default function NavigationMenuPP({
     ...props
