@@ -22,10 +22,8 @@ export default function BeerMenu({
         <div className="relative inline">
             <button
                 className={twMerge(
-                    `h-16 w-16 transition-all hover:scale-110 hover:rotate-5 hover:perspective-dramatic hover:translate-x-2 hover:-translate-y-2 ${
-                        navOpen &&
-                        "scale-105 rotate-10 translate-x-2 sm:-translate-y-2 perspective-dramatic"
-                    }`,
+                    `h-16 w-16 transition-all hover:scale-105 hover:rotate-5 hover:perspective-dramatic hover:translate-x-2 hover:-translate-y-1
+                    `,
                     className,
                 )}
                 onClick={() => setNavOpen(!navOpen)}
