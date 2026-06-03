@@ -36,12 +36,7 @@ export default function TotalSpentChart({
             <BarChart accessibilityLayer data={[chartData]}>
                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
 
-                <ChartLegend
-                    content={
-                        // @ts-expect-error invalid type formatting in the library
-                        <ChartLegendContent />
-                    }
-                />
+                <ChartLegend content={<ChartLegendContent />} />
                 {Object.keys(chartConfig).map((iso) => (
                     <Bar
                         key={iso}
