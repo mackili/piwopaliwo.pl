@@ -1,26 +1,16 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { GroupMember } from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
-import { PostgrestError } from "@supabase/supabase-js";
-import { SupabaseResponse } from "@/utils/supabase/types";
-import { UserInfo } from "@/components/scoretracker/types";
+import { TablesInsert } from "@/database.types";
 
-export async function upsertGroupMember(groupMember: GroupMember) {
+export async function upsertGroupMember(
+    groupMember: TablesInsert<"group_member">,
+) {
     const supabase = await createClient();
-    const { data, error } = await supabase
-        .from("group_member")
-        .upsert(groupMember)
-        .select();
-    return { data, error } as {
-        data: GroupMember[] | null;
-        error: PostgrestError | null;
-    };
+    return await supabase.from("group_member").upsert(groupMember).select();
 }
 
 export async function getAvailableUsers() {
     const supabase = await createClient();
-    return (await supabase
-        .from("UserInfo")
-        .select()) as SupabaseResponse<UserInfo>;
+    return await supabase.from("UserInfo").select();
 }

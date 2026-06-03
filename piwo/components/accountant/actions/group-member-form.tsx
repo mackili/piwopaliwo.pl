@@ -2,10 +2,7 @@
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import {
-    GroupMember,
-    GroupMemberSchema,
-} from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
+import { GroupMember } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/error-message";
@@ -21,6 +18,8 @@ import UserSelect from "@/components/ui/user-dropdown";
 import { UserInfo } from "@/components/scoretracker/types";
 import { PostgrestError } from "@supabase/supabase-js";
 import { useI18n } from "@/locales/client";
+import { TablesInsert } from "@/database.types";
+import { publicGroupMemberInsertSchema } from "@/database.schemas";
 
 export default function GroupMemberForm({
     data,
@@ -36,10 +35,10 @@ export default function GroupMemberForm({
     const [usersError, setUsersError] = useState<PostgrestError>();
     const [result, handleSubmit, isPending] = useActionState(
         handleGroupMemberSave,
-        null
+        null,
     );
-    const form = useForm<GroupMember>({
-        resolver: zodResolver(GroupMemberSchema),
+    const form = useForm<TablesInsert<"group_member">>({
+        resolver: zodResolver(publicGroupMemberInsertSchema),
         defaultValues: {
             ...data,
             id: data.id.length <= 0 ? uuid() : data.id,
@@ -52,7 +51,7 @@ export default function GroupMemberForm({
             if (error) {
                 setUsersError(error as PostgrestError);
             } else {
-                setUsers(data || []);
+                setUsers((data as UserInfo[]) || []);
             }
         };
         setUserData();
@@ -63,9 +62,6 @@ export default function GroupMemberForm({
             return;
         }
         const groupMemberData = form.getValues();
-        if (Object.keys(groupMemberData).includes("user")) {
-            delete groupMemberData.user;
-        }
         const result = await upsertGroupMember(groupMemberData);
         if (result.data) {
             router.refresh();

@@ -27,13 +27,15 @@ export default async function TripCard({ trip }: { trip: Tables<"trip"> }) {
                 </CardHeader>
                 {trip?.description && (
                     <CardContent>
-                        <CardDescription>{trip.description}</CardDescription>
+                        <CardDescription className="text-primary">
+                            {trip.description}
+                        </CardDescription>
                     </CardContent>
                 )}
                 <CardFooter>
                     <CardDescription>
                         <ul>
-                            <li className="flex flex-row gap-2 items-center flex-wrap">
+                            <li className="flex flex-row gap-2 items-center flex-wrap text-primary">
                                 <CalendarDaysIcon />
                                 {new Intl.DateTimeFormat(locale).format(
                                     new Date(trip.start_date),

@@ -1,12 +1,18 @@
 import { fetchTrips } from "@/components/trip-planner/fetch";
 import TripCard from "@/components/trip-planner/trip-card";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 
 export default async function Page() {
     const data = await fetchTrips();
 
     return (
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-4 p-4">
             {data.data
                 ?.filter((group) => group.trips.length > 0)
                 .map((group) => (
@@ -14,6 +20,7 @@ export default async function Page() {
                         <CardHeader>
                             <CardTitle>{group.name}</CardTitle>
                         </CardHeader>
+                        <CardAction></CardAction>
                         <CardContent className="@container">
                             <div className="grid @max-sm:grid-cols-1 @max-md:grid-cols-2 @max-4xl:grid-cols-3 grid-cols-4 gap-4">
                                 {group.trips.map((trip) => (

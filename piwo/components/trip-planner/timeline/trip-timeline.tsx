@@ -9,6 +9,7 @@ import {
 import { ParticipantRow } from "../transport/transport-assignment";
 import { Tables } from "@/database.types";
 import { TripAccommodationUnitSummary } from "../custom-schemas";
+import { getTripLength } from "../reducers";
 
 enum TimelineItemTimeType {
     START = "start",
@@ -69,6 +70,12 @@ export default async function TripTimeline({ tripId }: { tripId: string }) {
         },
         {},
     );
+    const firstDate = groupedData && Object.keys(groupedData)[0];
+    const getTripDayNumber = (day: Date) =>
+        firstDate
+            ? getTripLength({ startdate: new Date(firstDate), endDate: day }) +
+              1
+            : undefined;
     return (
         <div className="flex flex-col gap-8">
             <PostgrestErrorDisplay error={error} />
@@ -92,7 +99,7 @@ export default async function TripTimeline({ tripId }: { tripId: string }) {
                                     </div>
                                     <div>
                                         <div className="font-bold text-2xl flex flex-row gap-4 flex-wrap items-center">
-                                            <p>{`Day ${index + 1}`}</p>
+                                            <p>{`Day ${getTripDayNumber(new Date(day))}`}</p>
                                             <p className="font-normal text-muted-foreground text-base">
                                                 (
                                                 {Intl.DateTimeFormat(

@@ -1,6 +1,5 @@
 "use client";
 import { organization } from "@/public/statics";
-import { useEffect, useState } from "react";
 import UserNav from "./auth/user-nav";
 import BeerMenu from "./ui/beer-menu";
 
