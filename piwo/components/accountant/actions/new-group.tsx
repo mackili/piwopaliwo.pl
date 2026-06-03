@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Group } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
 import { v4 as uuid } from "uuid";
-import { User } from "@supabase/supabase-js";
 import GroupForm from "./group-form";
 import { useI18n } from "@/locales/client";
 
@@ -23,7 +22,7 @@ const generateNewGroup: (userId: string) => Group = (userId) => ({
     currencies: [],
 });
 
-export default function NewGroupButton({ user }: { user: User }) {
+export default function NewGroupButton({ userId }: { userId: string }) {
     const t = useI18n();
     return (
         <Dialog>
@@ -37,7 +36,7 @@ export default function NewGroupButton({ user }: { user: User }) {
                         {t("Accountant.createNewGroupEnterDetails")}
                     </DialogDescription>
                 </DialogHeader>
-                <GroupForm groupData={generateNewGroup(user.id)} />
+                <GroupForm groupData={generateNewGroup(userId)} />
             </DialogContent>
         </Dialog>
     );

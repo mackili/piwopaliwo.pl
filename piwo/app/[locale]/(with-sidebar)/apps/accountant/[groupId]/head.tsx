@@ -8,13 +8,13 @@ import { Group } from "../types";
 import { ComponentProps } from "react";
 import Image from "next/image";
 import EditGroupButton from "@/components/accountant/actions/edit-group";
-import { User } from "@supabase/supabase-js";
+import { JwtPayload } from "@supabase/supabase-js";
 
 export function GroupHead({
     group,
     user,
     ...props
-}: { group: Group; user: User } & ComponentProps<"div">) {
+}: { group: Group; user: JwtPayload } & ComponentProps<"div">) {
     return (
         <Card {...props}>
             <CardHeader className="gap-4">

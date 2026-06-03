@@ -8,15 +8,15 @@ import { createClient, supabaseToNextResponse } from "@/utils/supabase/server";
 
 export async function POST(req: NextRequest) {
     const newGame = ScoreTrackerGameSchema.parse(
-        (await req.json()) as ScoreTrackerGame
+        (await req.json()) as ScoreTrackerGame,
     );
     const supabase = await createClient();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data, error } = await supabase.auth.getUser();
-    newGame.ownerId = data.user?.id;
+    const { data, error } = await supabase.auth.getClaims();
+    newGame.ownerId = data?.claims?.sub;
     const response = await supabase.from("GameScore").upsert(newGame).select();
     const gameScore = SupabaseResponseSchema(ScoreTrackerGameSchema).parse(
-        response
+        response,
     );
     // @ts-expect-error invalid validation
     return supabaseToNextResponse(gameScore);

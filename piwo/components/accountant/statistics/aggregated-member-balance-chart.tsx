@@ -17,21 +17,21 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 function calculateGrandTotal(
     totals: { iso: string; amount: number }[] | null,
-    currencies: GroupCurrency[] | null | undefined
+    currencies: GroupCurrency[] | null | undefined,
 ) {
     const primaryRateTotals = (totals || []).map(
         (total) =>
             total.amount *
                 ((currencies || []).find(
-                    (currency) => currency.iso === total.iso
-                )?.rate || 0) || 0
+                    (currency) => currency.iso === total.iso,
+                )?.rate || 0) || 0,
     );
     return (
         Math.round(
             primaryRateTotals.reduce(
                 (accumulator, currentValue) => accumulator + currentValue,
-                0
-            ) * 100
+                0,
+            ) * 100,
         ) / 100
     );
 }
@@ -50,7 +50,7 @@ const AggregateMemberBalanceChart = memo(function MemberBalanceChart({
     function makeChartData() {
         // const currencyIsoArray: string[] = [];
         const primaryCurrency = group.currencies?.find(
-            (currency) => currency.primary
+            (currency) => currency.primary,
         );
         if (!primaryCurrency) {
             return { config: {}, data: [] };
@@ -73,11 +73,11 @@ const AggregateMemberBalanceChart = memo(function MemberBalanceChart({
                     (entry["amount"] ?? 0) +
                     calculateGrandTotal(
                         [{ iso: balance.iso, amount: balance.net_amount }],
-                        group.currencies
+                        group.currencies,
                     );
                 return aggregate;
             },
-            []
+            [],
         );
         return { config: chartConfig, data: chartData };
     }

@@ -9,14 +9,16 @@ import { getI18n } from "@/locales/server";
 export default async function Accountant() {
     const t = await getI18n();
     const supabase = await createClient();
-    const { user } = (await supabase.auth.getUser()).data;
+    const { data: user } = await supabase.auth.getClaims();
     return (
         <div className="p-4 flex flex-col gap-4">
             <section>
                 <Card>
                     <CardHeader>
                         <CardAction>
-                            {user && <NewGroupButton user={user} />}
+                            {user && (
+                                <NewGroupButton userId={user?.claims?.sub} />
+                            )}
                         </CardAction>
                         <h1 className="max-sm:text-3xl!">
                             {t("NavMenu.accountant")}

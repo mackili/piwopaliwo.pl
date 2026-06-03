@@ -1,4 +1,4 @@
-import { UserResponse } from "@supabase/supabase-js";
+import { JwtPayload } from "@supabase/supabase-js";
 import Comments from "./comments";
 import { getI18n } from "@/locales/server";
 import { ComponentProps } from "react";
@@ -11,16 +11,16 @@ export default async function CommentSection({
     ...props
 }: {
     articleId: string;
-    user: UserResponse;
+    user: JwtPayload;
 } & ComponentProps<"div">) {
     const t = await getI18n();
     return (
         <div className={twMerge("mt-8", props?.className)} {...props}>
             <h2>{t("Blog.comments")}</h2>
-            {user?.data?.user ? (
+            {user ? (
                 <Comments
                     articleId={articleId}
-                    user={user.data.user}
+                    user={user.user_metadata}
                     showNewComment={true}
                 />
             ) : (

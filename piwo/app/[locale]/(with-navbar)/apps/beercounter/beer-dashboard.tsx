@@ -38,14 +38,14 @@ const cardDefinitions: CardDefinition[] = [
 
 export default async function BeerDashboard() {
     const supabase = await createClient();
-    const user = await supabase.auth.getUser();
-    if (!user?.data?.user) {
+    const { data: userData } = await supabase.auth.getClaims();
+    if (!userData?.claims) {
         return <></>;
     }
     const { data, error } = await supabase
         .from("consumed_drink")
         .select("id,created_at,drank_at,drink_type,quantity,user_id")
-        .filter("user_id", "eq", user.data.user.id);
+        .filter("user_id", "eq", userData?.claims?.sub);
     const parsed =
         data && (await z.array(ConsumedDrinkSchema).safeParseAsync(data));
     if (!parsed || !parsed.success) {

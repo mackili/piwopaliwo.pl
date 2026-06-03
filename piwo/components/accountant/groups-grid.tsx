@@ -8,14 +8,14 @@ import { PostgrestError } from "@supabase/supabase-js";
 import GroupsInvitations from "./groups-invitations";
 export default async function GroupsGrid() {
     const supabase = await createClient();
-    const userId = (await supabase.auth.getUser()).data?.user?.id;
+    const userId = (await supabase.auth.getClaims()).data?.claims?.sub;
     const {
         data,
         error,
     }: { data: Group[] | null; error: PostgrestError | null } = await supabase
         .from("v_group_membership")
         .select(
-            "id,name,description,thumbnail_url,owner_id,currencies,created_at"
+            "id,name,description,thumbnail_url,owner_id,currencies,created_at",
         )
         .eq("user_id", userId)
         .filter("archived_at", "is", null)

@@ -10,11 +10,14 @@ export default async function Page({
 }) {
     const { gameId } = await params;
     const supabase = await createClient();
-    const { data } = await supabase.auth.getUser();
+    const { data } = await supabase.auth.getClaims();
     await supabase
         .from("UserScore")
         .upsert(
-            UserScoreSchema.parse({ gameId: gameId, userId: data.user?.id })
+            UserScoreSchema.parse({
+                gameId: gameId,
+                userId: data?.claims?.sub,
+            }),
         );
     const scores = (
         await supabase
@@ -27,7 +30,7 @@ export default async function Page({
         <div className="max-w-xxl mx-auto flex flex-col items-center-safe gap-6">
             <ScoreTracker
                 gameId={gameId}
-                userId={data.user?.id}
+                userId={data?.claims?.sub}
                 scores={scores ?? []}
             />
         </div>

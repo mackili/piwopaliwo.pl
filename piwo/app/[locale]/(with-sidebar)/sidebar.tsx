@@ -22,7 +22,7 @@ import {
 import { menuItems } from "@/components/ui/nav-menu-items";
 import { useCurrentLocale, useI18n } from "@/locales/client";
 import { CurrentUserAvatar } from "@/components/current-user-avatar";
-import { User } from "@supabase/supabase-js";
+import { JwtPayload } from "@supabase/supabase-js";
 import Link from "next/link";
 import { Settings, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -30,7 +30,7 @@ import { createClient } from "@/utils/supabase/client";
 import ErrorMessage from "@/components/ui/error-message";
 import { useState } from "react";
 
-export function AppSidebar({ user }: { user: User | null }) {
+export function AppSidebar({ user }: { user: JwtPayload | null }) {
     const [errorMessage, setError] = useState<string | null>(null);
     const { open, openMobile, isMobile } = useSidebar();
     const t = useI18n();
@@ -99,13 +99,13 @@ export function AppSidebar({ user }: { user: User | null }) {
                                                 <span>
                                                     {t(
                                                         // @ts-expect-error invalid type setting
-                                                        `NavMenu.${childMenuItem.id}`
+                                                        `NavMenu.${childMenuItem.id}`,
                                                     )}
                                                 </span>
                                             </SidebarMenuSubButton>
                                         </SidebarMenuSubItem>
                                     </SidebarMenuSub>
-                                )
+                                ),
                             )}
                         </SidebarMenuItem>
                     ))}
