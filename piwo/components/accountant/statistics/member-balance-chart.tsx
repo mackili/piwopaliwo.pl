@@ -42,7 +42,7 @@ const MemberBalanceChart = memo(function MemberBalanceChart({
                 }
                 return aggregate;
             },
-            []
+            [],
         );
         currencyIsoArray.map((currency, index) => {
             chartConfig[currency] = {
@@ -65,7 +65,12 @@ const MemberBalanceChart = memo(function MemberBalanceChart({
             >
                 <CartesianGrid vertical={false} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <ChartLegend content={<ChartLegendContent />} />
+                <ChartLegend
+                    content={
+                        // @ts-expect-error invalid type formatting in the library
+                        <ChartLegendContent />
+                    }
+                />
                 <YAxis tickLine={false} tickMargin={10} axisLine={false} />
                 <XAxis
                     dataKey="member"

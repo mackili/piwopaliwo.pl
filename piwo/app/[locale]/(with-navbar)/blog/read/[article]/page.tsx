@@ -21,7 +21,7 @@ export default async function Page({
         <ErrorMessage error={parseError?.message || "Article not found."} />
     ) : (
         <section className="mx-4 sm:mx-8 md:mx-32 lg:mx-40">
-            {isAuthorUser && user?.data?.user?.id === documentData.author && (
+            {isAuthorUser && user?.claims?.sub === documentData.author && (
                 <Link href={`/${locale}/blog/write?id=${documentData.id}`}>
                     <Button variant="outline" className="mb-8">
                         {t("Blog.edit")}
@@ -29,11 +29,13 @@ export default async function Page({
                 </Link>
             )}
             <BlogArticle article={documentData} />
-            <CommentSection
-                articleId={article}
-                user={user}
-                className="min-h-100"
-            />
+            {user?.claims && (
+                <CommentSection
+                    articleId={article}
+                    user={user?.claims}
+                    className="min-h-100"
+                />
+            )}
         </section>
     );
 }

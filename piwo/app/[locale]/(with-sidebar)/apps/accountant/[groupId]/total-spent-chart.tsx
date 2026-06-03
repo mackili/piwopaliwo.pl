@@ -16,11 +16,14 @@ export default function TotalSpentChart({
 }: {
     data: TotalSpentObject[];
 }) {
-    const chartData = data.reduce((acc, { iso, amount }) => {
-        acc["label"] = iso;
-        acc[iso] = amount;
-        return acc;
-    }, {} as Record<string, number | string>);
+    const chartData = data.reduce(
+        (acc, { iso, amount }) => {
+            acc["label"] = iso;
+            acc[iso] = amount;
+            return acc;
+        },
+        {} as Record<string, number | string>,
+    );
     const chartConfig = data.reduce((config, { iso }, index) => {
         config[iso] = {
             label: iso,
@@ -32,7 +35,13 @@ export default function TotalSpentChart({
         <ChartContainer config={chartConfig} className="min-h-8 w-full">
             <BarChart accessibilityLayer data={[chartData]}>
                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-                <ChartLegend content={<ChartLegendContent />} />
+
+                <ChartLegend
+                    content={
+                        // @ts-expect-error invalid type formatting in the library
+                        <ChartLegendContent />
+                    }
+                />
                 {Object.keys(chartConfig).map((iso) => (
                     <Bar
                         key={iso}
