@@ -16,10 +16,10 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     const supabase = await createClient();
-    const { data } = await supabase.auth.getUser();
+    const { data } = await supabase.auth.getClaims();
     return (
         <SidebarProvider>
-            <AppSidebar user={data?.user} />
+            {data?.claims && <AppSidebar user={data?.claims} />}
             <SidebarInset>
                 <TopBar />
                 <section className="flex-1 w-full overflow-y-auto">

@@ -1,7 +1,7 @@
 "use client";
 
 import { LogOut, Settings } from "lucide-react";
-import { AuthError } from "@supabase/supabase-js";
+import { AuthError, JwtPayload } from "@supabase/supabase-js";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,7 +13,6 @@ import {
 } from "../ui/dropdown-menu";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
-import { UserResponse } from "@supabase/supabase-js";
 import { CurrentUserAvatar } from "../current-user-avatar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -34,16 +33,16 @@ export default function UserNav({
     const [isLocaleSet, setLocaleSet] = useState(false);
     const router = useRouter();
     const supabase = createClient();
-    const [user, setUser] = useState<UserResponse>();
+    const [user, setUser] = useState<JwtPayload>();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [logoutError, setLogoutError] = useState<AuthError | undefined>();
     const getUser = async () => {
-        const userData = await supabase.auth.getUser();
-        setUser(userData);
-        if (userData.data?.user) {
+        const { data } = await supabase.auth.getClaims();
+        setUser(data?.claims);
+        if (data?.claims) {
             setLoginState("loggedIn");
         }
-        if (!userData.data?.user) {
+        if (!data?.claims) {
             setLoginState("noLogin");
         }
     };
@@ -53,7 +52,7 @@ export default function UserNav({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {}, [user, user?.data.user]);
+    useEffect(() => {}, [user]);
 
     const logOut = async () => {
         const { error } = await supabase.auth.signOut();
@@ -80,7 +79,7 @@ export default function UserNav({
             </Link>
             <DropdownMenu>
                 <DropdownMenuTrigger
-                    className={user?.data.user ? "cursor-pointer" : "hidden"}
+                    className={user ? "cursor-pointer" : "hidden"}
                 >
                     <CurrentUserAvatar className={className} />
                 </DropdownMenuTrigger>
@@ -95,10 +94,10 @@ export default function UserNav({
                             <CurrentUserAvatar className="h-8 w-8 rounded-lg" />
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">
-                                    {`${user?.data.user?.user_metadata.firstName} ${user?.data.user?.user_metadata.lastName}`}
+                                    {`${user?.user_metadata.firstName} ${user?.user_metadata.lastName}`}
                                 </span>
                                 <span className="truncate text-xs">
-                                    {user?.data.user?.email}
+                                    {user?.user_metadata?.email}
                                 </span>
                             </div>
                         </div>
