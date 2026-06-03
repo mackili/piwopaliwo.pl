@@ -106,13 +106,11 @@ const ChartTooltip = RechartsPrimitive.Tooltip;
 
 function ChartTooltipContent({
     active,
-    // @ts-expect-error invalid type formatting in the library
     payload,
     className,
     indicator = "dot",
     hideLabel = false,
     hideIndicator = false,
-    // @ts-expect-error invalid type formatting in the library
     label,
     labelFormatter,
     labelClassName,
@@ -182,9 +180,7 @@ function ChartTooltipContent({
             {!nestLabel ? tooltipLabel : null}
             <div className="grid gap-1.5">
                 {payload
-                    // @ts-expect-error invalid type formatting in the library
                     .filter((item) => item.type !== "none")
-                    // @ts-expect-error invalid type formatting in the library
                     .map((item, index) => {
                         const key = `${nameKey || item.name || item.dataKey || "value"}`;
                         const itemConfig = getPayloadConfigFromPayload(
@@ -291,13 +287,11 @@ function ChartLegendContent({
     verticalAlign = "bottom",
     nameKey,
 }: React.ComponentProps<"div"> &
-    // @ts-expect-error invalid type formatting in the library
     Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
         hideIcon?: boolean;
         nameKey?: string;
     }) {
     const { config } = useChart();
-    // @ts-expect-error invalid type formatting in the library
     if (!payload?.length) {
         return null;
     }
@@ -311,9 +305,7 @@ function ChartLegendContent({
             )}
         >
             {payload
-                // @ts-expect-error invalid type formatting in the library
                 .filter((item) => item.type !== "none")
-                // @ts-expect-error invalid type formatting in the library
                 .map((item) => {
                     const key = `${nameKey || item.dataKey || "value"}`;
                     const itemConfig = getPayloadConfigFromPayload(
