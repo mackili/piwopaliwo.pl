@@ -36,12 +36,12 @@ export async function fetchArticles() {
 
 export async function getAuthorUser() {
     const supabase = await createClient();
-    const user = await supabase.auth.getUser();
-    if (user && user.data) {
+    const { data: user } = await supabase.auth.getClaims();
+    if (user && user?.claims) {
         const { data } = await supabase
             .from("piwo_paliwo_member")
             .select("id")
-            .eq("user_id", user.data.user?.id)
+            .eq("user_id", user?.claims?.sub)
             .limit(1);
         if (data && data.length === 1) {
             return { isAuthorUser: true, user: user };

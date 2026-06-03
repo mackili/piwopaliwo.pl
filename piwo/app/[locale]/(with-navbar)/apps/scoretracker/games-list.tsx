@@ -13,16 +13,14 @@ import Link from "next/link";
 
 export default async function ScoredGamesList() {
     const supabase = await createClient();
-    const session = await supabase.auth.getUser();
+    const { data: session } = await supabase.auth.getClaims();
     const t = await getI18n();
     const locale = await getCurrentLocale();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from("UserScore")
         .select("gameId, GameScore(name, status)")
-        .filter("userId", "eq", `${session.data.user?.id}`)
+        .eq("userId", `${session?.claims?.sub}`)
         .limit(40);
-
     return (
         <>
             <h3 className="font-serif text-center">

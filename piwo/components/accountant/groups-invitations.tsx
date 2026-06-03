@@ -14,12 +14,12 @@ export default async function GroupsInvitations({
 }: ComponentProps<"div">) {
     const t = await getI18n();
     const supabase = await createClient();
-    const { data: user, error: userError } = await supabase.auth.getUser();
-    const { data: invitations, error: invitationsError } = user?.user?.id
+    const { data: user, error: userError } = await supabase.auth.getClaims();
+    const { data: invitations, error: invitationsError } = user?.claims?.sub
         ? await supabase
               .from(GROUP_INVITE_VIEW)
               .select()
-              .eq("user_id", user.user.id)
+              .eq("user_id", user?.claims?.sub)
               .is("accepted_at", null)
         : ({ data: null, error: null } as SupabaseResponse<GroupInviteView>);
     return (
@@ -29,7 +29,7 @@ export default async function GroupsInvitations({
             </CardHeader>
             <CardContent className="max-h-full overflow-y-scroll">
                 {invitations &&
-                    user?.user &&
+                    user?.claims &&
                     invitations.map((invite, index) => (
                         <Card key={index}>
                             <CardHeader>
@@ -39,7 +39,7 @@ export default async function GroupsInvitations({
                                 invite?.group_member?.nickname && (
                                     <CardContent>
                                         {`${t(
-                                            "Accountant.youHaveBeenInvited"
+                                            "Accountant.youHaveBeenInvited",
                                         )}} ${invite.group?.name} ${t("as")} ${
                                             invite.group_member?.nickname
                                         }
@@ -48,7 +48,7 @@ export default async function GroupsInvitations({
                                 )}
                             <InvitationAcceptForm
                                 invitation={invite}
-                                userId={user.user.id}
+                                userId={user?.claims?.sub}
                                 className="w-full gap-2 justify-center"
                             />
                         </Card>

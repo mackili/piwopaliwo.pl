@@ -42,7 +42,7 @@ const MemberBalanceChart = memo(function MemberBalanceChart({
                 }
                 return aggregate;
             },
-            []
+            [],
         );
         currencyIsoArray.map((currency, index) => {
             chartConfig[currency] = {

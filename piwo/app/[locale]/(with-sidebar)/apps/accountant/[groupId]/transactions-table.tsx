@@ -17,7 +17,7 @@ import { getI18n } from "@/locales/server";
 
 const defaultTransaction: (groupId: string, userId: string) => Transaction = (
     groupId,
-    userId
+    userId,
 ) => ({
     id: "",
     paid_by_id: userId,
@@ -36,15 +36,15 @@ export default async function GroupTransactionTable({
     const { data, error } = (await supabase
         .from("transaction")
         .select(
-            "id,description,paid_by_id,currency_iso_code,amount,group_id,split_type,created_at,paid_by:group_member!transaction_paid_by_fkey(id,nickname,user:UserInfo(firstName,lastName,avatarUrl,userId)),splits:transaction_split(transaction_id,group_id,borrower_id,created_at,amount)"
+            "id,description,paid_by_id,currency_iso_code,amount,group_id,split_type,created_at,paid_by:group_member!transaction_paid_by_fkey(id,nickname,user:UserInfo(firstName,lastName,avatarUrl,userId)),splits:transaction_split(transaction_id,group_id,borrower_id,created_at,amount)",
         )
         .eq("group_id", group.id)
         .order("created_at", {
             ascending: false,
         })) as SupabaseResponse<Transaction>;
-    const { user } = (await supabase.auth.getUser()).data;
+    const { data: user } = await supabase.auth.getClaims();
     const currentUserMember = (group?.members || []).find(
-        (member) => member.user_id === user?.id
+        (member) => member.user_id === user?.claims?.sub,
     );
     const t = await getI18n();
     return (
@@ -59,7 +59,7 @@ export default async function GroupTransactionTable({
                     </p>
                 </div>
                 <CardAction>
-                    {user && (
+                    {user?.claims && (
                         <NewElement
                             buttonLabel={t("Accountant.newTransaction")}
                             dialogTitle={t("Accountant.newTransaction")}
@@ -67,7 +67,7 @@ export default async function GroupTransactionTable({
                             formProps={{
                                 data: defaultTransaction(
                                     group.id,
-                                    currentUserMember?.id || ""
+                                    currentUserMember?.id || "",
                                 ),
                                 groupMembers: group?.members || [],
                             }}

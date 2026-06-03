@@ -20,15 +20,19 @@ export default async function Page({
     const { data, error } = (await supabase
         .from("group")
         .select(
-            "id,name,description,thumbnail_url,owner_id,created_at,members:group_member_group_id_fkey(id,nickname,added_at,user_id,status,user:UserInfo(firstName,lastName,avatarUrl)),currencies"
+            "id,name,description,thumbnail_url,owner_id,created_at,members:group_member_group_id_fkey(id,nickname,added_at,user_id,status,user:UserInfo(firstName,lastName,avatarUrl)),currencies",
         )
         .eq("id", groupId)
         .single()) as { data: Group | null; error: PostgrestError | null };
-    const { user } = (await supabase.auth.getUser()).data;
+    const { data: user } = await supabase.auth.getClaims();
     return data && user ? (
         <div className="@container">
             <div className="w-full grid @max-xl:grid-cols-1 @2xl:grid-cols-2 @4xl:grid-cols-6 p-4 gap-4">
-                <GroupHead group={data} user={user} className="col-span-full" />
+                <GroupHead
+                    group={data}
+                    user={user?.claims}
+                    className="col-span-full"
+                />
                 <GroupMembersTable
                     group={data}
                     groupMembers={data.members || []}

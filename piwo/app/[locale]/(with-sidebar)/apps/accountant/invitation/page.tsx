@@ -26,7 +26,7 @@ export default async function Invite({
     if (!groupId || !groupMemberId) {
         redirectToMainAccountant();
     }
-    const userId = (await supabase.auth.getUser())?.data?.user?.id;
+    const userId = (await supabase.auth.getClaims())?.data?.claims?.sub;
     const { data, error } = (await supabase
         .from("v_group_invitation")
         .select()

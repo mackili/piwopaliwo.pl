@@ -14,14 +14,14 @@ export default async function Page({
 }) {
     const { id } = await searchParams;
     const supabase = await createClient();
-    const user = await supabase.auth.getUser();
+    const { data: user } = await supabase.auth.getClaims();
     const locale = await getCurrentLocale();
     if (!id) {
         const newDocumentId = uuid();
         const { error } = await supabase.from("TextDocument").insert(
             TextDocumentSchema.safeParse({
                 id: newDocumentId,
-                author: user.data.user?.id,
+                author: user?.claims?.sub,
                 access: "restricted",
                 status: "draft",
                 document_type: "blog",

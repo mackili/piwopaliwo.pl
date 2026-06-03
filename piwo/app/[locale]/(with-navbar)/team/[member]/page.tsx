@@ -1,6 +1,4 @@
 import { createClient } from "@/utils/supabase/server";
-import { PiwoPaliwoTeamMember } from "../team-member-tile";
-import { SupabaseError } from "@/utils/supabase/types";
 import Image from "next/image";
 import TeamMemberFacts from "../team-member-facts";
 import { Button } from "@/components/ui/button";
@@ -21,19 +19,18 @@ export default async function Page({
 }: {
     params: Promise<{ member: string }>;
 }) {
-    const { member } = await params;
-    const supabase = await createClient();
-    const t = await getI18n();
-    const locale = await getCurrentLocale();
-    const { data, error } = (await supabase
+    const [{ member }, supabase, t, locale] = await Promise.all([
+        params,
+        createClient(),
+        getI18n(),
+        getCurrentLocale(),
+    ]);
+    const { data, error } = await supabase
         .from("piwo_paliwo_member")
         .select("*, bio_document:TextDocument!piwo_paliwo_member_bio_fkey(*)")
         .filter("id", "eq", `${member}`)
         .limit(1)
-        .single()) as {
-        data: PiwoPaliwoTeamMember | null;
-        error: SupabaseError | null;
-    };
+        .single();
     return (
         <section className="relative overflow-ellipsis sm:overflow-visible">
             {data ? (
@@ -59,7 +56,8 @@ export default async function Page({
                             <TeamMemberFacts teamMember={data} />
                         </div>
                         {data.user_id ===
-                            (await supabase.auth.getUser()).data.user?.id && (
+                            (await supabase.auth.getClaims()).data?.claims
+                                ?.sub && (
                             <Link
                                 href={`/${locale}/team/${member}/edit?id=${data?.bio}`}
                                 className="w-full"
