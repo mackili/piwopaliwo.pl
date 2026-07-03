@@ -1,4 +1,4 @@
-import { JwtPayload } from "@supabase/supabase-js";
+import { JwtPayload, User } from "@supabase/supabase-js";
 import Comments from "./comments";
 import { getI18n } from "@/locales/server";
 import { ComponentProps } from "react";
@@ -20,7 +20,10 @@ export default async function CommentSection({
             {user ? (
                 <Comments
                     articleId={articleId}
-                    user={user.user_metadata}
+                    user={
+                        // @ts-expect-error correct conversion
+                        user as User
+                    }
                     showNewComment={true}
                 />
             ) : (

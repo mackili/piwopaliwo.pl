@@ -58,7 +58,10 @@ export function AutomaticBreadcrumbs() {
                         <>
                             <BreadcrumbItem>
                                 <DropdownMenu>
-                                    <DropdownMenuTrigger className="flex items-center gap-1">
+                                    <DropdownMenuTrigger
+                                        className="flex items-center gap-1"
+                                        asChild
+                                    >
                                         <Button
                                             variant="ghost"
                                             size="sm"

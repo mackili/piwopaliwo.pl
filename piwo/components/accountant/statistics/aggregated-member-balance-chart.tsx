@@ -94,7 +94,12 @@ const AggregateMemberBalanceChart = memo(function MemberBalanceChart({
             >
                 <CartesianGrid vertical={false} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <ChartLegend content={<ChartLegendContent />} />
+                <ChartLegend
+                    content={
+                        // @ts-expect-error chart library error
+                        <ChartLegendContent />
+                    }
+                />
                 <YAxis tickLine={false} tickMargin={10} axisLine={false} />
                 <XAxis
                     dataKey="member"

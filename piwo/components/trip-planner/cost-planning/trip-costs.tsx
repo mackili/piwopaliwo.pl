@@ -9,6 +9,8 @@ import { fetchPlannedFinanceStatistics, fetchTripTransactions } from "../fetch";
 import TripCostsSummary from "./trip-costs-summary";
 import TripCostsCard, { INITIAL_TRANSACTIONS_LIMIT } from "./trip-costs-card";
 import { TripFinanceDataActionType, tripFinanceDataReducer } from "../reducers";
+import TripCostsCardSkeleton from "./trip-costs-card-skeleton";
+import TripCostsSummarySkeleton from "./trip-costs-summary-skeleton";
 
 export const TripContext = createContext<Tables<"v_trip_details"> | null>(null);
 
@@ -20,8 +22,13 @@ export default function TripCosts({
     const tripId = trip?.id;
     const [data, setData] = useReducer(tripFinanceDataReducer, {
         planned: {
-            statistics: { data: null, error: null },
-            transactions: { data: null, error: null, count: null },
+            statistics: { data: null, error: null, isLoading: true },
+            transactions: {
+                data: null,
+                error: null,
+                count: null,
+                isLoading: true,
+            },
         },
     });
     useEffect(() => {
@@ -39,11 +46,11 @@ export default function TripCosts({
                 ]);
             setData({
                 type: TripFinanceDataActionType.FETCH_PLANNED_STATISTICS,
-                payload: financialStatisticsResult,
+                payload: { ...financialStatisticsResult, isLoading: false },
             });
             setData({
                 type: TripFinanceDataActionType.FETCH_PLANNED,
-                payload: tripTransactionsResult,
+                payload: { ...tripTransactionsResult, isLoading: false },
             });
         };
         handleFetch();
@@ -89,16 +96,26 @@ export default function TripCosts({
                             <>
                                 <div className="grow-8 col-span-full lg:col-span-8">
                                     <div className="grid max-[350px]:grid-cols-1 grid-cols-2 md:grid-cols-4 gap-4 @container">
-                                        <TripCostsSummary
-                                            data={data.planned.statistics.data}
-                                            className="col-span-full @max-[370px]:grid-cols-1 grid-cols-2 @lg:grid-cols-3 grid gap-4"
-                                        />
-                                        <TripCostsCard
-                                            tripId={trip.id}
-                                            data={data.planned.transactions}
-                                            setTripFinanceData={setData}
-                                            className="col-span-full"
-                                        />
+                                        {data.planned.statistics.isLoading ? (
+                                            <TripCostsSummarySkeleton />
+                                        ) : (
+                                            <TripCostsSummary
+                                                data={
+                                                    data.planned.statistics.data
+                                                }
+                                                className="col-span-full @max-[370px]:grid-cols-1 grid-cols-2 @lg:grid-cols-3 grid gap-4"
+                                            />
+                                        )}
+                                        {data.planned.transactions.isLoading ? (
+                                            <TripCostsCardSkeleton />
+                                        ) : (
+                                            <TripCostsCard
+                                                tripId={trip.id}
+                                                data={data.planned.transactions}
+                                                setTripFinanceData={setData}
+                                                className="col-span-full"
+                                            />
+                                        )}
                                     </div>
                                 </div>
                                 <div className="grow-4 gap-4 col-span-full lg:col-span-4">

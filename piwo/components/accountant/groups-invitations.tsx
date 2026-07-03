@@ -33,20 +33,34 @@ export default async function GroupsInvitations({
                     invitations.map((invite, index) => (
                         <Card key={index}>
                             <CardHeader>
-                                <h4>{invite?.group?.name}</h4>
+                                <h4>
+                                    {
+                                        // @ts-expect-error supabase json formatting
+                                        invite?.group?.name
+                                    }
+                                </h4>
                             </CardHeader>
-                            {invite?.group?.name &&
-                                invite?.group_member?.nickname && (
-                                    <CardContent>
-                                        {`${t(
-                                            "Accountant.youHaveBeenInvited",
-                                        )}} ${invite.group?.name} ${t("as")} ${
-                                            invite.group_member?.nickname
-                                        }
+                            {
+                                // @ts-expect-error supabase json formatting
+                                invite?.group?.name &&
+                                    // @ts-expect-error supabase json formatting
+                                    invite?.group_member?.nickname && (
+                                        <CardContent>
+                                            {`${t(
+                                                "Accountant.youHaveBeenInvited",
+                                            )}} ${
+                                                // @ts-expect-error supabase json formatting
+                                                invite.group?.name
+                                            } ${t("as")} ${
+                                                // @ts-expect-error supabase json formatting
+                                                invite.group_member?.nickname
+                                            }
                         `}
-                                    </CardContent>
-                                )}
+                                        </CardContent>
+                                    )
+                            }
                             <InvitationAcceptForm
+                                // @ts-expect-error supabase json formatting
                                 invitation={invite}
                                 userId={user?.claims?.sub}
                                 className="w-full gap-2 justify-center"

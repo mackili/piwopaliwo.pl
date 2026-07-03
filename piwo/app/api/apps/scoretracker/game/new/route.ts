@@ -5,15 +5,18 @@ import {
 import { SupabaseResponseSchema } from "@/utils/supabase/types";
 import { NextRequest } from "next/server";
 import { createClient, supabaseToNextResponse } from "@/utils/supabase/server";
+import { publicGamescoreInsertSchema } from "@/database.schemas";
 
 export async function POST(req: NextRequest) {
-    const newGame = ScoreTrackerGameSchema.parse(
+    const newGame = publicGamescoreInsertSchema.parse(
         (await req.json()) as ScoreTrackerGame,
     );
     const supabase = await createClient();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, error } = await supabase.auth.getClaims();
-    newGame.ownerId = data?.claims?.sub;
+    const userId = data?.claims?.sub;
+    if (!userId) return;
+    newGame.ownerId = userId;
     const response = await supabase.from("GameScore").upsert(newGame).select();
     const gameScore = SupabaseResponseSchema(ScoreTrackerGameSchema).parse(
         response,

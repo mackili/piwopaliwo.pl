@@ -56,7 +56,12 @@ export default function EstimateByCategory({
                 height={5}
                 responsive
             >
-                <ChartLegend content={<ChartLegendContent />} />
+                <ChartLegend
+                    content={
+                        // @ts-expect-error chart library error
+                        <ChartLegendContent />
+                    }
+                />
                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                 <YAxis type="category" tickLine={false} axisLine={false} hide />
                 <XAxis type="number" hide />

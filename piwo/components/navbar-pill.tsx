@@ -198,12 +198,7 @@ export default function NavBarPill() {
                             )}
                         >
                             <item.icon className="stroke-primary" />
-                            <p className="text-primary text-xs">
-                                {
-                                    // @ts-expect-error impossible to set correct type inference
-                                    t(item.id)
-                                }
-                            </p>
+                            <p className="text-primary text-xs">{t(item.id)}</p>
                         </button>
                     </NavItemDialog>
                 ))}
@@ -233,18 +228,12 @@ export function NavItemDialog({
                     <DialogTitle>
                         <div className="flex flex-row gap-4 flex-nowrap items-center text-wrap">
                             <item.icon className="stroke-2 scale-120" />
-                            {t(
-                                // @ts-expect-error impossible to set correct type inference
-                                item.id,
-                            )}
+                            {t(item.id)}
                         </div>
                     </DialogTitle>
                     {item?.description && (
                         <DialogDescription>
-                            {t(
-                                // @ts-expect-error impossible to set correct type inference
-                                item.description,
-                            )}
+                            {t(item.description)}
                         </DialogDescription>
                     )}
                 </DialogHeader>
@@ -306,20 +295,12 @@ export function NavChildItem({
             <CardContent>
                 <CardTitle className="flex flex-row gap-2 flex-nowrap items-center text-wrap">
                     <item.icon />
-                    {t(
-                        // @ts-expect-error impossible to set correct type inference
-                        item.id,
-                    )}
+                    {t(item.id)}
                 </CardTitle>
             </CardContent>
             {item?.description && (
                 <CardFooter>
-                    <CardDescription>
-                        {t(
-                            // @ts-expect-error impossible to set correct type inference
-                            item.description,
-                        )}
-                    </CardDescription>
+                    <CardDescription>{t(item.description)}</CardDescription>
                 </CardFooter>
             )}
         </Card>

@@ -4,6 +4,7 @@ import { TextDocument, TextDocumentSchema } from "../markdown-editor/types";
 import isEqual from "lodash.isequal";
 import { PostgrestError } from "@supabase/supabase-js";
 import { ZodError } from "zod";
+import { TablesInsert } from "@/database.types";
 
 const supabase = createClient();
 const TEXT_DOCUMENT_SELECT = "*";
@@ -37,7 +38,10 @@ export async function readTextDocument({ documentId }: { documentId: string }) {
         .filter("id", "eq", documentId)
         .limit(1)
         .single();
-    return await parseDocumentResult({ data, error });
+    return await parseDocumentResult({ data, error } as {
+        data: TextDocument;
+        error: PostgrestError | ZodError | null;
+    });
 }
 
 async function compareDocumentVersions({
@@ -55,11 +59,16 @@ async function upsertTextDocument({ document }: { document: TextDocument }) {
     const { authorData, ...documentWithoutAuthorData } = document;
     const { data, error } = await supabase
         .from("TextDocument")
-        .upsert({ ...documentWithoutAuthorData })
+        .upsert({
+            ...documentWithoutAuthorData,
+        } as TablesInsert<"TextDocument">)
         .select()
         .limit(1)
         .single();
-    return await parseDocumentResult({ data, error });
+    return await parseDocumentResult({ data, error } as {
+        data: TextDocument;
+        error: PostgrestError | ZodError | null;
+    });
 }
 
 export async function upsertHandler({

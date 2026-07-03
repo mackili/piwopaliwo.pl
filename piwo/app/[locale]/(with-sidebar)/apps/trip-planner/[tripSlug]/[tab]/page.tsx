@@ -23,7 +23,7 @@ export enum TRIP_PLANNER_TABS {
 export default async function Page({
     params,
 }: {
-    params: Promise<{ tripSlug: string; tab: TRIP_PLANNER_TABS }>;
+    params: Promise<{ tripSlug: string; tab: string }>;
 }) {
     const [{ tripSlug, tab }, locale] = await Promise.all([
         params,

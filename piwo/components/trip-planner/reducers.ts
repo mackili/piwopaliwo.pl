@@ -537,6 +537,7 @@ export interface TripPlannedTransactionsResult {
     data: Tables<"trip_transaction">[] | null;
     error: PostgrestError | null;
     count: number | null;
+    isLoading: boolean;
 }
 
 export interface TripFinanceData {
@@ -544,6 +545,7 @@ export interface TripFinanceData {
         statistics: {
             data: TripPlannedFinanceStatisticsResponse | null;
             error: PostgrestError | null;
+            isLoading: boolean;
         };
         transactions: TripPlannedTransactionsResult;
     };
@@ -557,6 +559,7 @@ export interface TripFinanceDataPayloadMap {
     [TripFinanceDataActionType.FETCH_PLANNED_STATISTICS]: {
         data: TripPlannedFinanceStatisticsResponse | null;
         error: PostgrestError | null;
+        isLoading: boolean;
     };
 }
 

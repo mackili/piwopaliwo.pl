@@ -25,7 +25,7 @@ export default async function Layout({
     children,
     params,
 }: {
-    params: Promise<{ tripSlug: string; tab: TRIP_PLANNER_TABS }>;
+    params: Promise<{ tripSlug: string; tab: string }>;
 } & Readonly<{
     children: React.ReactNode;
 }>) {

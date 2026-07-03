@@ -123,7 +123,6 @@ async function fetchTripTransactions(
         ascending: true,
     },
 ) {
-    console.log(offset, offset + limit - 1);
     const supabase = await createClient();
     const { data, count, error } = await supabase
         .from("trip_transaction")
@@ -131,7 +130,6 @@ async function fetchTripTransactions(
         .eq("trip_id", tripId)
         .order(orderBy.field, { ascending: orderBy?.ascending || true })
         .range(offset, offset + limit - 1);
-    console.log(data, count, error);
     return { data, count, error };
 }
 

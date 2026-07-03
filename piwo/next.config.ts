@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         ],
     },
     allowedDevOrigins: ["192.168.0.31"],
+    experimental: {
+        turbopackServerFastRefresh: false,
+    },
+    cacheComponents: true,
 };
 
 const withMDX = createMDX({

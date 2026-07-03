@@ -8,21 +8,21 @@ import {
 } from "../../../app/[locale]/(with-sidebar)/apps/accountant/types";
 
 export async function fetchGroupMemberBalances(
-    groupId: string
+    groupId: string,
 ): Promise<SupabaseResponse<GroupMemberBalance>> {
     const supabase = await createClient();
-    return await supabase
+    return (await supabase
         .from("v_group_member_net_balance")
         .select("member,iso,paid_amount,owed_amount,net_amount,status")
         .eq("group_id", groupId)
-        .order("status");
+        .order("status")) as SupabaseResponse<GroupMemberBalance>;
 }
 
 export async function fetchDailyTransactionSummaries(
     groupId: string,
     limit?: number,
     dateFrom?: string,
-    dateTo?: string
+    dateTo?: string,
 ): Promise<SupabaseResponse<GroupDailyTransactionSummary>> {
     const supabase = await createClient();
     let query = supabase
@@ -38,5 +38,5 @@ export async function fetchDailyTransactionSummaries(
     }
     query.limit(limit ? Math.min(30, limit) : 30);
     const result = await query;
-    return result;
+    return result as SupabaseResponse<GroupDailyTransactionSummary>;
 }
