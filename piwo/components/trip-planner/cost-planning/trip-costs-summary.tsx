@@ -1,20 +1,20 @@
+"use client";
+
 import { ComponentProps } from "react";
-import { fetchPlannedFinanceStatistics } from "../fetch";
-import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
+import { TripPlannedFinanceStatisticsResponse } from "../fetch";
 import TripStatistic from "../trip-statistic";
-import { getCurrentLocale } from "@/locales/server";
 import { Constants } from "@/database.types";
 import EstimateByCategory from "../charts/expenses-per-category";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCurrentLocale } from "@/locales/client";
 
-export default async function TripCostsSummary({
-    tripId,
+export default function TripCostsSummary({
+    data,
     className,
-}: { tripId: string } & ComponentProps<"div">) {
-    const [locale, { data, error }] = await Promise.all([
-        getCurrentLocale(),
-        fetchPlannedFinanceStatistics(tripId),
-    ]);
+}: {
+    data: TripPlannedFinanceStatisticsResponse | null;
+} & ComponentProps<"div">) {
+    const locale = useCurrentLocale();
 
     const plannedTotal =
         data?.financials.reduce(
@@ -59,7 +59,6 @@ export default async function TripCostsSummary({
 
     return (
         <div className={className}>
-            <PostgrestErrorDisplay error={error} />
             {data && data?.trip_currency && (
                 <>
                     <TripStatistic

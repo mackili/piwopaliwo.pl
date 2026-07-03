@@ -16,16 +16,16 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { twMerge } from "tailwind-merge";
-import { Constants, Enums } from "@/database.types";
-import { ChessKingIcon, CrownIcon, User2Icon } from "lucide-react";
+import { Constants, Database } from "@/database.types";
+import { CrownIcon, EditIcon, ViewIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const participantRoles = Constants.public.Enums.trip_participant_role;
+const participantRoles = Constants.permissions.Enums.user_role;
 
 export function TripParticipantRoleDisplay({
     role,
 }: {
-    role: Enums<"trip_participant_role">;
+    role: Database["permissions"]["Enums"]["user_role"];
 }) {
     let result = <>{role}</>;
     switch (role) {
@@ -36,17 +36,17 @@ export function TripParticipantRoleDisplay({
                 </>
             );
             break;
-        case "member":
+        case "editor":
             result = (
                 <>
-                    <User2Icon /> Member
+                    <EditIcon /> Member
                 </>
             );
             break;
-        case "owner":
+        case "viewer":
             result = (
                 <>
-                    <ChessKingIcon /> Owner
+                    <ViewIcon /> Viewer
                 </>
             );
             break;
@@ -64,12 +64,14 @@ export default function TripParticipantRolePicker({
     participant: ParticipantResponseJson;
     canEdit?: boolean;
 } & ComponentProps<"select">) {
-    const [role, setRole] = useState<Enums<"trip_participant_role">>(
-        participant.role,
-    );
+    const [role, setRole] = useState<
+        Database["permissions"]["Enums"]["user_role"]
+    >(participant.role);
     const [optimisticRole, setOptimisticRole] =
-        useOptimistic<Enums<"trip_participant_role">>(role);
-    const handleChange = async (value: Enums<"trip_participant_role">) => {
+        useOptimistic<Database["permissions"]["Enums"]["user_role"]>(role);
+    const handleChange = async (
+        value: Database["permissions"]["Enums"]["user_role"],
+    ) => {
         startTransition(async () => {
             setOptimisticRole(value);
             const { error } = await updateParticipant(

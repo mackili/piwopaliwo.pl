@@ -1,4 +1,4 @@
-import { Enums } from "@/database.types";
+import { Database, Enums } from "@/database.types";
 import { ParticipantResponseJson } from "./fetch";
 
 export type TripParticipantPermissions =
@@ -10,7 +10,8 @@ export type TripParticipantPermissions =
     | "assign_accommodation"
     | "modify_transport"
     | "assign_transport"
-    | "plan_budget";
+    | "plan_budget"
+    | "delete_trip";
 
 const PARTICIPANT_PERMISSIONS_MATRIX: {
     role: Enums<"trip_participant_role">;
@@ -28,6 +29,7 @@ const PARTICIPANT_PERMISSIONS_MATRIX: {
             "modify_transport",
             "assign_transport",
             "plan_budget",
+            "delete_trip",
         ],
     },
     {
@@ -42,6 +44,7 @@ const PARTICIPANT_PERMISSIONS_MATRIX: {
             "modify_transport",
             "assign_transport",
             "plan_budget",
+            "delete_trip",
         ],
     },
     {
@@ -63,7 +66,7 @@ function permissionsReducer({
     tripParticipantRole,
     permission,
 }: {
-    tripParticipantRole: Enums<"trip_participant_role">;
+    tripParticipantRole: Database["permissions"]["Enums"]["user_role"];
     permission: TripParticipantPermissions;
 }) {
     return (

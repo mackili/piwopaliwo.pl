@@ -11,7 +11,7 @@ import UpsertAccommodationUnit, {
 } from "./upsert-accommodation-unit";
 import { AccommodationModificationChangeAction } from "../reducers";
 import DeleteAccommodationUnit from "./delete-accommodation-unit";
-import { Enums } from "@/database.types";
+import { Database } from "@/database.types";
 import { permissionsReducer } from "../permissions";
 import AccommodationUnitAssignment from "./accommodation-unit-assignment";
 
@@ -28,7 +28,7 @@ export default function AccommodationUnitCard({
     onOptimisticAccommodationUnitChange: (
         action: AccommodationModificationChangeAction,
     ) => void;
-    currentParticipantRole: Enums<"trip_participant_role">;
+    currentParticipantRole: Database["permissions"]["Enums"]["user_role"];
 }) {
     return (
         <Card>
@@ -46,6 +46,7 @@ export default function AccommodationUnitCard({
                             permission: "modify_accommodation",
                         }) && (
                             <UpsertAccommodationUnit
+                                key={accommodationUnit.id}
                                 accommodationId={
                                     accommodationUnit.accommodation_id
                                 }

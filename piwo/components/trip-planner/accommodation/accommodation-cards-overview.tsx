@@ -5,16 +5,19 @@ import { TripAccommodationSummaryView } from "../custom-schemas";
 import { Tables } from "@/database.types";
 import { createContext, useOptimistic, useReducer } from "react";
 import { accommodationModificationReducer } from "../reducers";
+import UpsertAccommodation from "./upsert-accommodation";
 
 export const TripParticipantsContext = createContext<
     Tables<"v_trip_participant_details">[]
 >([]);
 
 export default function TripAccommodationCardsOverview({
+    tripId,
     accommodations,
     currentTripParticipant,
     potentialParticipants,
 }: {
+    tripId: string;
     accommodations: TripAccommodationSummaryView[];
     currentTripParticipant: Tables<"v_trip_participant_details">;
     potentialParticipants: Tables<"v_trip_participant_details">[];
@@ -48,9 +51,9 @@ export default function TripAccommodationCardsOverview({
     return (
         <TripParticipantsContext value={potentialParticipants}>
             {currentTripParticipant &&
-                optimisticAccommodationData?.map((accommodation, index) => (
+                optimisticAccommodationData?.map((accommodation) => (
                     <TripAccommodationCard
-                        key={index}
+                        key={accommodation.id}
                         accommodationData={accommodation}
                         currentTripParticipant={currentTripParticipant}
                         setAccommodationData={setAccommodationData}
@@ -59,6 +62,10 @@ export default function TripAccommodationCardsOverview({
                         }
                     />
                 ))}
+            <UpsertAccommodation
+                tripId={tripId}
+                onSave={setAccommodationData}
+            />
         </TripParticipantsContext>
     );
 }

@@ -19,7 +19,6 @@ import {
 import { Trash2Icon } from "lucide-react";
 import { deleteAccommodation } from "../fetch";
 import { TripAccommodationSummaryView } from "../custom-schemas";
-import { useRouter } from "next/navigation";
 
 export default function DeleteAccommodation({
     accommodation,
@@ -31,7 +30,6 @@ export default function DeleteAccommodation({
     const [saveError, setSaveError] = useState<PostgrestError | null>();
     const [isPending, setPending] = useState<boolean>(false);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-    const router = useRouter();
 
     const handleDelete = async () => {
         if (!accommodation?.id) return;
@@ -39,7 +37,10 @@ export default function DeleteAccommodation({
         const { error } = await deleteAccommodation(accommodation.id);
         setSaveError(error);
         if (!error) {
-            router.refresh();
+            onSave({
+                type: AccommodationModificationSplitChangeEventType.ACCOMMODATION_DELETED,
+                payload: accommodation.id,
+            });
             setDialogOpen(false);
         }
         setPending(false);

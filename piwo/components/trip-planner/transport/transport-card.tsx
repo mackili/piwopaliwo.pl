@@ -8,7 +8,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Enums, Tables, TablesInsert } from "@/database.types";
+import { Database, Tables, TablesInsert } from "@/database.types";
 import TransportTypeIcon from "../icon-factories";
 import DetailField from "@/components/ui/detail-field";
 import { useCurrentLocale } from "@/locales/client";
@@ -31,7 +31,9 @@ export default function TransportCard({
     potentialParticipants,
 }: {
     transport: Tables<"v_trip_travel_summary">;
-    currentParticipantRole?: Enums<"trip_participant_role"> | null;
+    currentParticipantRole?:
+        | Database["permissions"]["Enums"]["user_role"]
+        | null;
     size?: number;
     potentialParticipants: Tables<"v_trip_participant_details">[];
 }) {

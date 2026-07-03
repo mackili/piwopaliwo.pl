@@ -17,7 +17,7 @@ import {
 export type ParticipantResponseJson = {
     id: string;
     status: Enums<"trip_participant_status">;
-    role: Enums<"trip_participant_role">;
+    role: Database["permissions"]["Enums"]["user_role"];
     group_member: {
         id: string;
         nickname: string | null;
@@ -123,6 +123,7 @@ async function fetchTripTransactions(
         ascending: true,
     },
 ) {
+    console.log(offset, offset + limit - 1);
     const supabase = await createClient();
     const { data, count, error } = await supabase
         .from("trip_transaction")
@@ -130,6 +131,7 @@ async function fetchTripTransactions(
         .eq("trip_id", tripId)
         .order(orderBy.field, { ascending: orderBy?.ascending || true })
         .range(offset, offset + limit - 1);
+    console.log(data, count, error);
     return { data, count, error };
 }
 
@@ -151,6 +153,15 @@ async function deleteTripTransaction(transactionId: string) {
         .delete()
         .eq("id", transactionId);
 }
+
+export type TripPlannedFinanceStatisticsResponse = Omit<
+    Tables<"v_trip_financial_summary">,
+    "financials" | "participants" | "financials_by_category"
+> & {
+    financials: TripFinancialsJson[];
+    participants: TripFinancialsParticipantsJson[];
+    financials_by_category: TripFinancialsPerCategoryJson[];
+};
 
 async function fetchPlannedFinanceStatistics(tripId: string) {
     const supabase = await createClient();
@@ -244,17 +255,6 @@ async function deleteAccommodation(accommodationId: string) {
         .from("accommodation")
         .delete()
         .eq("id", accommodationId);
-}
-
-async function fetchAccommodationUnassignedTripParticipants(tripId: string) {
-    const supabase = await createClient();
-    return await supabase
-        .from("v_accommodation_unassigned_trip_participants")
-        .select("*")
-        .eq("trip_id", tripId)
-        .eq("is_declinded", false)
-        .order("nickname", { ascending: true })
-        .order("last_name", { ascending: true });
 }
 
 async function fetchTripParticipantDetails(
@@ -415,6 +415,11 @@ async function fetchTripTimeline(
     return { data, count, error };
 }
 
+async function deleteTrips(tripIds: string[]) {
+    const supabase = await createClient();
+    return await supabase.from("trip").delete().in("id", tripIds);
+}
+
 export {
     fetchTrips,
     fetchTripDetails,
@@ -432,7 +437,6 @@ export {
     fetchCurrentTripParticipant,
     upsertAccommodation,
     deleteAccommodation,
-    fetchAccommodationUnassignedTripParticipants,
     fetchTripParticipantDetails,
     upsertAccommodationAssignments,
     removeAccommodationAssignment,
@@ -445,4 +449,5 @@ export {
     fetchTransactionById,
     updateLinkedTransaction,
     fetchTripTimeline,
+    deleteTrips,
 };

@@ -54,7 +54,7 @@ type GroupMemberFetch =
       }[]
     | null;
 
-const PARTICIPANT_ROLES = Constants.public.Enums.trip_participant_role;
+const PARTICIPANT_ROLES = Constants.permissions.Enums.user_role;
 
 enum GroupMembersActionType {
     FETCH = "FETCH",
@@ -106,13 +106,13 @@ export default function TripParticipantsInvite({
         availableGroupMembersReducer,
         [],
     );
-    const supabase = createClient();
     const defaultMember: TablesInsert<"trip_participant"> = {
         trip_id: trip.id as string,
-        role: "member",
+        role: "viewer",
         group_member_id: "",
     };
     useEffect(() => {
+        const supabase = createClient();
         const fetchGroupMembers = async () => {
             if (trip?.group_id) {
                 const { data, error } = await supabase
@@ -121,7 +121,7 @@ export default function TripParticipantsInvite({
                         "*,user:UserInfo(first_name:firstName,id:userId,last_name:lastName,avatar_url:avatarUrl)",
                     )
                     .eq("group_id", trip.group_id)
-                    .neq("status", "rejected")
+                    .or("status.neq.rejected,status.is.null")
                     .not(
                         "id",
                         "in",
@@ -147,7 +147,7 @@ export default function TripParticipantsInvite({
             }
         };
         fetchGroupMembers();
-    }, [trip?.group_id, trip?.participants, supabase]);
+    }, [trip?.group_id, trip?.participants]);
     const form = useForm<z.infer<typeof formObject>>({
         resolver: zodResolver(formObject),
         defaultValues: {
@@ -176,6 +176,7 @@ export default function TripParticipantsInvite({
         router.refresh();
         setDialogOpen(false);
     }
+
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
@@ -208,7 +209,7 @@ export default function TripParticipantsInvite({
                                                                 participant={{
                                                                     id: "",
                                                                     status: "invited",
-                                                                    role: "member",
+                                                                    role: "viewer",
                                                                     group_member:
                                                                         {
                                                                             ...member,

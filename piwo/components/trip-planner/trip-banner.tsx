@@ -20,6 +20,7 @@ import TripParticipantsInvite from "./participant-management/participants-invite
 import { createClient } from "@/utils/supabase/server";
 import { getCurrentUserParticipant, permissionsReducer } from "./permissions";
 import { getTripLength } from "./reducers";
+import DeleteTrip from "./delete-trip";
 
 export function getFormattedDates(start: string, end: string, locale: string) {
     return `${new Intl.DateTimeFormat(locale).format(new Date(start))} - ${new Intl.DateTimeFormat(locale).format(new Date(end))}`;
@@ -94,6 +95,11 @@ export default async function TripBanner({
                                     currentUserGroupParticipant.role,
                                 permission: "invite_participants",
                             }) && <TripParticipantsInvite trip={trip} />}
+                            {permissionsReducer({
+                                tripParticipantRole:
+                                    currentUserGroupParticipant.role,
+                                permission: "delete_trip",
+                            }) && <DeleteTrip trip={trip} />}
                         </ButtonGroup>
                     </CardAction>
                 )}

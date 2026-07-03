@@ -90,8 +90,11 @@ function TripParticipantAvatar({
                 }
             />
             <AvatarFallback>
-                {`${participant.user?.first_name?.slice(0, 1)}${participant.user?.last_name?.slice(0, 1)}` ||
-                    participant.group_member?.nickname}
+                {participant?.user?.first_name && participant?.user?.last_name
+                    ? `${participant.user?.first_name?.slice(0, 1)}${participant.user?.last_name?.slice(0, 1)}`.toUpperCase()
+                    : participant?.group_member?.nickname
+                          ?.toUpperCase()
+                          ?.slice(0, 1)}
             </AvatarFallback>
             {showStatusIcon && (
                 <TripParticipantStatusIcon

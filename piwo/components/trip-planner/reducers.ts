@@ -1,9 +1,13 @@
 import { Enums, Tables, TablesInsert } from "@/database.types";
-import { ParticipantResponseJson } from "./fetch";
+import {
+    ParticipantResponseJson,
+    TripPlannedFinanceStatisticsResponse,
+} from "./fetch";
 import {
     TripAccommodationSummaryView,
     TripTransactionSplit,
 } from "./custom-schemas";
+import { PostgrestError } from "@supabase/supabase-js";
 
 function transactionTotalCostReducer({
     unitCost,
@@ -204,6 +208,32 @@ function accommodationModificationReducer(
     action: AccommodationModificationChangeAction,
 ) {
     const resultArray = [...state];
+    if (
+        action.type ===
+        AccommodationModificationSplitChangeEventType.ACCOMMODATION_DELETED
+    ) {
+        const filteredResult = resultArray.filter(
+            (accommodation) => accommodation.id !== action.payload,
+        );
+        return filteredResult;
+    }
+    if (
+        action.type ===
+            AccommodationModificationSplitChangeEventType.ACCOMMODATION_DETAILS_CHANGED &&
+        !resultArray.find(
+            (accommodation) => accommodation.id === action.payload.id,
+        )
+    ) {
+        resultArray.push({
+            ...action.payload,
+            accommodation_units: [],
+            currency_iso_code: null,
+            total_amount: null,
+            totalCapacity: 0,
+            usedCapacity: 0,
+        });
+        return resultArray;
+    }
     return resultArray.map((result) => {
         switch (action.type) {
             case AccommodationModificationSplitChangeEventType.UNIT_ADDED:
@@ -495,6 +525,107 @@ function tripTransactionsReducer(
     return result;
 }
 
+export enum TripFinanceDataActionType {
+    FETCH_PLANNED = "FETCH_PLANNED",
+    APPEND_PLANNED = "APPEND_PLANNED",
+    UPDATE_PLANNED = "UPDATE_PLANNED",
+    DELETE_PLANNED = "DELETE_PLANNED",
+    FETCH_PLANNED_STATISTICS = "FETCH_PLANNED_STATISTICS",
+}
+
+export interface TripPlannedTransactionsResult {
+    data: Tables<"trip_transaction">[] | null;
+    error: PostgrestError | null;
+    count: number | null;
+}
+
+export interface TripFinanceData {
+    planned: {
+        statistics: {
+            data: TripPlannedFinanceStatisticsResponse | null;
+            error: PostgrestError | null;
+        };
+        transactions: TripPlannedTransactionsResult;
+    };
+}
+
+export interface TripFinanceDataPayloadMap {
+    [TripFinanceDataActionType.APPEND_PLANNED]: Tables<"trip_transaction">[];
+    [TripFinanceDataActionType.FETCH_PLANNED]: TripPlannedTransactionsResult;
+    [TripFinanceDataActionType.UPDATE_PLANNED]: Tables<"trip_transaction">[];
+    [TripFinanceDataActionType.DELETE_PLANNED]: string[];
+    [TripFinanceDataActionType.FETCH_PLANNED_STATISTICS]: {
+        data: TripPlannedFinanceStatisticsResponse | null;
+        error: PostgrestError | null;
+    };
+}
+
+export type TripFinanceDataAction = {
+    [T in TripFinanceDataActionType]: {
+        type: T;
+        payload: TripFinanceDataPayloadMap[T];
+    };
+}[TripFinanceDataActionType];
+
+function tripFinanceDataReducer(
+    state: TripFinanceData,
+    action: TripFinanceDataAction,
+) {
+    const newState = { ...state };
+    switch (action.type) {
+        case TripFinanceDataActionType.FETCH_PLANNED_STATISTICS:
+            newState.planned.statistics = action.payload;
+            break;
+        case TripFinanceDataActionType.FETCH_PLANNED:
+            newState.planned.transactions = action.payload;
+            break;
+        case TripFinanceDataActionType.APPEND_PLANNED:
+            const oldTransactionIdsSet = new Set(
+                (state.planned.transactions.data || []).map(
+                    (transaction) => transaction.id,
+                ),
+            );
+            const oldArray = state.planned.transactions.data || [];
+            action.payload.forEach((transaction) => {
+                if (oldTransactionIdsSet.has(transaction.id)) {
+                    return;
+                }
+                oldArray.push(transaction);
+            });
+            newState.planned.transactions.data = oldArray;
+            break;
+        case TripFinanceDataActionType.UPDATE_PLANNED:
+            const newArray = [...(state.planned.transactions.data || [])];
+            action.payload.forEach((transaction) => {
+                const indexOfTransaction = (
+                    state.planned.transactions.data || []
+                ).findIndex((t) => t.id === transaction.id);
+                if (indexOfTransaction === -1) {
+                    newArray.push(transaction);
+                } else {
+                    newArray[indexOfTransaction] = transaction;
+                }
+                console.log(indexOfTransaction);
+            });
+            newState.planned.transactions.data = newArray;
+            console.log(newArray);
+            break;
+        case TripFinanceDataActionType.DELETE_PLANNED:
+            const deletedIdSet = new Set(action.payload);
+            newState.planned.transactions.data = [
+                ...(state.planned.transactions.data || []),
+            ].filter((transaction) => !deletedIdSet.has(transaction.id));
+            newState.planned.transactions.count = Math.max(
+                0,
+                (state.planned.transactions.count || 0) - action.payload.length,
+            );
+            break;
+        default:
+            break;
+    }
+    return newState;
+}
+
 export {
     transactionTotalCostReducer,
     countPotentialParticipants,
@@ -507,4 +638,5 @@ export {
     calculateAccommodationUsedCapacity,
     transportChangeReducer,
     tripTransactionsReducer,
+    tripFinanceDataReducer,
 };

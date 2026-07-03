@@ -23,7 +23,7 @@ import {
     DialogTitle,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { Edit2Icon, SaveIcon } from "lucide-react";
+import { Edit2Icon, PlusIcon, SaveIcon } from "lucide-react";
 import FormInput from "../ui/form-input";
 import LoadingSpinner from "../ui/loading-spinner";
 import { upsertTrips } from "./fetch";
@@ -44,10 +44,12 @@ export default function EditTripForm({
     title,
     className,
     onClose,
+    isEdit = true,
     ...props
 }: {
     displayMode: "dialog" | "card";
     title: string;
+    isEdit?: boolean;
     trip?: TablesInsert<"trip">;
     onClose?: () => void;
 } & ComponentProps<"div">) {
@@ -76,11 +78,13 @@ export default function EditTripForm({
                 description: <PostgrestErrorDisplay error={error} />,
                 position: "bottom-center",
             });
+            return;
         }
         toast("Trip saved successfully", { position: "bottom-center" });
         if (onClose) {
             onClose();
         }
+        form.reset();
         router.refresh();
         setDialogOpen(false);
     }
@@ -145,11 +149,7 @@ export default function EditTripForm({
                     {displayMode === "card" ? (
                         <CardFooter>{submitButton}</CardFooter>
                     ) : (
-                        <DialogFooter>
-                            {/* <DialogClose asChild> */}
-                            {submitButton}
-                            {/* </DialogClose> */}
-                        </DialogFooter>
+                        <DialogFooter>{submitButton}</DialogFooter>
                     )}
                 </div>
             </form>
@@ -169,8 +169,16 @@ export default function EditTripForm({
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
                 <Button variant="secondary">
-                    <Edit2Icon />
-                    Edit
+                    {isEdit ? (
+                        <>
+                            <Edit2Icon />
+                            Edit{" "}
+                        </>
+                    ) : (
+                        <>
+                            <PlusIcon /> New
+                        </>
+                    )}
                 </Button>
             </DialogTrigger>
             <DialogContent className={className} {...props}>

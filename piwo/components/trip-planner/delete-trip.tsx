@@ -13,38 +13,35 @@ import { useState } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { Trash2Icon } from "lucide-react";
-import { deleteTripTransaction } from "../fetch";
+import { useRouter } from "next/navigation";
 import { Tables } from "@/database.types";
-import { TripFinanceDataAction, TripFinanceDataActionType } from "../reducers";
+import { deleteTrips } from "./fetch";
+import { useCurrentLocale } from "@/locales/client";
 
-export default function DeleteTransaction({
-    transaction,
-    onSuccess,
+export default function DeleteTrip({
+    trip,
 }: {
-    transaction: Tables<"trip_transaction">;
-    onSuccess?: (action: TripFinanceDataAction) => void;
+    trip: Tables<"v_trip_details">;
 }) {
     const [saveError, setSaveError] = useState<PostgrestError | null>();
     const [isPending, setPending] = useState<boolean>(false);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    const locale = useCurrentLocale();
+    const router = useRouter();
 
     const handleDelete = async () => {
-        if (!transaction?.id) return;
+        if (!trip?.id) return;
         setPending(true);
-        const { error } = await deleteTripTransaction(transaction.id);
+        const { error } = await deleteTrips([trip.id]);
         setSaveError(error);
         if (!error) {
-            if (onSuccess)
-                onSuccess({
-                    type: TripFinanceDataActionType.DELETE_PLANNED,
-                    payload: [transaction.id],
-                });
+            router.push(`/${locale}/apps/trip-planner`);
             setDialogOpen(false);
         }
         setPending(false);
     };
     return (
-        transaction?.id && (
+        trip?.id && (
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
                     <Button variant="secondary" type="button" size="icon">
@@ -52,8 +49,8 @@ export default function DeleteTransaction({
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="overflow-auto">
-                    <DialogTitle>Delete Transaction</DialogTitle>
-                    Are you sure you want to delete {transaction.description}?
+                    <DialogTitle>Delete Trip</DialogTitle>
+                    Are you sure you want to delete {trip.name}?
                     <PostgrestErrorDisplay error={saveError} />
                     <DialogFooter>
                         <Button

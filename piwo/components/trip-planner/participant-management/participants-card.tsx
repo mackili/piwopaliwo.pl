@@ -14,6 +14,12 @@ import { twMerge } from "tailwind-merge";
 import { getCurrentUserParticipant, permissionsReducer } from "../permissions";
 import TripParticipantStatusPicker from "./participant-status-picker";
 import TripParticipantRolePicker from "./participant-role-picker";
+import { Badge } from "@/components/ui/badge";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default async function TripParticipantsCard({
     trip,
@@ -42,7 +48,51 @@ export default async function TripParticipantsCard({
                             permission: "invite_participants",
                         }) && <TripParticipantsInvite trip={trip} />}
                 </CardAction>
-                <CardTitle>Participants</CardTitle>
+                <CardTitle className="flex flex-row gap-2 items-center">
+                    Participants{" "}
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Badge className="bg-green-800">
+                                {
+                                    (
+                                        trip.participants as ParticipantResponseJson[]
+                                    )?.filter((p) => p.status === "confirmed")
+                                        .length
+                                }
+                            </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>Confirmed</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Badge className="bg-blue-700">
+                                {
+                                    (
+                                        trip.participants as ParticipantResponseJson[]
+                                    )?.filter(
+                                        (p) =>
+                                            p.status === "invited" ||
+                                            p.status === "tentative",
+                                    ).length
+                                }
+                            </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>Tentative</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Badge className="bg-red-700">
+                                {
+                                    (
+                                        trip.participants as ParticipantResponseJson[]
+                                    )?.filter((p) => p.status === "declined")
+                                        .length
+                                }
+                            </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>Declined</TooltipContent>
+                    </Tooltip>
+                </CardTitle>
             </CardHeader>
             <CardContent className="@container">
                 {((trip.participants as ParticipantResponseJson[]) || []).map(

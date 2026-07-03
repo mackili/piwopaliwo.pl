@@ -7,6 +7,30 @@
 import { z } from "zod";
 import { type Json } from "./database.types";
 
+export const permissionsCrudAccessSchema = z.enum([
+  "create",
+  "read",
+  "update",
+  "delete",
+]);
+
+export const permissionsMembershipRoleSchema = z.enum([
+  "viewer",
+  "editor",
+  "admin",
+]);
+
+export const permissionsRowLevelAccessSchema = z.enum([
+  "none",
+  "public",
+  "authenticated",
+  "private",
+  "membership",
+  "inherited",
+]);
+
+export const permissionsUserRoleSchema = z.enum(["admin", "editor", "viewer"]);
+
 export const publicAccGroupUserStatusSchema = z.enum([
   "invited",
   "accepted",
@@ -324,17 +348,6 @@ export const publicAccommodationUnitAssignmentRelationshipsSchema = z.tuple([
     ),
     columns: z.tuple([z.literal("trip_participant_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal(
-      "accommodation_unit_assignment_trip_participant_id_fkey",
-    ),
-    columns: z.tuple([z.literal("trip_participant_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_participant_details"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
@@ -373,15 +386,6 @@ export const publicBalanceRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("balance_borrower_id_fkey"),
     columns: z.tuple([z.literal("borrower_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("balance_borrower_id_fkey"),
-    columns: z.tuple([z.literal("borrower_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_participant_details"),
     referencedColumns: z.tuple([z.literal("user_id")]),
   }),
@@ -391,15 +395,6 @@ export const publicBalanceRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("UserInfo"),
     referencedColumns: z.tuple([z.literal("userId")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("balance_lender_id_fkey"),
-    columns: z.tuple([z.literal("lender_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
   }),
   z.object({
     foreignKeyName: z.literal("balance_lender_id_fkey"),
@@ -444,15 +439,6 @@ export const publicConsumedDrinkRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("UserInfo"),
     referencedColumns: z.tuple([z.literal("userId")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("consumed_drink_user_id_fkey"),
-    columns: z.tuple([z.literal("user_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
   }),
   z.object({
     foreignKeyName: z.literal("consumed_drink_user_id_fkey"),
@@ -535,15 +521,6 @@ export const publicGroupRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("group_owner_id_fkey"),
     columns: z.tuple([z.literal("owner_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_owner_id_fkey"),
-    columns: z.tuple([z.literal("owner_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_participant_details"),
     referencedColumns: z.tuple([z.literal("user_id")]),
   }),
@@ -585,15 +562,6 @@ export const publicGroupBalanceRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("group_balance_borrower_id_fkey"),
     columns: z.tuple([z.literal("borrower_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("group_member_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_balance_borrower_id_fkey"),
-    columns: z.tuple([z.literal("borrower_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_group_member_details"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
@@ -624,15 +592,6 @@ export const publicGroupBalanceRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("group_member"),
     referencedColumns: z.tuple([z.literal("id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_balance_lender_id_fkey"),
-    columns: z.tuple([z.literal("lender_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("group_member_id")]),
   }),
   z.object({
     foreignKeyName: z.literal("group_balance_lender_id_fkey"),
@@ -703,15 +662,6 @@ export const publicGroupInvitationRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("group_invitation_group_member_id_fkey"),
     columns: z.tuple([z.literal("group_member_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("group_member_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_invitation_group_member_id_fkey"),
-    columns: z.tuple([z.literal("group_member_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_group_member_details"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
@@ -733,15 +683,6 @@ export const publicGroupInvitationRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("group_invitation_user_id_fkey"),
     columns: z.tuple([z.literal("user_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_invitation_user_id_fkey"),
-    columns: z.tuple([z.literal("user_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_participant_details"),
     referencedColumns: z.tuple([z.literal("user_id")]),
   }),
@@ -754,6 +695,7 @@ export const publicGroupMemberRowSchema = z.object({
   id: z.string(),
   nickname: z.string(),
   removed_at: z.string().nullable(),
+  role: permissionsMembershipRoleSchema,
   status: publicAccGroupUserStatusSchema.nullable(),
   user_id: z.string().nullable(),
 });
@@ -765,6 +707,7 @@ export const publicGroupMemberInsertSchema = z.object({
   id: z.string().optional(),
   nickname: z.string(),
   removed_at: z.string().optional().nullable(),
+  role: permissionsMembershipRoleSchema.optional(),
   status: publicAccGroupUserStatusSchema.optional().nullable(),
   user_id: z.string().optional().nullable(),
 });
@@ -776,6 +719,7 @@ export const publicGroupMemberUpdateSchema = z.object({
   id: z.string().optional(),
   nickname: z.string().optional(),
   removed_at: z.string().optional().nullable(),
+  role: permissionsMembershipRoleSchema.optional(),
   status: publicAccGroupUserStatusSchema.optional().nullable(),
   user_id: z.string().optional().nullable(),
 });
@@ -801,15 +745,6 @@ export const publicGroupMemberRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("UserInfo"),
     referencedColumns: z.tuple([z.literal("userId")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_member_user_id_fkey"),
-    columns: z.tuple([z.literal("user_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
   }),
   z.object({
     foreignKeyName: z.literal("group_member_user_id_fkey"),
@@ -917,15 +852,6 @@ export const publicTextdocumentRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("TextDocument_author_fkey1"),
     columns: z.tuple([z.literal("author")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("TextDocument_author_fkey1"),
-    columns: z.tuple([z.literal("author")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_participant_details"),
     referencedColumns: z.tuple([z.literal("user_id")]),
   }),
@@ -965,15 +891,6 @@ export const publicTextdocumentcommentRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("UserInfo"),
     referencedColumns: z.tuple([z.literal("userId")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("TextDocumentComment_author_id_fkey"),
-    columns: z.tuple([z.literal("author_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
   }),
   z.object({
     foreignKeyName: z.literal("TextDocumentComment_author_id_fkey"),
@@ -1059,15 +976,6 @@ export const publicTransactionRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("transaction_paid_by_fkey"),
     columns: z.tuple([z.literal("paid_by_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("group_member_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("transaction_paid_by_fkey"),
-    columns: z.tuple([z.literal("paid_by_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_group_member_details"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
@@ -1114,15 +1022,6 @@ export const publicTransactionSplitRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("group_member"),
     referencedColumns: z.tuple([z.literal("id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("transaction_split_borrower_id_fkey"),
-    columns: z.tuple([z.literal("borrower_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("group_member_id")]),
   }),
   z.object({
     foreignKeyName: z.literal("transaction_split_borrower_id_fkey"),
@@ -1316,9 +1215,10 @@ export const publicTripParticipantRowSchema = z.object({
   is_tentative: z.boolean().nullable(),
   last_modified_at: z.string().nullable(),
   last_modified_by: z.string().nullable(),
-  role: publicTripParticipantRoleSchema,
+  role: permissionsUserRoleSchema,
   status: publicTripParticipantStatusSchema,
   trip_id: z.string(),
+  user_id: z.string().nullable(),
 });
 
 export const publicTripParticipantInsertSchema = z.object({
@@ -1331,9 +1231,10 @@ export const publicTripParticipantInsertSchema = z.object({
   is_tentative: z.boolean().optional().nullable(),
   last_modified_at: z.string().optional().nullable(),
   last_modified_by: z.string().optional().nullable(),
-  role: publicTripParticipantRoleSchema.optional(),
+  role: permissionsUserRoleSchema.optional(),
   status: publicTripParticipantStatusSchema.optional(),
   trip_id: z.string(),
+  user_id: z.string().optional().nullable(),
 });
 
 export const publicTripParticipantUpdateSchema = z.object({
@@ -1346,9 +1247,10 @@ export const publicTripParticipantUpdateSchema = z.object({
   is_tentative: z.boolean().optional().nullable(),
   last_modified_at: z.string().optional().nullable(),
   last_modified_by: z.string().optional().nullable(),
-  role: publicTripParticipantRoleSchema.optional(),
+  role: permissionsUserRoleSchema.optional(),
   status: publicTripParticipantStatusSchema.optional(),
   trip_id: z.string().optional(),
+  user_id: z.string().optional().nullable(),
 });
 
 export const publicTripParticipantRelationshipsSchema = z.tuple([
@@ -1358,15 +1260,6 @@ export const publicTripParticipantRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("group_member"),
     referencedColumns: z.tuple([z.literal("id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("trip_participant_group_member_id_fkey"),
-    columns: z.tuple([z.literal("group_member_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("group_member_id")]),
   }),
   z.object({
     foreignKeyName: z.literal("trip_participant_group_member_id_fkey"),
@@ -1402,6 +1295,20 @@ export const publicTripParticipantRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_financial_summary"),
     referencedColumns: z.tuple([z.literal("trip_id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_participant_user_id_fkey"),
+    columns: z.tuple([z.literal("user_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("UserInfo"),
+    referencedColumns: z.tuple([z.literal("userId")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_participant_user_id_fkey"),
+    columns: z.tuple([z.literal("user_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("v_trip_participant_details"),
+    referencedColumns: z.tuple([z.literal("user_id")]),
   }),
 ]);
 
@@ -1657,17 +1564,6 @@ export const publicTripTravelAssignmentRelationshipsSchema = z.tuple([
     ),
     columns: z.tuple([z.literal("trip_participant_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal(
-      "trip_travel_assignment_trip_participant_id_fkey",
-    ),
-    columns: z.tuple([z.literal("trip_participant_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_participant_details"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
@@ -1726,15 +1622,6 @@ export const publicUserNotificationRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("user_notification_user_id_fkey"),
     columns: z.tuple([z.literal("user_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("user_notification_user_id_fkey"),
-    columns: z.tuple([z.literal("user_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_participant_details"),
     referencedColumns: z.tuple([z.literal("user_id")]),
   }),
@@ -1787,6 +1674,13 @@ export const publicUserscoreUpdateSchema = z.object({
 
 export const publicUserscoreRelationshipsSchema = z.tuple([
   z.object({
+    foreignKeyName: z.literal("UserScore_gameId_fkey"),
+    columns: z.tuple([z.literal("gameId")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("GameScore"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
     foreignKeyName: z.literal("UserScore_userId_fkey1"),
     columns: z.tuple([z.literal("userId")]),
     isOneToOne: z.literal(false),
@@ -1797,63 +1691,10 @@ export const publicUserscoreRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("UserScore_userId_fkey1"),
     columns: z.tuple([z.literal("userId")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("UserScore_userId_fkey1"),
-    columns: z.tuple([z.literal("userId")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_participant_details"),
     referencedColumns: z.tuple([z.literal("user_id")]),
   }),
 ]);
-
-export const publicVAccommodationUnassignedTripParticipantsRowSchema = z.object(
-  {
-    avatar_url: z.string().nullable(),
-    first_name: z.string().nullable(),
-    group_member_id: z.string().nullable(),
-    group_member_status: publicAccGroupUserStatusSchema.nullable(),
-    id: z.string().nullable(),
-    is_confirmed: z.boolean().nullable(),
-    is_declined: z.boolean().nullable(),
-    is_tentative: z.boolean().nullable(),
-    last_name: z.string().nullable(),
-    nickname: z.string().nullable(),
-    role: publicTripParticipantRoleSchema.nullable(),
-    status: publicTripParticipantStatusSchema.nullable(),
-    trip_id: z.string().nullable(),
-    user_id: z.string().nullable(),
-  },
-);
-
-export const publicVAccommodationUnassignedTripParticipantsRelationshipsSchema =
-  z.tuple([
-    z.object({
-      foreignKeyName: z.literal("trip_participant_trip_id_fkey"),
-      columns: z.tuple([z.literal("trip_id")]),
-      isOneToOne: z.literal(false),
-      referencedRelation: z.literal("trip"),
-      referencedColumns: z.tuple([z.literal("id")]),
-    }),
-    z.object({
-      foreignKeyName: z.literal("trip_participant_trip_id_fkey"),
-      columns: z.tuple([z.literal("trip_id")]),
-      isOneToOne: z.literal(false),
-      referencedRelation: z.literal("v_trip_details"),
-      referencedColumns: z.tuple([z.literal("id")]),
-    }),
-    z.object({
-      foreignKeyName: z.literal("trip_participant_trip_id_fkey"),
-      columns: z.tuple([z.literal("trip_id")]),
-      isOneToOne: z.literal(false),
-      referencedRelation: z.literal("v_trip_financial_summary"),
-      referencedColumns: z.tuple([z.literal("trip_id")]),
-    }),
-  ]);
 
 export const publicVGroupBalanceRowSchema = z.object({
   borrower: jsonSchema.nullable(),
@@ -1890,15 +1731,6 @@ export const publicVGroupBalanceRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("transaction_paid_by_fkey"),
     columns: z.tuple([z.literal("lender_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("group_member_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("transaction_paid_by_fkey"),
-    columns: z.tuple([z.literal("lender_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_group_member_details"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
@@ -1915,15 +1747,6 @@ export const publicVGroupBalanceRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("group_member"),
     referencedColumns: z.tuple([z.literal("id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("transaction_split_borrower_id_fkey"),
-    columns: z.tuple([z.literal("borrower_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("group_member_id")]),
   }),
   z.object({
     foreignKeyName: z.literal("transaction_split_borrower_id_fkey"),
@@ -2003,15 +1826,6 @@ export const publicVGroupInvitationRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("group_invitation_group_member_id_fkey"),
     columns: z.tuple([z.literal("group_member_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("group_member_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_invitation_group_member_id_fkey"),
-    columns: z.tuple([z.literal("group_member_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_group_member_details"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
@@ -2028,15 +1842,6 @@ export const publicVGroupInvitationRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("UserInfo"),
     referencedColumns: z.tuple([z.literal("userId")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_invitation_user_id_fkey"),
-    columns: z.tuple([z.literal("user_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
   }),
   z.object({
     foreignKeyName: z.literal("group_invitation_user_id_fkey"),
@@ -2085,15 +1890,6 @@ export const publicVGroupMemberDetailsRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("group_member_user_id_fkey"),
     columns: z.tuple([z.literal("user_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_member_user_id_fkey"),
-    columns: z.tuple([z.literal("user_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_participant_details"),
     referencedColumns: z.tuple([z.literal("user_id")]),
   }),
@@ -2133,15 +1929,6 @@ export const publicVGroupMembershipRelationshipsSchema = z.tuple([
     foreignKeyName: z.literal("group_member_user_id_fkey"),
     columns: z.tuple([z.literal("user_id")]),
     isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_member_user_id_fkey"),
-    columns: z.tuple([z.literal("user_id")]),
-    isOneToOne: z.literal(false),
     referencedRelation: z.literal("v_trip_participant_details"),
     referencedColumns: z.tuple([z.literal("user_id")]),
   }),
@@ -2151,15 +1938,6 @@ export const publicVGroupMembershipRelationshipsSchema = z.tuple([
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("UserInfo"),
     referencedColumns: z.tuple([z.literal("userId")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("group_owner_id_fkey"),
-    columns: z.tuple([z.literal("owner_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal(
-      "v_accommodation_unassigned_trip_participants",
-    ),
-    referencedColumns: z.tuple([z.literal("user_id")]),
   }),
   z.object({
     foreignKeyName: z.literal("group_owner_id_fkey"),
@@ -2291,7 +2069,7 @@ export const publicVTripParticipantDetailsRowSchema = z.object({
   is_tentative: z.boolean().nullable(),
   last_name: z.string().nullable(),
   nickname: z.string().nullable(),
-  role: publicTripParticipantRoleSchema.nullable(),
+  role: permissionsUserRoleSchema.nullable(),
   status: publicTripParticipantStatusSchema.nullable(),
   trip_id: z.string().nullable(),
   user_id: z.string().nullable(),
@@ -2480,3 +2258,171 @@ export const publicTripTravelMakeTransactionSplitArgsSchema = z.object({
 });
 
 export const publicTripTravelMakeTransactionSplitReturnsSchema = jsonSchema;
+
+export const permissionsMembershipRoleAccessRowSchema = z.object({
+  can_delete: z.boolean(),
+  can_insert: z.boolean(),
+  can_select: z.boolean(),
+  can_update: z.boolean(),
+  id: z.number(),
+  role: permissionsMembershipRoleSchema,
+  security_id: z.string(),
+});
+
+export const permissionsMembershipRoleAccessInsertSchema = z.object({
+  can_delete: z.boolean().optional(),
+  can_insert: z.boolean().optional(),
+  can_select: z.boolean().optional(),
+  can_update: z.boolean().optional(),
+  id: z.never().optional(),
+  role: permissionsMembershipRoleSchema,
+  security_id: z.string(),
+});
+
+export const permissionsMembershipRoleAccessUpdateSchema = z.object({
+  can_delete: z.boolean().optional(),
+  can_insert: z.boolean().optional(),
+  can_select: z.boolean().optional(),
+  can_update: z.boolean().optional(),
+  id: z.never().optional(),
+  role: permissionsMembershipRoleSchema.optional(),
+  security_id: z.string().optional(),
+});
+
+export const permissionsMembershipRoleAccessRelationshipsSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("membership_role_access_security_id_fkey"),
+    columns: z.tuple([z.literal("security_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("row_level_security"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+]);
+
+export const permissionsRowLevelSecurityRowSchema = z.object({
+  authenticated_delete: permissionsRowLevelAccessSchema,
+  authenticated_insert: permissionsRowLevelAccessSchema,
+  authenticated_select: permissionsRowLevelAccessSchema,
+  authenticated_update: permissionsRowLevelAccessSchema,
+  id: z.string(),
+  inherited_fk: z.string().nullable(),
+  inherited_from: z.string().nullable(),
+  inherited_pk: z.string().nullable(),
+  membership_fk: z.string().nullable(),
+  membership_pk: z.string().nullable(),
+  membership_role_column: z.string().nullable(),
+  membership_table: z.string().nullable(),
+  membership_user_fk: z.string().nullable(),
+  owner_column: z.string().nullable(),
+  public_delete: permissionsRowLevelAccessSchema,
+  public_insert: permissionsRowLevelAccessSchema,
+  public_select: permissionsRowLevelAccessSchema,
+  public_update: permissionsRowLevelAccessSchema,
+  schema_name: z.string(),
+  table_name: z.string(),
+});
+
+export const permissionsRowLevelSecurityInsertSchema = z.object({
+  authenticated_delete: permissionsRowLevelAccessSchema.optional(),
+  authenticated_insert: permissionsRowLevelAccessSchema.optional(),
+  authenticated_select: permissionsRowLevelAccessSchema.optional(),
+  authenticated_update: permissionsRowLevelAccessSchema.optional(),
+  id: z.string().optional(),
+  inherited_fk: z.string().optional().nullable(),
+  inherited_from: z.string().optional().nullable(),
+  inherited_pk: z.string().optional().nullable(),
+  membership_fk: z.string().optional().nullable(),
+  membership_pk: z.string().optional().nullable(),
+  membership_role_column: z.string().optional().nullable(),
+  membership_table: z.string().optional().nullable(),
+  membership_user_fk: z.string().optional().nullable(),
+  owner_column: z.string().optional().nullable(),
+  public_delete: permissionsRowLevelAccessSchema.optional(),
+  public_insert: permissionsRowLevelAccessSchema.optional(),
+  public_select: permissionsRowLevelAccessSchema.optional(),
+  public_update: permissionsRowLevelAccessSchema.optional(),
+  schema_name: z.string().optional(),
+  table_name: z.string(),
+});
+
+export const permissionsRowLevelSecurityUpdateSchema = z.object({
+  authenticated_delete: permissionsRowLevelAccessSchema.optional(),
+  authenticated_insert: permissionsRowLevelAccessSchema.optional(),
+  authenticated_select: permissionsRowLevelAccessSchema.optional(),
+  authenticated_update: permissionsRowLevelAccessSchema.optional(),
+  id: z.string().optional(),
+  inherited_fk: z.string().optional().nullable(),
+  inherited_from: z.string().optional().nullable(),
+  inherited_pk: z.string().optional().nullable(),
+  membership_fk: z.string().optional().nullable(),
+  membership_pk: z.string().optional().nullable(),
+  membership_role_column: z.string().optional().nullable(),
+  membership_table: z.string().optional().nullable(),
+  membership_user_fk: z.string().optional().nullable(),
+  owner_column: z.string().optional().nullable(),
+  public_delete: permissionsRowLevelAccessSchema.optional(),
+  public_insert: permissionsRowLevelAccessSchema.optional(),
+  public_select: permissionsRowLevelAccessSchema.optional(),
+  public_update: permissionsRowLevelAccessSchema.optional(),
+  schema_name: z.string().optional(),
+  table_name: z.string().optional(),
+});
+
+export const permissionsRowLevelSecurityRelationshipsSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("row_level_security_inherited_from_fkey"),
+    columns: z.tuple([z.literal("inherited_from")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("row_level_security"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+]);
+
+export const permissionsCheckRecordAccessArgsSchema = z.object({
+  p_operation: z.string(),
+  p_record: jsonSchema,
+  p_schema_name: z.string(),
+  p_table_name: z.string(),
+});
+
+export const permissionsCheckRecordAccessReturnsSchema = z.boolean();
+
+export const permissionsCanDeleteRecordArgsSchema = z.object({
+  p_record: jsonSchema,
+  p_schema_name: z.string(),
+  p_table_name: z.string(),
+});
+
+export const permissionsCanDeleteRecordReturnsSchema = z.boolean();
+
+export const permissionsCanInsertRecordArgsSchema = z.object({
+  p_record: jsonSchema,
+  p_schema_name: z.string(),
+  p_table_name: z.string(),
+});
+
+export const permissionsCanInsertRecordReturnsSchema = z.boolean();
+
+export const permissionsCanReadRecordArgsSchema = z.object({
+  p_record: jsonSchema,
+  p_schema_name: z.string(),
+  p_table_name: z.string(),
+});
+
+export const permissionsCanReadRecordReturnsSchema = z.boolean();
+
+export const permissionsCanUpdateRecordArgsSchema = z.object({
+  p_record: jsonSchema,
+  p_schema_name: z.string(),
+  p_table_name: z.string(),
+});
+
+export const permissionsCanUpdateRecordReturnsSchema = z.boolean();
+
+export const permissionsVerifyCrudPermissionArgsSchema = z.object({
+  p_crud_access: permissionsCrudAccessSchema,
+  p_role: permissionsUserRoleSchema,
+  p_table: z.string(),
+});
+
+export const permissionsVerifyCrudPermissionReturnsSchema = z.boolean();

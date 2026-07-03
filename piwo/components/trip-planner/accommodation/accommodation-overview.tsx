@@ -5,8 +5,6 @@ import {
     fetchTripAccommodationSummary,
     fetchTripParticipantDetails,
 } from "../fetch";
-import { permissionsReducer } from "../permissions";
-import UpsertAccommodation from "./upsert-accommodation";
 import TripAccommodationCardsOverview from "./accommodation-cards-overview";
 
 export default async function TripAccommodationOverview({
@@ -46,16 +44,12 @@ export default async function TripAccommodationOverview({
                 <PostgrestErrorDisplay error={error} />
                 {currentTripParticipant && (
                     <TripAccommodationCardsOverview
+                        tripId={tripId}
                         currentTripParticipant={currentTripParticipant}
                         accommodations={data || []}
                         potentialParticipants={tripParticipantDetails || []}
                     />
                 )}
-                {currentTripParticipant?.role &&
-                    permissionsReducer({
-                        tripParticipantRole: currentTripParticipant.role,
-                        permission: "modify_accommodation",
-                    }) && <UpsertAccommodation tripId={tripId} />}
             </div>
         </div>
     );

@@ -1,14 +1,6 @@
 "use client";
 
-import { Tables } from "@/database.types";
-import {
-    ComponentProps,
-    useEffect,
-    useMemo,
-    useReducer,
-    useRef,
-    useState,
-} from "react";
+import { ComponentProps, useContext, useState } from "react";
 import { fetchTripTransactions } from "../fetch";
 import { PostgrestError } from "@supabase/supabase-js";
 import {
@@ -25,73 +17,53 @@ import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import TripTransaction from "./trip-transaction";
 import { twMerge } from "tailwind-merge";
 import {
-    TransactionFetchActionType,
-    tripTransactionsReducer,
+    TripFinanceDataAction,
+    TripFinanceDataActionType,
+    TripPlannedTransactionsResult,
 } from "../reducers";
+import { TripContext } from "./trip-costs";
 
 export const INITIAL_TRANSACTIONS_LIMIT = 10 as const;
 
 export default function TripCostsCard({
-    trip,
+    tripId,
     mode = "planned",
+    data,
+    setTripFinanceData,
     className,
     ...props
 }: {
-    trip: Tables<"v_trip_details">;
+    tripId: string;
+    data: TripPlannedTransactionsResult;
+    setTripFinanceData: (action: TripFinanceDataAction) => void;
     mode?: "planned" | "actual";
 } & ComponentProps<"div">) {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<null | PostgrestError>(
         null,
     );
-    const [tripLineItems, setTripLineItems] = useReducer(
-        tripTransactionsReducer,
-        [],
-    );
-    const totalTransactionsCount = useRef<number | null>(null);
-    useEffect(() => {
-        const handleLineItemsFetch = async () => {
-            if (!trip?.id) return;
-            setLoading(true);
-            const { count, data, error } = await fetchTripTransactions(
-                trip.id,
+    const trip = useContext(TripContext);
+    const enableFetchMore =
+        data?.data && data?.count && data?.data?.length < data?.count;
+    // const handleFetchMore = () => {};
+    async function handleFetchMore() {
+        console.log("fetching more");
+        if (!tripId || !data?.data) return;
+        setLoading(true);
+        const { data: fetchedTransactions, error } =
+            await fetchTripTransactions(
+                tripId,
                 INITIAL_TRANSACTIONS_LIMIT,
-                0,
+                data.data.length,
                 { field: "created_at", ascending: true },
             );
-            setErrorMessage(error);
-            totalTransactionsCount.current = count;
-            setTripLineItems({
-                type: TransactionFetchActionType.FETCH,
-                payload: data || [],
-            });
-            setLoading(false);
-        };
-        handleLineItemsFetch();
-    }, [trip?.id, mode]);
-    const enableFetchMore = useMemo(
-        () =>
-            totalTransactionsCount.current
-                ? tripLineItems.length < totalTransactionsCount.current
-                : false,
-        [totalTransactionsCount, tripLineItems],
-    );
-
-    async function handleFetchMore() {
-        if (!trip?.id) return;
-        setLoading(true);
-        const { data, error } = await fetchTripTransactions(
-            trip.id,
-            INITIAL_TRANSACTIONS_LIMIT,
-            tripLineItems.length,
-            { field: "created_at", ascending: true },
-        );
         setErrorMessage(error);
-        setTripLineItems({
-            type: TransactionFetchActionType.APPEND,
-            payload: data || [],
+        setTripFinanceData({
+            type: TripFinanceDataActionType.APPEND_PLANNED,
+            payload: fetchedTransactions || [],
         });
         setLoading(false);
+        return;
     }
     return (
         <Card className={twMerge("pb-0", className)} {...props}>
@@ -99,22 +71,22 @@ export default function TripCostsCard({
                 <CardTitle>Trip Costs</CardTitle>
                 <CardAction>
                     <p>
-                        Showing {tripLineItems.length} of{" "}
-                        {totalTransactionsCount.current} costs
+                        Showing {data?.data?.length || 0} of {data?.count} costs
                     </p>
                 </CardAction>
             </CardHeader>
             <CardContent className="space-y-4 px-0">
                 <PostgrestErrorDisplay error={errorMessage} />
-                {tripLineItems.map((transaction) => (
-                    <TripTransaction
-                        key={transaction.id}
-                        transaction={transaction}
-                        trip={trip}
-                        onSuccess={setTripLineItems}
-                        className="border-b pb-4 px-6 last:border-b-0 first:border-t first:pt-4"
-                    />
-                ))}
+                {trip &&
+                    data.data?.map((transaction) => (
+                        <TripTransaction
+                            key={transaction.id}
+                            transaction={transaction}
+                            trip={trip}
+                            onSuccess={setTripFinanceData}
+                            className="border-b pb-4 px-6 last:border-b-0 first:border-t first:pt-4"
+                        />
+                    ))}
             </CardContent>
             {enableFetchMore && (
                 <CardFooter className="flex justify-center pb-6">

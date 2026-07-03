@@ -18,7 +18,6 @@ import { publicTripTransactionInsertSchema } from "@/database.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormItem, FormLabel } from "@/components/ui/form";
 import LoadingSpinner from "@/components/ui/loading-spinner";
-import { useRouter } from "next/navigation";
 import FormInput from "@/components/ui/form-input";
 import {
     TripTransactionSplit,
@@ -33,9 +32,9 @@ import { useCurrentLocale } from "@/locales/client";
 import {
     countPotentialParticipants,
     getTripLength,
-    TransactionFetchAction,
-    TransactionFetchActionType,
     transactionTotalCostReducer,
+    TripFinanceDataAction,
+    TripFinanceDataActionType,
 } from "../reducers";
 
 const formObject = publicTripTransactionInsertSchema.extend({
@@ -107,10 +106,9 @@ export default function TripTransactionEdit({
     trip: Tables<"v_trip_details">;
     transaction?: Tables<"trip_transaction">;
     buttonContent?: ReactElement;
-    onSuccess?: (action: TransactionFetchAction) => void;
+    onSuccess?: (action: TripFinanceDataAction) => void;
 } & ComponentProps<"button"> &
     VariantProps<typeof buttonVariants>) {
-    const router = useRouter();
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [availableCurrencies, setAvailableCurrencies] = useState<
         GroupCurrency[]
@@ -168,11 +166,10 @@ export default function TripTransactionEdit({
         toast("Transaction saved successfully", {
             position: "bottom-center",
         });
-        router.refresh();
         if (onSuccess) {
             onSuccess({
-                type: TransactionFetchActionType.UPDATE,
-                payload: data,
+                type: TripFinanceDataActionType.UPDATE_PLANNED,
+                payload: [data],
             });
         }
         setDialogOpen(false);

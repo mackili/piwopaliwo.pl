@@ -14,7 +14,7 @@ import {
     TripTransactionCategoryIcon,
     TripTransactionStatusPill,
 } from "../icon-factories";
-import { TransactionFetchAction } from "../reducers";
+import { TripFinanceDataAction } from "../reducers";
 
 export default function TripTransaction({
     trip,
@@ -24,7 +24,7 @@ export default function TripTransaction({
     ...props
 }: {
     trip: Tables<"v_trip_details">;
-    onSuccess: (action: TransactionFetchAction) => void;
+    onSuccess: (action: TripFinanceDataAction) => void;
     transaction: Tables<"trip_transaction">;
 } & ComponentProps<"div">) {
     const locale = useCurrentLocale();

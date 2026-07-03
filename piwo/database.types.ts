@@ -12,6 +12,178 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "13.0.5"
   }
+  permissions: {
+    Tables: {
+      membership_role_access: {
+        Row: {
+          can_delete: boolean
+          can_insert: boolean
+          can_select: boolean
+          can_update: boolean
+          id: number
+          role: Database["permissions"]["Enums"]["membership_role"]
+          security_id: string
+        }
+        Insert: {
+          can_delete?: boolean
+          can_insert?: boolean
+          can_select?: boolean
+          can_update?: boolean
+          id?: never
+          role: Database["permissions"]["Enums"]["membership_role"]
+          security_id: string
+        }
+        Update: {
+          can_delete?: boolean
+          can_insert?: boolean
+          can_select?: boolean
+          can_update?: boolean
+          id?: never
+          role?: Database["permissions"]["Enums"]["membership_role"]
+          security_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_role_access_security_id_fkey"
+            columns: ["security_id"]
+            isOneToOne: false
+            referencedRelation: "row_level_security"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      row_level_security: {
+        Row: {
+          authenticated_delete: Database["permissions"]["Enums"]["row_level_access"]
+          authenticated_insert: Database["permissions"]["Enums"]["row_level_access"]
+          authenticated_select: Database["permissions"]["Enums"]["row_level_access"]
+          authenticated_update: Database["permissions"]["Enums"]["row_level_access"]
+          id: string
+          inherited_fk: string | null
+          inherited_from: string | null
+          inherited_pk: string | null
+          membership_fk: string | null
+          membership_pk: string | null
+          membership_role_column: string | null
+          membership_table: string | null
+          membership_user_fk: string | null
+          owner_column: string | null
+          public_delete: Database["permissions"]["Enums"]["row_level_access"]
+          public_insert: Database["permissions"]["Enums"]["row_level_access"]
+          public_select: Database["permissions"]["Enums"]["row_level_access"]
+          public_update: Database["permissions"]["Enums"]["row_level_access"]
+          schema_name: string
+          table_name: string
+        }
+        Insert: {
+          authenticated_delete?: Database["permissions"]["Enums"]["row_level_access"]
+          authenticated_insert?: Database["permissions"]["Enums"]["row_level_access"]
+          authenticated_select?: Database["permissions"]["Enums"]["row_level_access"]
+          authenticated_update?: Database["permissions"]["Enums"]["row_level_access"]
+          id?: string
+          inherited_fk?: string | null
+          inherited_from?: string | null
+          inherited_pk?: string | null
+          membership_fk?: string | null
+          membership_pk?: string | null
+          membership_role_column?: string | null
+          membership_table?: string | null
+          membership_user_fk?: string | null
+          owner_column?: string | null
+          public_delete?: Database["permissions"]["Enums"]["row_level_access"]
+          public_insert?: Database["permissions"]["Enums"]["row_level_access"]
+          public_select?: Database["permissions"]["Enums"]["row_level_access"]
+          public_update?: Database["permissions"]["Enums"]["row_level_access"]
+          schema_name?: string
+          table_name: string
+        }
+        Update: {
+          authenticated_delete?: Database["permissions"]["Enums"]["row_level_access"]
+          authenticated_insert?: Database["permissions"]["Enums"]["row_level_access"]
+          authenticated_select?: Database["permissions"]["Enums"]["row_level_access"]
+          authenticated_update?: Database["permissions"]["Enums"]["row_level_access"]
+          id?: string
+          inherited_fk?: string | null
+          inherited_from?: string | null
+          inherited_pk?: string | null
+          membership_fk?: string | null
+          membership_pk?: string | null
+          membership_role_column?: string | null
+          membership_table?: string | null
+          membership_user_fk?: string | null
+          owner_column?: string | null
+          public_delete?: Database["permissions"]["Enums"]["row_level_access"]
+          public_insert?: Database["permissions"]["Enums"]["row_level_access"]
+          public_select?: Database["permissions"]["Enums"]["row_level_access"]
+          public_update?: Database["permissions"]["Enums"]["row_level_access"]
+          schema_name?: string
+          table_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "row_level_security_inherited_from_fkey"
+            columns: ["inherited_from"]
+            isOneToOne: false
+            referencedRelation: "row_level_security"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      _check_record_access: {
+        Args: {
+          p_operation: string
+          p_record: Json
+          p_schema_name: string
+          p_table_name: string
+        }
+        Returns: boolean
+      }
+      can_delete_record: {
+        Args: { p_record: Json; p_schema_name: string; p_table_name: string }
+        Returns: boolean
+      }
+      can_insert_record: {
+        Args: { p_record: Json; p_schema_name: string; p_table_name: string }
+        Returns: boolean
+      }
+      can_read_record: {
+        Args: { p_record: Json; p_schema_name: string; p_table_name: string }
+        Returns: boolean
+      }
+      can_update_record: {
+        Args: { p_record: Json; p_schema_name: string; p_table_name: string }
+        Returns: boolean
+      }
+      verify_crud_permission: {
+        Args: {
+          p_crud_access: Database["permissions"]["Enums"]["crud_access"]
+          p_role: Database["permissions"]["Enums"]["user_role"]
+          p_table: string
+        }
+        Returns: boolean
+      }
+    }
+    Enums: {
+      crud_access: "create" | "read" | "update" | "delete"
+      membership_role: "viewer" | "editor" | "admin"
+      row_level_access:
+        | "none"
+        | "public"
+        | "authenticated"
+        | "private"
+        | "membership"
+        | "inherited"
+      user_role: "admin" | "editor" | "viewer"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       accommodation: {
@@ -200,13 +372,6 @@ export type Database = {
             foreignKeyName: "accommodation_unit_assignment_trip_participant_id_fkey"
             columns: ["trip_participant_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "accommodation_unit_assignment_trip_participant_id_fkey"
-            columns: ["trip_participant_id"]
-            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["id"]
           },
@@ -243,13 +408,6 @@ export type Database = {
             foreignKeyName: "balance_borrower_id_fkey"
             columns: ["borrower_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "balance_borrower_id_fkey"
-            columns: ["borrower_id"]
-            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -259,13 +417,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
-          },
-          {
-            foreignKeyName: "balance_lender_id_fkey"
-            columns: ["lender_id"]
-            isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "balance_lender_id_fkey"
@@ -308,13 +459,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
-          },
-          {
-            foreignKeyName: "consumed_drink_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "consumed_drink_user_id_fkey"
@@ -395,13 +539,6 @@ export type Database = {
             foreignKeyName: "group_owner_id_fkey"
             columns: ["owner_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "group_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -441,13 +578,6 @@ export type Database = {
             foreignKeyName: "group_balance_borrower_id_fkey"
             columns: ["borrower_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["group_member_id"]
-          },
-          {
-            foreignKeyName: "group_balance_borrower_id_fkey"
-            columns: ["borrower_id"]
-            isOneToOne: false
             referencedRelation: "v_group_member_details"
             referencedColumns: ["id"]
           },
@@ -478,13 +608,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "group_member"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "group_balance_lender_id_fkey"
-            columns: ["lender_id"]
-            isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["group_member_id"]
           },
           {
             foreignKeyName: "group_balance_lender_id_fkey"
@@ -553,13 +676,6 @@ export type Database = {
             foreignKeyName: "group_invitation_group_member_id_fkey"
             columns: ["group_member_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["group_member_id"]
-          },
-          {
-            foreignKeyName: "group_invitation_group_member_id_fkey"
-            columns: ["group_member_id"]
-            isOneToOne: false
             referencedRelation: "v_group_member_details"
             referencedColumns: ["id"]
           },
@@ -581,13 +697,6 @@ export type Database = {
             foreignKeyName: "group_invitation_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "group_invitation_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -601,6 +710,7 @@ export type Database = {
           id: string
           nickname: string
           removed_at: string | null
+          role: Database["permissions"]["Enums"]["membership_role"]
           status: Database["public"]["Enums"]["acc_group_user_status"] | null
           user_id: string | null
         }
@@ -611,6 +721,7 @@ export type Database = {
           id?: string
           nickname: string
           removed_at?: string | null
+          role?: Database["permissions"]["Enums"]["membership_role"]
           status?: Database["public"]["Enums"]["acc_group_user_status"] | null
           user_id?: string | null
         }
@@ -621,6 +732,7 @@ export type Database = {
           id?: string
           nickname?: string
           removed_at?: string | null
+          role?: Database["permissions"]["Enums"]["membership_role"]
           status?: Database["public"]["Enums"]["acc_group_user_status"] | null
           user_id?: string | null
         }
@@ -645,13 +757,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
-          },
-          {
-            foreignKeyName: "group_member_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "group_member_user_id_fkey"
@@ -761,13 +866,6 @@ export type Database = {
             foreignKeyName: "TextDocument_author_fkey1"
             columns: ["author"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "TextDocument_author_fkey1"
-            columns: ["author"]
-            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -805,13 +903,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
-          },
-          {
-            foreignKeyName: "TextDocumentComment_author_id_fkey"
-            columns: ["author_id"]
-            isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "TextDocumentComment_author_id_fkey"
@@ -893,13 +984,6 @@ export type Database = {
             foreignKeyName: "transaction_paid_by_fkey"
             columns: ["paid_by_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["group_member_id"]
-          },
-          {
-            foreignKeyName: "transaction_paid_by_fkey"
-            columns: ["paid_by_id"]
-            isOneToOne: false
             referencedRelation: "v_group_member_details"
             referencedColumns: ["id"]
           },
@@ -944,13 +1028,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "group_member"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transaction_split_borrower_id_fkey"
-            columns: ["borrower_id"]
-            isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["group_member_id"]
           },
           {
             foreignKeyName: "transaction_split_borrower_id_fkey"
@@ -1141,9 +1218,10 @@ export type Database = {
           is_tentative: boolean | null
           last_modified_at: string | null
           last_modified_by: string | null
-          role: Database["public"]["Enums"]["trip_participant_role"]
+          role: Database["permissions"]["Enums"]["user_role"]
           status: Database["public"]["Enums"]["trip_participant_status"]
           trip_id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -1155,9 +1233,10 @@ export type Database = {
           is_tentative?: boolean | null
           last_modified_at?: string | null
           last_modified_by?: string | null
-          role?: Database["public"]["Enums"]["trip_participant_role"]
+          role?: Database["permissions"]["Enums"]["user_role"]
           status?: Database["public"]["Enums"]["trip_participant_status"]
           trip_id: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -1169,9 +1248,10 @@ export type Database = {
           is_tentative?: boolean | null
           last_modified_at?: string | null
           last_modified_by?: string | null
-          role?: Database["public"]["Enums"]["trip_participant_role"]
+          role?: Database["permissions"]["Enums"]["user_role"]
           status?: Database["public"]["Enums"]["trip_participant_status"]
           trip_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -1180,13 +1260,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "group_member"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "trip_participant_group_member_id_fkey"
-            columns: ["group_member_id"]
-            isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["group_member_id"]
           },
           {
             foreignKeyName: "trip_participant_group_member_id_fkey"
@@ -1222,6 +1295,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_trip_financial_summary"
             referencedColumns: ["trip_id"]
+          },
+          {
+            foreignKeyName: "trip_participant_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "UserInfo"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "trip_participant_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_participant_details"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -1467,13 +1554,6 @@ export type Database = {
             foreignKeyName: "trip_travel_assignment_trip_participant_id_fkey"
             columns: ["trip_participant_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "trip_travel_assignment_trip_participant_id_fkey"
-            columns: ["trip_participant_id"]
-            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["id"]
           },
@@ -1530,13 +1610,6 @@ export type Database = {
             foreignKeyName: "user_notification_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "user_notification_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -1587,18 +1660,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "UserScore_userId_fkey1"
-            columns: ["userId"]
+            foreignKeyName: "UserScore_gameId_fkey"
+            columns: ["gameId"]
             isOneToOne: false
-            referencedRelation: "UserInfo"
-            referencedColumns: ["userId"]
+            referencedRelation: "GameScore"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "UserScore_userId_fkey1"
             columns: ["userId"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
+            referencedRelation: "UserInfo"
+            referencedColumns: ["userId"]
           },
           {
             foreignKeyName: "UserScore_userId_fkey1"
@@ -1611,49 +1684,6 @@ export type Database = {
       }
     }
     Views: {
-      v_accommodation_unassigned_trip_participants: {
-        Row: {
-          avatar_url: string | null
-          first_name: string | null
-          group_member_id: string | null
-          group_member_status:
-            | Database["public"]["Enums"]["acc_group_user_status"]
-            | null
-          id: string | null
-          is_confirmed: boolean | null
-          is_declined: boolean | null
-          is_tentative: boolean | null
-          last_name: string | null
-          nickname: string | null
-          role: Database["public"]["Enums"]["trip_participant_role"] | null
-          status: Database["public"]["Enums"]["trip_participant_status"] | null
-          trip_id: string | null
-          user_id: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "trip_participant_trip_id_fkey"
-            columns: ["trip_id"]
-            isOneToOne: false
-            referencedRelation: "trip"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "trip_participant_trip_id_fkey"
-            columns: ["trip_id"]
-            isOneToOne: false
-            referencedRelation: "v_trip_details"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "trip_participant_trip_id_fkey"
-            columns: ["trip_id"]
-            isOneToOne: false
-            referencedRelation: "v_trip_financial_summary"
-            referencedColumns: ["trip_id"]
-          },
-        ]
-      }
       v_group_balance: {
         Row: {
           borrower: Json | null
@@ -1689,13 +1719,6 @@ export type Database = {
             foreignKeyName: "transaction_paid_by_fkey"
             columns: ["lender_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["group_member_id"]
-          },
-          {
-            foreignKeyName: "transaction_paid_by_fkey"
-            columns: ["lender_id"]
-            isOneToOne: false
             referencedRelation: "v_group_member_details"
             referencedColumns: ["id"]
           },
@@ -1712,13 +1735,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "group_member"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transaction_split_borrower_id_fkey"
-            columns: ["borrower_id"]
-            isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["group_member_id"]
           },
           {
             foreignKeyName: "transaction_split_borrower_id_fkey"
@@ -1798,13 +1814,6 @@ export type Database = {
             foreignKeyName: "group_invitation_group_member_id_fkey"
             columns: ["group_member_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["group_member_id"]
-          },
-          {
-            foreignKeyName: "group_invitation_group_member_id_fkey"
-            columns: ["group_member_id"]
-            isOneToOne: false
             referencedRelation: "v_group_member_details"
             referencedColumns: ["id"]
           },
@@ -1821,13 +1830,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
-          },
-          {
-            foreignKeyName: "group_invitation_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "group_invitation_user_id_fkey"
@@ -1876,13 +1878,6 @@ export type Database = {
             foreignKeyName: "group_member_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "group_member_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -1924,13 +1919,6 @@ export type Database = {
             foreignKeyName: "group_member_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "group_member_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
             referencedRelation: "v_trip_participant_details"
             referencedColumns: ["user_id"]
           },
@@ -1940,13 +1928,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "UserInfo"
             referencedColumns: ["userId"]
-          },
-          {
-            foreignKeyName: "group_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "v_accommodation_unassigned_trip_participants"
-            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "group_owner_id_fkey"
@@ -2083,7 +2064,7 @@ export type Database = {
           is_tentative: boolean | null
           last_name: string | null
           nickname: string | null
-          role: Database["public"]["Enums"]["trip_participant_role"] | null
+          role: Database["permissions"]["Enums"]["user_role"] | null
           status: Database["public"]["Enums"]["trip_participant_status"] | null
           trip_id: string | null
           user_id: string | null
@@ -2424,6 +2405,21 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  permissions: {
+    Enums: {
+      crud_access: ["create", "read", "update", "delete"],
+      membership_role: ["viewer", "editor", "admin"],
+      row_level_access: [
+        "none",
+        "public",
+        "authenticated",
+        "private",
+        "membership",
+        "inherited",
+      ],
+      user_role: ["admin", "editor", "viewer"],
+    },
+  },
   public: {
     Enums: {
       acc_group_user_status: ["invited", "accepted", "rejected", "owner"],

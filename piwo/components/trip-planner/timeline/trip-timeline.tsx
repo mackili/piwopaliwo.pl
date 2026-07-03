@@ -1,5 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { fetchTripTimeline, TripTimelineResponseRow } from "../fetch";
+import {
+    fetchCurrentTripParticipant,
+    fetchTripTimeline,
+    TripTimelineResponseRow,
+} from "../fetch";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { getCurrentLocale } from "@/locales/server";
 import {
@@ -26,10 +30,12 @@ type TripTimelineAggregated = {
 };
 
 export default async function TripTimeline({ tripId }: { tripId: string }) {
-    const [locale, { data, error }] = await Promise.all([
-        getCurrentLocale(),
-        fetchTripTimeline(tripId),
-    ]);
+    const [locale, { data, error }, { data: currentTripParticipant }] =
+        await Promise.all([
+            getCurrentLocale(),
+            fetchTripTimeline(tripId),
+            fetchCurrentTripParticipant(tripId),
+        ]);
     const groupedData = data?.reduce(
         (acc: TripTimelineAggregated, current: TripTimelineResponseRow) => {
             if (!current.start_date) return acc;
@@ -124,6 +130,9 @@ export default async function TripTimeline({ tripId }: { tripId: string }) {
                                         key={index}
                                         item={item}
                                         locale={locale}
+                                        currentTripParticipantId={
+                                            currentTripParticipant?.id
+                                        }
                                     />
                                 ))}
                         </CardContent>
@@ -136,9 +145,11 @@ export default async function TripTimeline({ tripId }: { tripId: string }) {
 function TripTimelineItem({
     item,
     locale,
+    currentTripParticipantId,
 }: {
     item: TripTimelineAggregatedRow;
     locale: string;
+    currentTripParticipantId?: string | null;
 }) {
     return (
         <div className="border-b pb-8 px-6 last:border-b-0 first:border-t pt-4 first:pt-8">
@@ -167,38 +178,62 @@ function TripTimelineItem({
                         <h4>{`${item.timeType === TimelineItemTimeType.START ? "Departure" : "Arrival"} ${item.name}`}</h4>
                     )}
                     <p>{item.description}</p>
+                </div>
+                {item?.status && (
+                    <div className="shrink">
+                        <TripTransactionStatusPill status={item.status} />
+                    </div>
+                )}
+                <div className="basis-full">
                     <div className="flex gap-4 flex-row flex-wrap pt-4">
                         {item.record_type === "travel" &&
                             item?.details &&
                             (
                                 item.details as unknown as Tables<"v_trip_participant_details">[]
-                            )?.map((detail, index) => (
-                                <ParticipantRow
-                                    participant={detail}
-                                    key={index}
-                                />
-                            ))}
+                            )
+                                ?.sort((a, b) =>
+                                    (a?.nickname || "").localeCompare(
+                                        b?.nickname || "",
+                                    ),
+                                )
+                                ?.map((detail, index) => (
+                                    <ParticipantRow
+                                        participant={detail}
+                                        key={index}
+                                        className={
+                                            detail?.id ===
+                                            currentTripParticipantId
+                                                ? "outline-1 outline-offset-4 outline-accent rounded-xl"
+                                                : ""
+                                        }
+                                    />
+                                ))}
                         {item.record_type === "accommodation" &&
                             item?.details &&
                             (
                                 item.details as unknown as TripAccommodationUnitSummary[]
                             )?.map((unit) => {
-                                return unit.assignments.map(
-                                    (assignment, index) => (
+                                return unit.assignments
+                                    ?.sort((a, b) =>
+                                        (a?.nickname || "").localeCompare(
+                                            b?.nickname || "",
+                                        ),
+                                    )
+                                    .map((assignment, index) => (
                                         <ParticipantRow
                                             key={index}
                                             participant={assignment}
+                                            className={
+                                                assignment?.id ===
+                                                currentTripParticipantId
+                                                    ? "outline-1 outline-offset-4 outline-accent rounded-xl"
+                                                    : ""
+                                            }
                                         />
-                                    ),
-                                );
+                                    ));
                             })}
                     </div>
                 </div>
-                {item?.status && (
-                    <div>
-                        <TripTransactionStatusPill status={item.status} />
-                    </div>
-                )}
             </div>
         </div>
     );
