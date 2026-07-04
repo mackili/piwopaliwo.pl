@@ -54,7 +54,7 @@ export default async function TripBanner({
                 className,
             )}
         >
-            <CardHeader>
+            <CardHeader className="flex flex-wrap justify-between flex-col-reverse sm:flex-row gap-4">
                 <div className="flex flex-row flex-wrap gap-2">
                     {trip?.location && (
                         <Badge variant="glass" className="text-secondary">

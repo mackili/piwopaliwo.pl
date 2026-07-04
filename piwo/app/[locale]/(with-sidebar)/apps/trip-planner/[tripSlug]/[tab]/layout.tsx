@@ -37,10 +37,10 @@ export default async function Layout({
         return `/${locale}/apps/trip-planner/${tripSlug}/${tab}`;
     };
     return (
-        <Tabs value={tab} className="w-full">
+        <Tabs value={tab} className="w-full ">
             <TabsList
                 variant="line"
-                className="flex gap-4 w-full flex-wrap mb-4 justify-between"
+                className="flex gap-4 w-full flex-nowrap mb-4 justify-between overflow-x-scroll overflow-y-hidden"
             >
                 <Link
                     href={hrefFactory(TRIP_PLANNER_TABS.OVERVIEW)}
