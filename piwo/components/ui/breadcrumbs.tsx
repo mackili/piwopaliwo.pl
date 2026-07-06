@@ -29,18 +29,18 @@ export function AutomaticBreadcrumbs() {
             pathname
                 ?.split("/")
                 .filter((result) => result.length > 0 && result !== locale) ||
-                []
+                [],
         );
     }, [locale, pathname]);
 
     const hiddenCrumbsCount = Math.max(
         0,
-        crumbs.length - 1 - MAX_CRUMBS_DISPLAYED
+        crumbs.length - 1 - MAX_CRUMBS_DISPLAYED,
     );
     const hiddenCrumbs = crumbs.slice(1, hiddenCrumbsCount + 1);
     const visibleCrumbs = crumbs.slice(
         Math.max(crumbs.length - MAX_CRUMBS_DISPLAYED, 1),
-        crumbs.length
+        crumbs.length,
     );
     return (
         <Breadcrumb>
@@ -58,7 +58,10 @@ export function AutomaticBreadcrumbs() {
                         <>
                             <BreadcrumbItem>
                                 <DropdownMenu>
-                                    <DropdownMenuTrigger className="flex items-center gap-1">
+                                    <DropdownMenuTrigger
+                                        className="flex items-center gap-1"
+                                        asChild
+                                    >
                                         <Button
                                             variant="ghost"
                                             size="sm"
@@ -76,7 +79,9 @@ export function AutomaticBreadcrumbs() {
                                     >
                                         {hiddenCrumbs.map((crumb, index) => (
                                             <DropdownMenuItem key={index}>
-                                                <Link href={""}>
+                                                <Link
+                                                    href={`/${locale}/${crumbs[0]}/${hiddenCrumbs.slice(0, index + 1).join("/")}`}
+                                                >
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
@@ -114,10 +119,9 @@ export function AutomaticBreadcrumbs() {
                                 </Link>
                             </BreadcrumbItem>
                             <>
-                                {hiddenCrumbsCount === 0 &&
-                                    index + 1 < visibleCrumbs.length && (
-                                        <BreadcrumbSeparator />
-                                    )}
+                                {index + 1 < visibleCrumbs.length && (
+                                    <BreadcrumbSeparator />
+                                )}
                             </>
                         </div>
                     ))}

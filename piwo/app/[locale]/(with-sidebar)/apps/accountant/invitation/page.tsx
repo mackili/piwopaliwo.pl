@@ -30,9 +30,9 @@ export default async function Invite({
     const { data, error } = (await supabase
         .from("v_group_invitation")
         .select()
-        .eq("group_id", groupId)
-        .eq("group_member_id", groupMemberId)
-        .eq("user_id", userId)
+        .eq("group_id", groupId as string)
+        .eq("group_member_id", groupMemberId as string)
+        .eq("user_id", userId || "")
         .limit(1)) as SupabaseResponse<GroupInviteView>;
     const invitation = data ? data[0] : null;
     if (invitation?.accepted_at) {

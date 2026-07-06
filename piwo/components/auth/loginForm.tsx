@@ -15,17 +15,20 @@ import { Button } from "@/components/ui/button";
 import { UserSchema, User } from "./types";
 import { useI18n } from "@/locales/client";
 
-export default function LoginPage() {
+export default function LoginPage({ returnUrl }: { returnUrl?: string }) {
     const t = useI18n();
     const loginForm = useForm<User>({
         resolver: zodResolver(UserSchema),
         defaultValues: { email: "", password: "" },
     });
+    const onSubmit = (data: User) => {
+        login(data, returnUrl);
+    };
     return (
         <Form {...loginForm}>
             <form
                 className="flex gap-4 flex-col w-full flex-nowrap"
-                onSubmit={loginForm.handleSubmit(login)}
+                onSubmit={loginForm.handleSubmit(onSubmit)}
             >
                 <FormField
                     control={loginForm.control}

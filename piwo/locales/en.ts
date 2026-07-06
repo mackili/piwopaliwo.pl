@@ -1,4 +1,4 @@
-export default {
+const translations = {
     settings: "Setting",
     logOut: "Log out",
     logIn: "Log in",
@@ -26,6 +26,8 @@ export default {
         accountant: "BeerWise",
         accountant_description:
             "Track and split your group's expenses during a trip",
+        tripPlanner: "Trip Planner",
+        tripPlanner_description: "Plan your next adventure with PiwoPaliwo.pl",
     },
     BeerCounter: {
         newBeer: "Add a Beer",
@@ -137,6 +139,155 @@ export default {
         editMember: "Edit Member",
         noInvitationsComm: "There's nothing waiting for you right now. Sorry!",
     },
+    TripPlanner: {
+        newTrip: "New trip",
+        editTrip: "Edit trip",
+        tripAttributes: {
+            name: "Trip name",
+            description: "Description",
+            startDate: "Start date",
+            endDate: "End date",
+            mainLocation: "Main location",
+            tripStatus: "Trip status",
+            tripType: "Trip type",
+        },
+        participants: {
+            participantsInvitedSuccessfully:
+                "Participants invited successfully",
+            invite: "Invite",
+            inviteGroupMembers: "Invite Group Members",
+            removeParticipant: "Remove participant",
+            addParticipant: "Add Participant",
+            failedToFetchGroupMembers: "Failed to fetch group members",
+            status: {
+                invited: "Invited",
+                declined: "Declined",
+                confirmed: "Confirmed",
+                tentative: "Tentative",
+            },
+        },
+        roles: {
+            admin: "Admin",
+            editor: "Member",
+            viewer: "Viewer",
+        },
+        delete: {
+            deleteTrip: "Delete trip",
+            deleteTripConfirmation:
+                "Are you sure you want to delete {tripName}?",
+            deleteTransaction: "Delete Transaction",
+            deleteTransactionConfirmation:
+                "Are you sure you want to delete {transactionDescription}?",
+            deleteAccommodation: "Delete Accommodation",
+            deleteConfirmation: "Are you sure you want to delete {name}?",
+            deleteGeneric: "Delete {name}",
+        },
+        tabs: {
+            overview: "Overview",
+            timeline: "Timeline",
+            feed: "Feed",
+            costs: "Costs",
+            stay: "Stay",
+            transport: "Transport",
+            participants: "Participants",
+        },
+        accommodation: {
+            tabDescription:
+                "Bookings, accommodation, rooms, room-mate assignments.",
+            checkIn: "Check-In",
+            checkOut: "Check-Out",
+            status: "Status",
+            nights: "Nights",
+            capacity: "Capacity",
+            capacityUsed: "Capacity Used",
+            capacityAvailable: "Capacity Available",
+            totalAmount: "Total Amount",
+            rooms: "Rooms",
+            name: "Name",
+            accommodationUnit: "Accommodation Unit",
+            noParticipantsLeftToAssign: "No participants left to assign",
+            selectAParticipant: "Select a participant",
+        },
+        travel: {
+            tabDescription: "Getting there and around",
+            departure: "Departure",
+            arrival: "Arrival",
+            duration: "Duration",
+            capacity: "Capacity",
+            capacityAvailable: "Capacity Available",
+            capacityUsed: "Capacity Used",
+            status: "Status",
+            totalAmount: "Total Amount",
+            origin: "Origin",
+            destination: "Destination",
+            modeOfTransport: "Mode of Transport",
+            mode: {
+                tram: "Tram",
+                subway: "Subway",
+                rail: "Rail",
+                bus: "Bus",
+                ferry: "Ferry",
+                lift: "Lift",
+                car: "Car",
+                airplane: "Airplane",
+            },
+        },
+        transactions: {
+            planning: "Planning",
+            spending: "Spending",
+            tripCosts: "Trip Costs",
+            tabDescription:
+                "Plan the budget, then track what actually got paid.",
+            status: {
+                idea: "Idea",
+                quoted: "Quoted",
+                committed: "Committed",
+                paid: "Paid",
+            },
+            categories: {
+                stay: "Stay",
+                transport: "Transport",
+                other: "Other",
+                food: "Food",
+                fuel: "Fuel",
+                activity: "Activity",
+            },
+            calculationType: {
+                group_total: "Group total",
+                per_day: "Per day",
+                per_participant: "Per participant",
+                per_participant_per_day: "Per participant per day",
+            },
+            statistics: {
+                plannedTotal: "Planned Total",
+                committedTotal: "Committed Total",
+                alreadyPaid: "Already Paid",
+                perPersonAvg: "Per Person AVG",
+                onlyCommittedParticipants: "Only Committed Participants",
+                allPotentialParticipants: "All Potential Participants",
+                plannedCostsPerCategory: "Planned costs per category",
+            },
+            edit: {
+                failedToSaveTransaction: "Failed to save to transaction",
+                transactionSavedSuccessfully: "Transaction saved successfully",
+                planCost: "Plan cost",
+                planTripCost: "Plan Trip Cost",
+                planDescription: "Description",
+                amount: "Amount",
+                currency: "Currency",
+                totalAmount: "Total Amount",
+                calculationType: "Calculation Type",
+                category: "Category",
+                notes: "Notes",
+                status: "Status",
+            },
+            unlink: "Unlink",
+            link: "Link",
+            selectTransaction: "Select Transaction",
+            transaction: "Transaction",
+        },
+        goToGroup: "Go to Group",
+    },
     submit: "Submit",
     as: "as",
     accept: "Accept",
@@ -147,4 +298,27 @@ export default {
     next: "Next",
     firstName: "First Name",
     lastName: "Last Name",
+    new: "New",
+    failedToSaveToDatabase: "Failed to save to database",
+    role: "Role",
+    delete: "Delete",
+    day: "Day",
+    fetchMore: "Fetch More",
+    showingXofY: "Showing {x} of {y}",
+    perPersonValue: "{x}/person",
+    description: "Description",
+    confirm: "Confirm",
+    minutes: "Minutes",
+    group: "Group",
 } as const;
+
+type FlattenObjectKeys<
+    T extends Record<string, unknown>,
+    Key = keyof T,
+> = Key extends string
+    ? T[Key] extends Record<string, unknown>
+        ? `${Key}.${FlattenObjectKeys<T[Key]>}`
+        : `${Key}`
+    : never;
+export type TranslationKey = FlattenObjectKeys<typeof translations>;
+export default translations;

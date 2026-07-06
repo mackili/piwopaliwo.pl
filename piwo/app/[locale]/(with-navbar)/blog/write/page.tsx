@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { v4 as uuid } from "uuid";
 import { getCurrentLocale } from "@/locales/server";
+import { publicTextdocumentInsertSchema } from "@/database.schemas";
 
 export default async function Page({
     searchParams,
@@ -18,15 +19,18 @@ export default async function Page({
     const locale = await getCurrentLocale();
     if (!id) {
         const newDocumentId = uuid();
-        const { error } = await supabase.from("TextDocument").insert(
-            TextDocumentSchema.safeParse({
-                id: newDocumentId,
-                author: user?.claims?.sub,
-                access: "restricted",
-                status: "draft",
-                document_type: "blog",
-            }).data,
-        );
+        const parsedResult = publicTextdocumentInsertSchema.safeParse({
+            id: newDocumentId,
+            author: user?.claims?.sub,
+            access: "restricted",
+            status: "draft",
+            document_type: "blog",
+            markdown: null,
+        });
+        if (!parsedResult.success || !parsedResult?.data) return;
+        const { error } = await supabase
+            .from("TextDocument")
+            .insert(parsedResult.data);
         if (error) {
             redirect(`/${locale}/blog`);
         } else {

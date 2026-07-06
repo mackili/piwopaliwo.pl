@@ -4,12 +4,12 @@ import { UserInfo, UserInfoSchema } from "@/components/auth/types";
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: Promise<{ userId: string }> }
+    { params }: { params: Promise<{ userId: string }> },
 ) {
     const { userId } = await params;
     const supabase = await createClient();
     const response = await supabase
-        .from("users")
+        .from("UserInfo")
         .select()
         .filter("id", "eq", userId);
     return supabaseToNextResponse(response);
@@ -17,7 +17,7 @@ export async function GET(
 
 export async function PATCH(
     req: NextRequest,
-    { params }: { params: Promise<{ userId: string }> }
+    { params }: { params: Promise<{ userId: string }> },
 ) {
     const { userId } = await params;
     const userInfo = UserInfoSchema.parse({

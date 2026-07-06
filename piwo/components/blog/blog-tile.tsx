@@ -12,7 +12,7 @@ export default function BlogTile({
             className={twMerge(
                 "flex flex-col w-full gap-12 p-4 md:p-8",
                 "antialiased backdrop-blur-xs shadow-lg",
-                className
+                className,
             )}
         >
             {article?.thumbnail_url ? (
@@ -23,6 +23,7 @@ export default function BlogTile({
                         className="w-full h-full object-cover"
                         fill
                         priority
+                        sizes="(max-width: 639px) 80vw, (max-width: 1005px) 50vw, 30vw"
                     />
                 </div>
             ) : (

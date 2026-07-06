@@ -26,3 +26,10 @@ export type SupabaseResponse<T = unknown> = {
     status: number;
     statusText: string;
 };
+
+export enum CRUD_PERMISSIONS {
+    CREATE = "CREATE",
+    READ = "READ",
+    UPDATE = "UPDATE",
+    DELETE = "DELETE",
+}

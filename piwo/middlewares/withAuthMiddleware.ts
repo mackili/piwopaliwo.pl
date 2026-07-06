@@ -3,7 +3,7 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { CustomMiddleware } from "./chain";
 
 const privatePageRegex =
-    /^\/[a-z]{2}(\/apps\a?|\/settings?|\/blog\/write?|\/api?)/;
+    /^\/[a-z]{2}(\/apps\/.*|\/settings?|\/blog\/write?|\/api(\/.*)?)/;
 
 export function withAuthMiddleware(middleware: CustomMiddleware) {
     return async (

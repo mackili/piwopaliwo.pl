@@ -47,7 +47,13 @@ export async function updateSession(request: NextRequest) {
         // const url = request.nextUrl.clone();
         // url.pathname = "/pl/auth/login";
         // return NextResponse.redirect(url);
-        return NextResponse.redirect(new URL("/pl/auth/login", request.url));
+        const loginUrl = new URL("/auth/login", request.url);
+        loginUrl.searchParams.set(
+            "returnUrl",
+            `${request.nextUrl.pathname}${request.nextUrl.search}`,
+        );
+        return NextResponse.redirect(loginUrl);
+        // return NextResponse.redirect(new URL("/pl/auth/login", request.url));
     }
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is.

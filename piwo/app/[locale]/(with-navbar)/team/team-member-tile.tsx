@@ -6,7 +6,7 @@ import TeamMemberFacts from "./team-member-facts";
 import { TextDocumentSchema } from "@/components/markdown-editor/types";
 export const PiwoPaliwoTeamMemberSchema = z.object({
     id: z.uuidv4(),
-    user_id: z.uuidv4(),
+    user_id: z.uuidv4().nullish(),
     first_name: z.string(),
     nickname: z.string().nullish(),
     fav_beer: z.string().nullish(),
@@ -27,23 +27,32 @@ export default async function TeamMemberTile({
     const locale = (await getCurrentLocale()) || "pl";
     return (
         <div className="aspect-square flex w-full h-full relative transition-all ease-in-out bg-accent overflow-hidden">
-            <div className="z-0">
-                {teamMember.image_url && (
-                    <Image src={teamMember.image_url} fill={true} alt="Image" />
-                )}
-            </div>
+            {/* <div className="z-0"> */}
+            {teamMember.image_url && (
+                <Image
+                    src={teamMember.image_url}
+                    fill={true}
+                    alt="Image"
+                    sizes="(max-width: 7687px) 100vw, (max-width: 1005px) 45vw, 33vw"
+                />
+            )}
+            {/* </div> */}
             <Link href={`/${locale}/team/${teamMember.id}`}>
-                <div className="w-full h-full absolute flex items-end hover:bg-background/20 transition-all ease-in-out select-none z-20 hover:scale-105 origin-bottom-left">
-                    <div className="p-5 grid gap-2 text-accent dark:text-primary">
-                        <p className="font-serif font-bold text-5xl pb-2 flex flex-row gap-2 items-baseline">
+                <div className="w-full h-full absolute flex items-end transition-all ease-in-out select-none z-20 hover:scale-102 origin-bottom-left">
+                    <div className="p-2 px-4 md:p-5 grid gap-1 md:gap-2 text-secondary dark:text-primary bg-radial backdrop-blur-xs rounded-2xl outline outline-sidebar/10 shadow-xs m-2 max-w-[300px]">
+                        <p className="font-serif font-bold text-2xl md:text-4xl pb-1 flex flex-row gap-2 items-baseline">
                             {teamMember.first_name}
                             {teamMember.nickname && (
-                                <span className="text-2xl font-medium">
+                                <span className="text-base md:text-xl font-medium ">
                                     {`(${teamMember.nickname})`}
                                 </span>
                             )}
                         </p>
-                        <TeamMemberFacts teamMember={teamMember} />
+                        <TeamMemberFacts
+                            teamMember={teamMember}
+                            className="text-xs md:text-sm"
+                            iconClassName="max-sm:h-4"
+                        />
                     </div>
                 </div>
             </Link>

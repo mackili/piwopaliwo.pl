@@ -42,18 +42,10 @@ export default async function ScoredGamesList() {
                                     <Link
                                         href={`/${locale}/apps/scoretracker/${row.gameId}`}
                                     >
-                                        {
-                                            // @ts-expect-error invalid type inferred by Supabase
-                                            row.GameScore.name
-                                        }
+                                        {row.GameScore.name}
                                     </Link>
                                 </TableCell>
-                                <TableCell>
-                                    {
-                                        // @ts-expect-error invalid type inferred by Supabase
-                                        row.GameScore.status
-                                    }
-                                </TableCell>
+                                <TableCell>{row.GameScore.status}</TableCell>
                                 <TableCell>{row.gameId}</TableCell>
                             </TableRow>
                         ))}

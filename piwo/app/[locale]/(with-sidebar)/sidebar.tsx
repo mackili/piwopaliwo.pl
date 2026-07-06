@@ -19,7 +19,7 @@ import {
     SidebarMenuSubItem,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { menuItems } from "@/components/ui/nav-menu-items";
+import { menuItems } from "@/components/navbar-pill.data";
 import { useCurrentLocale, useI18n } from "@/locales/client";
 import { CurrentUserAvatar } from "@/components/current-user-avatar";
 import { JwtPayload } from "@supabase/supabase-js";
@@ -82,7 +82,7 @@ export function AppSidebar({ user }: { user: JwtPayload | null }) {
                                     <span>
                                         {
                                             // @ts-expect-error structured with the translation
-                                            t(`NavMenu.${mainMenuItem.id}`)
+                                            t(mainMenuItem.id)
                                         }
                                     </span>
                                 </SidebarMenuButton>
@@ -97,10 +97,10 @@ export function AppSidebar({ user }: { user: JwtPayload | null }) {
                                             >
                                                 <childMenuItem.icon />
                                                 <span>
-                                                    {t(
-                                                        // @ts-expect-error invalid type setting
-                                                        `NavMenu.${childMenuItem.id}`,
-                                                    )}
+                                                    {
+                                                        // @ts-expect-error translation inference
+                                                        t(childMenuItem.id)
+                                                    }
                                                 </span>
                                             </SidebarMenuSubButton>
                                         </SidebarMenuSubItem>
