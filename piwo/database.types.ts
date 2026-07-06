@@ -704,7 +704,7 @@ export type Database = {
       }
       group_member: {
         Row: {
-          added_at: string
+          added_at: string | null
           assigned_at: string | null
           group_id: string
           id: string
@@ -715,7 +715,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
-          added_at: string
+          added_at?: string | null
           assigned_at?: string | null
           group_id: string
           id?: string
@@ -726,7 +726,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
-          added_at?: string
+          added_at?: string | null
           assigned_at?: string | null
           group_id?: string
           id?: string

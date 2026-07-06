@@ -1,5 +1,9 @@
 import * as z from "zod";
 import { UserInfoSchema } from "@/components/scoretracker/types";
+import {
+    permissionsUserRoleSchema,
+    publicTripParticipantRoleSchema,
+} from "@/database.schemas";
 
 export const GroupMemberStatusSchema = z.enum([
     "invited",
@@ -21,6 +25,7 @@ export const GroupMemberSchema = z.object({
     removed_at: z.iso.datetime({ offset: true }).nullish(),
     user: UserInfoSchema.nullish(),
     status: GroupMemberStatusSchema.nullish(),
+    role: permissionsUserRoleSchema.nullish(),
 });
 
 export const GroupCurrencySchema = z.object({

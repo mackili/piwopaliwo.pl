@@ -38,7 +38,7 @@ const formObject = z.object({
 });
 type GroupMemberFetch =
     | {
-          added_at: string;
+          added_at: string | null;
           assigned_at: string | null;
           group_id: string;
           id: string;
