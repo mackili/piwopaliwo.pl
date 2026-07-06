@@ -858,7 +858,7 @@ export const publicGroupInvitationRelationshipsSchema = z.tuple([
 ]);
 
 export const publicGroupMemberRowSchema = z.object({
-  added_at: z.string(),
+  added_at: z.string().nullable(),
   assigned_at: z.string().nullable(),
   group_id: z.string(),
   id: z.string(),
@@ -870,7 +870,7 @@ export const publicGroupMemberRowSchema = z.object({
 });
 
 export const publicGroupMemberInsertSchema = z.object({
-  added_at: z.string(),
+  added_at: z.string().optional().nullable(),
   assigned_at: z.string().optional().nullable(),
   group_id: z.string(),
   id: z.string().optional(),
@@ -882,7 +882,7 @@ export const publicGroupMemberInsertSchema = z.object({
 });
 
 export const publicGroupMemberUpdateSchema = z.object({
-  added_at: z.string().optional(),
+  added_at: z.string().optional().nullable(),
   assigned_at: z.string().optional().nullable(),
   group_id: z.string().optional(),
   id: z.string().optional(),

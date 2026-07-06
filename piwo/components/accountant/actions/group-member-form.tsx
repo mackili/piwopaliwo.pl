@@ -18,8 +18,9 @@ import UserSelect from "@/components/ui/user-dropdown";
 import { UserInfo } from "@/components/scoretracker/types";
 import { PostgrestError } from "@supabase/supabase-js";
 import { useI18n } from "@/locales/client";
-import { TablesInsert } from "@/database.types";
+import { Constants, TablesInsert } from "@/database.types";
 import { publicGroupMemberInsertSchema } from "@/database.schemas";
+import FormInput from "@/components/ui/form-input";
 
 export default function GroupMemberForm({
     data,
@@ -42,6 +43,8 @@ export default function GroupMemberForm({
         defaultValues: {
             ...data,
             id: data.id.length <= 0 ? uuid() : data.id,
+            nickname: data?.nickname || "",
+            role: data?.role || "viewer",
         },
     });
 
@@ -62,7 +65,9 @@ export default function GroupMemberForm({
             return;
         }
         const groupMemberData = form.getValues();
-        const result = await upsertGroupMember(groupMemberData);
+        const result = await upsertGroupMember(
+            publicGroupMemberInsertSchema.parse(groupMemberData),
+        );
         if (result.data) {
             router.refresh();
             setDialogOpen(false);
@@ -116,6 +121,18 @@ export default function GroupMemberForm({
                     />
                 )}
                 {usersError && <PostgrestErrorDisplay error={usersError} />}
+                <FormInput
+                    form={form}
+                    name="role"
+                    type="select"
+                    label={t("role")}
+                    options={Constants["permissions"]["Enums"]["user_role"].map(
+                        (role) => ({
+                            value: role,
+                            label: `${t(`TripPlanner.roles.${role}`)}`,
+                        }),
+                    )}
+                />
                 <PostgrestErrorDisplay error={result} />
                 <DialogFooter>
                     <DialogClose asChild>
