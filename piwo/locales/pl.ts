@@ -28,6 +28,8 @@ const translations = {
         accountant_description:
             "Śledź i dziel wydatki swojej grupy w trakcie wyjazdu",
         tripPlanner: "Planer wyjazdów",
+        tripPlanner_description:
+            "Zaplanuj swoją następną przygodę z PiwoPaliwo.pl",
     },
     ScoreTracker: {
         title: "Licznik punktów",
@@ -170,7 +172,7 @@ const translations = {
         },
         roles: {
             admin: "Administrator",
-            member: "Członek",
+            editor: "Edytor",
             viewer: "Obserwator",
         },
         delete: {
@@ -231,6 +233,7 @@ const translations = {
                 ferry: "Prom",
                 lift: "Wyciąg",
                 car: "Samochód",
+                airplane: "Samolot",
             },
         },
         transactions: {
@@ -287,6 +290,7 @@ const translations = {
             selectTransaction: "Wybierz transakcję",
             transaction: "Transakcję",
         },
+        goToGroup: "Wyświetl Grupę",
     },
     submit: "Zapisz",
     as: "jako",
@@ -309,6 +313,7 @@ const translations = {
     description: "Opis",
     confirm: "Potwierdź",
     minutes: "Minuty",
+    group: "Grupa",
 } as const;
 
 type FlattenObjectKeys<

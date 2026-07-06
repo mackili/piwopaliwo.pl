@@ -21,99 +21,7 @@ import {
     CardFooter,
     CardTitle,
 } from "./ui/card";
-import {
-    BadgeCentIcon,
-    BeerIcon,
-    EqualApproximatelyIcon,
-    Gamepad2Icon,
-    HomeIcon,
-    LucideIcon,
-    NewspaperIcon,
-    SailboatIcon,
-    TerminalIcon,
-    VolleyballIcon,
-} from "lucide-react";
-import { TranslationKey } from "@/locales/pl";
-
-export interface MenuItem {
-    title?: string;
-    description?: TranslationKey;
-    id: TranslationKey;
-    order?: number;
-    link?: string;
-    icon: LucideIcon;
-}
-
-export type AuxiliaryMenuItem = MenuItem;
-
-export type MainMenuItem = MenuItem & {
-    children?: AuxiliaryMenuItem[];
-    status: "active" | "disabled";
-};
-
-export const menuItems: MainMenuItem[] = [
-    {
-        id: "NavMenu.home",
-        order: 0,
-        link: "/",
-        status: "active",
-        icon: HomeIcon,
-        children: [
-            {
-                description: "NavMenu.blog_description",
-                id: "NavMenu.blog",
-                icon: NewspaperIcon,
-                link: "/blog",
-            },
-        ],
-    },
-    {
-        description: "NavMenu.games_description",
-        id: "NavMenu.games",
-        order: 10,
-        status: "disabled",
-        icon: Gamepad2Icon,
-        children: [
-            {
-                id: "NavMenu.piwopol",
-                icon: BadgeCentIcon,
-                // link: "#",
-            },
-        ],
-    },
-    {
-        id: "NavMenu.apps",
-        order: 20,
-        description: "NavMenu.apps_description",
-        status: "active",
-        icon: TerminalIcon,
-        children: [
-            {
-                description: "NavMenu.accountant_description",
-                id: "NavMenu.accountant",
-                link: "/apps/accountant",
-                icon: EqualApproximatelyIcon,
-            },
-            {
-                description: "NavMenu.scoreTracker_description",
-                id: "NavMenu.scoreTracker",
-                link: "/apps/scoretracker",
-                icon: VolleyballIcon,
-            },
-            {
-                description: "NavMenu.beerCounter_description",
-                id: "NavMenu.beerCounter",
-                link: "/apps/beercounter",
-                icon: BeerIcon,
-            },
-            {
-                id: "NavMenu.tripPlanner",
-                link: "/apps/trip-planner",
-                icon: SailboatIcon,
-            },
-        ],
-    },
-] as const;
+import { AuxiliaryMenuItem, MainMenuItem, menuItems } from "./navbar-pill.data";
 
 export default function NavBarPill() {
     const beerIconSize = 32 as const;
@@ -198,7 +106,12 @@ export default function NavBarPill() {
                             )}
                         >
                             <item.icon className="stroke-primary" />
-                            <p className="text-primary text-xs">{t(item.id)}</p>
+                            <p className="text-primary text-xs">
+                                {
+                                    // @ts-expect-error translation inference
+                                    t(item.id)
+                                }
+                            </p>
                         </button>
                     </NavItemDialog>
                 ))}
@@ -228,12 +141,18 @@ export function NavItemDialog({
                     <DialogTitle>
                         <div className="flex flex-row gap-4 flex-nowrap items-center text-wrap">
                             <item.icon className="stroke-2 scale-120" />
-                            {t(item.id)}
+                            {
+                                // @ts-expect-error translation inference
+                                t(item.id)
+                            }
                         </div>
                     </DialogTitle>
                     {item?.description && (
                         <DialogDescription>
-                            {t(item.description)}
+                            {
+                                // @ts-expect-error translation inference
+                                t(item.description)
+                            }
                         </DialogDescription>
                     )}
                 </DialogHeader>
@@ -295,12 +214,20 @@ export function NavChildItem({
             <CardContent>
                 <CardTitle className="flex flex-row gap-2 flex-nowrap items-center text-wrap">
                     <item.icon />
-                    {t(item.id)}
+                    {
+                        // @ts-expect-error translation inference
+                        t(item.id)
+                    }
                 </CardTitle>
             </CardContent>
             {item?.description && (
                 <CardFooter>
-                    <CardDescription>{t(item.description)}</CardDescription>
+                    <CardDescription>
+                        {
+                            // @ts-expect-error translation inference
+                            t(item.description)
+                        }
+                    </CardDescription>
                 </CardFooter>
             )}
         </Card>

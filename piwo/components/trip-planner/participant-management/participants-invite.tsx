@@ -249,7 +249,12 @@ export default function TripParticipantsInvite({
                                                 (role) => ({
                                                     value: role,
                                                     label: TripParticipantRoleDisplay(
-                                                        { role: role },
+                                                        {
+                                                            role: role,
+                                                            roleDisplay: t(
+                                                                `TripPlanner.roles.${role}`,
+                                                            ),
+                                                        },
                                                     ),
                                                 }),
                                             )}

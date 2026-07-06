@@ -47,7 +47,6 @@ export default function TripCostsCard({
     const trip = useContext(TripContext);
     const enableFetchMore =
         data?.data && data?.count && data?.data?.length < data?.count;
-    // const handleFetchMore = () => {};
     async function handleFetchMore() {
         console.log("fetching more");
         if (!tripId || !data?.data) return;
@@ -93,7 +92,7 @@ export default function TripCostsCard({
                         />
                     ))}
             </CardContent>
-            {enableFetchMore && (
+            {!!enableFetchMore && (
                 <CardFooter className="flex justify-center pb-6">
                     {isLoading ? (
                         <LoadingSpinner />

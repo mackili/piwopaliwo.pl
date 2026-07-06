@@ -199,6 +199,10 @@ export default function TransportTypeIcon({
             break;
         case "tram":
             Icon = TramFrontIcon;
+            break;
+        case "airplane":
+            Icon = PlaneIcon;
+            break;
         default:
             Icon = LuggageIcon;
             break;

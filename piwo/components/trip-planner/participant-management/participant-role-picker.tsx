@@ -19,36 +19,36 @@ import { twMerge } from "tailwind-merge";
 import { Constants, Database } from "@/database.types";
 import { CrownIcon, EditIcon, ViewIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useI18n } from "@/locales/client";
 
 const participantRoles = Constants.permissions.Enums.user_role;
 
 export function TripParticipantRoleDisplay({
     role,
+    roleDisplay,
 }: {
     role: Database["permissions"]["Enums"]["user_role"];
+    roleDisplay?: string;
 }) {
-    const t = useI18n();
     let result = <>{role}</>;
     switch (role) {
         case "admin":
             result = (
                 <>
-                    <CrownIcon /> {t("TripPlanner.roles.admin")}
+                    <CrownIcon /> {roleDisplay || role}
                 </>
             );
             break;
         case "editor":
             result = (
                 <>
-                    <EditIcon /> {t("TripPlanner.roles.member")}
+                    <EditIcon /> {roleDisplay || role}
                 </>
             );
             break;
         case "viewer":
             result = (
                 <>
-                    <ViewIcon /> {t("TripPlanner.roles.viewer")}
+                    <ViewIcon /> {roleDisplay || role}
                 </>
             );
             break;

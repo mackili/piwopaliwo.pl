@@ -2251,6 +2251,7 @@ export type Database = {
         | "ferry"
         | "lift"
         | "car"
+        | "airplane"
       trip_feed_item_type: "post" | "announcement"
       trip_participant_role: "admin" | "member" | "owner"
       trip_participant_status:
@@ -2438,6 +2439,7 @@ export const Constants = {
         "ferry",
         "lift",
         "car",
+        "airplane",
       ],
       trip_feed_item_type: ["post", "announcement"],
       trip_participant_role: ["admin", "member", "owner"],

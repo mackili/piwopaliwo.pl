@@ -33,18 +33,18 @@ export type ParticipantResponseJson = {
 
 async function fetchTrips() {
     const supabase = await createClient();
-    const user = await supabase.auth.getUser();
-    if (user.error) {
-        return { data: null, error: user.error };
+    const { data: user, error } = await supabase.auth.getClaims();
+    if (!user?.claims?.sub) {
+        return { data: null, error: error };
     }
-
     const response = await supabase
         .from("group")
         .select(
-            `id, name, thumbnail_url, trips:trip(
+            `*, trips:trip(
             id,name,description,type,start_date,end_date,currency_iso_code,status,created_at, created_by, group_id, last_modified_at,last_modified_by, text_document_id, location, slug
-            )`,
+            ), group_member!group_member_group_id_fkey!inner(user_id,role)`,
         )
+        .eq("group_member.user_id", user.claims.sub)
         .order("name", { ascending: true });
     return response;
 }
@@ -415,7 +415,14 @@ async function fetchTripTimeline(
 
 async function deleteTrips(tripIds: string[]) {
     const supabase = await createClient();
-    return await supabase.from("trip").delete().in("id", tripIds);
+    const result = await supabase.from("trip").delete().in("id", tripIds);
+    return result;
+}
+
+async function upsertGroup(group: TablesInsert<"group">) {
+    const supabase = await createClient();
+    const result = await supabase.from("group").upsert(group).select().single();
+    return result;
 }
 
 export {
@@ -448,4 +455,5 @@ export {
     updateLinkedTransaction,
     fetchTripTimeline,
     deleteTrips,
+    upsertGroup,
 };

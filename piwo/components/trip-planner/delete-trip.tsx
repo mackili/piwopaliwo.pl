@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { Tables } from "@/database.types";
 import { deleteTrips } from "./fetch";
 import { useCurrentLocale, useI18n } from "@/locales/client";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function DeleteTrip({
     trip,
@@ -45,9 +46,20 @@ export default function DeleteTrip({
         trip?.id && (
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
-                    <Button variant="secondary" type="button" size="icon">
-                        <Trash2Icon />
-                    </Button>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="secondary"
+                                type="button"
+                                size="icon"
+                            >
+                                <Trash2Icon />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            {t("TripPlanner.delete.deleteTrip")}
+                        </TooltipContent>
+                    </Tooltip>
                 </DialogTrigger>
                 <DialogContent className="overflow-auto">
                     <DialogTitle>

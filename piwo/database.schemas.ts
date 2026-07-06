@@ -62,12 +62,6 @@ export const publicTextdocumentstatusSchema = z.enum([
   "unpublished",
 ]);
 
-export const publicTrackergamestatusSchema = z.enum([
-  "paused",
-  "active",
-  "finished",
-]);
-
 export const publicTransactionStatusSchema = z.enum([
   "idea",
   "quoted",
@@ -83,15 +77,10 @@ export const publicTransportationTypeSchema = z.enum([
   "ferry",
   "lift",
   "car",
+  "airplane",
 ]);
 
 export const publicTripFeedItemTypeSchema = z.enum(["post", "announcement"]);
-
-export const publicTripParticipantRoleSchema = z.enum([
-  "admin",
-  "member",
-  "owner",
-]);
 
 export const publicTripParticipantStatusSchema = z.enum([
   "invited",
@@ -149,6 +138,186 @@ export const jsonSchema: z.ZodSchema<Json> = z.lazy(() =>
     ])
     .nullable(),
 );
+
+export const permissionsMembershipRoleAccessRowSchema = z.object({
+  can_delete: z.boolean(),
+  can_insert: z.boolean(),
+  can_select: z.boolean(),
+  can_update: z.boolean(),
+  id: z.number(),
+  role: permissionsMembershipRoleSchema,
+  security_id: z.string(),
+});
+
+export const permissionsMembershipRoleAccessInsertSchema = z.object({
+  can_delete: z.boolean().optional(),
+  can_insert: z.boolean().optional(),
+  can_select: z.boolean().optional(),
+  can_update: z.boolean().optional(),
+  id: z.never().optional(),
+  role: permissionsMembershipRoleSchema,
+  security_id: z.string(),
+});
+
+export const permissionsMembershipRoleAccessUpdateSchema = z.object({
+  can_delete: z.boolean().optional(),
+  can_insert: z.boolean().optional(),
+  can_select: z.boolean().optional(),
+  can_update: z.boolean().optional(),
+  id: z.never().optional(),
+  role: permissionsMembershipRoleSchema.optional(),
+  security_id: z.string().optional(),
+});
+
+export const permissionsMembershipRoleAccessRelationshipsSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("membership_role_access_security_id_fkey"),
+    columns: z.tuple([z.literal("security_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("row_level_security"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+]);
+
+export const permissionsRowLevelSecurityRowSchema = z.object({
+  authenticated_delete: permissionsRowLevelAccessSchema,
+  authenticated_insert: permissionsRowLevelAccessSchema,
+  authenticated_select: permissionsRowLevelAccessSchema,
+  authenticated_update: permissionsRowLevelAccessSchema,
+  id: z.string(),
+  inherited_fk: z.string().nullable(),
+  inherited_from: z.string().nullable(),
+  inherited_pk: z.string().nullable(),
+  membership_fk: z.string().nullable(),
+  membership_pk: z.string().nullable(),
+  membership_role_column: z.string().nullable(),
+  membership_table: z.string().nullable(),
+  membership_user_fk: z.string().nullable(),
+  owner_column: z.string().nullable(),
+  public_delete: permissionsRowLevelAccessSchema,
+  public_insert: permissionsRowLevelAccessSchema,
+  public_select: permissionsRowLevelAccessSchema,
+  public_update: permissionsRowLevelAccessSchema,
+  schema_name: z.string(),
+  table_name: z.string(),
+});
+
+export const permissionsRowLevelSecurityInsertSchema = z.object({
+  authenticated_delete: permissionsRowLevelAccessSchema.optional(),
+  authenticated_insert: permissionsRowLevelAccessSchema.optional(),
+  authenticated_select: permissionsRowLevelAccessSchema.optional(),
+  authenticated_update: permissionsRowLevelAccessSchema.optional(),
+  id: z.string().optional(),
+  inherited_fk: z.string().optional().nullable(),
+  inherited_from: z.string().optional().nullable(),
+  inherited_pk: z.string().optional().nullable(),
+  membership_fk: z.string().optional().nullable(),
+  membership_pk: z.string().optional().nullable(),
+  membership_role_column: z.string().optional().nullable(),
+  membership_table: z.string().optional().nullable(),
+  membership_user_fk: z.string().optional().nullable(),
+  owner_column: z.string().optional().nullable(),
+  public_delete: permissionsRowLevelAccessSchema.optional(),
+  public_insert: permissionsRowLevelAccessSchema.optional(),
+  public_select: permissionsRowLevelAccessSchema.optional(),
+  public_update: permissionsRowLevelAccessSchema.optional(),
+  schema_name: z.string().optional(),
+  table_name: z.string(),
+});
+
+export const permissionsRowLevelSecurityUpdateSchema = z.object({
+  authenticated_delete: permissionsRowLevelAccessSchema.optional(),
+  authenticated_insert: permissionsRowLevelAccessSchema.optional(),
+  authenticated_select: permissionsRowLevelAccessSchema.optional(),
+  authenticated_update: permissionsRowLevelAccessSchema.optional(),
+  id: z.string().optional(),
+  inherited_fk: z.string().optional().nullable(),
+  inherited_from: z.string().optional().nullable(),
+  inherited_pk: z.string().optional().nullable(),
+  membership_fk: z.string().optional().nullable(),
+  membership_pk: z.string().optional().nullable(),
+  membership_role_column: z.string().optional().nullable(),
+  membership_table: z.string().optional().nullable(),
+  membership_user_fk: z.string().optional().nullable(),
+  owner_column: z.string().optional().nullable(),
+  public_delete: permissionsRowLevelAccessSchema.optional(),
+  public_insert: permissionsRowLevelAccessSchema.optional(),
+  public_select: permissionsRowLevelAccessSchema.optional(),
+  public_update: permissionsRowLevelAccessSchema.optional(),
+  schema_name: z.string().optional(),
+  table_name: z.string().optional(),
+});
+
+export const permissionsRowLevelSecurityRelationshipsSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("row_level_security_inherited_from_fkey"),
+    columns: z.tuple([z.literal("inherited_from")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("row_level_security"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+]);
+
+export const permissionsCheckRecordAccessArgsSchema = z.object({
+  p_operation: z.string(),
+  p_record: jsonSchema,
+  p_schema_name: z.string(),
+  p_table_name: z.string(),
+});
+
+export const permissionsCheckRecordAccessReturnsSchema = z.boolean();
+
+export const permissionsCanDeleteRecordArgsSchema = z.object({
+  p_record: jsonSchema,
+  p_schema_name: z.string(),
+  p_table_name: z.string(),
+});
+
+export const permissionsCanDeleteRecordReturnsSchema = z.boolean();
+
+export const permissionsCanInsertRecordArgsSchema = z.object({
+  p_record: jsonSchema,
+  p_schema_name: z.string(),
+  p_table_name: z.string(),
+});
+
+export const permissionsCanInsertRecordReturnsSchema = z.boolean();
+
+export const permissionsCanReadRecordArgsSchema = z.object({
+  p_record: jsonSchema,
+  p_schema_name: z.string(),
+  p_table_name: z.string(),
+});
+
+export const permissionsCanReadRecordReturnsSchema = z.boolean();
+
+export const permissionsCanUpdateRecordArgsSchema = z.object({
+  p_record: jsonSchema,
+  p_schema_name: z.string(),
+  p_table_name: z.string(),
+});
+
+export const permissionsCanUpdateRecordReturnsSchema = z.boolean();
+
+export const permissionsVerifyCrudPermissionArgsSchema = z.object({
+  p_crud_access: permissionsCrudAccessSchema,
+  p_role: permissionsUserRoleSchema,
+  p_table: z.string(),
+});
+
+export const permissionsVerifyCrudPermissionReturnsSchema = z.boolean();
+
+export const publicTrackergamestatusSchema = z.enum([
+  "paused",
+  "active",
+  "finished",
+]);
+
+export const publicTripParticipantRoleSchema = z.enum([
+  "admin",
+  "member",
+  "owner",
+]);
 
 export const publicAccommodationRowSchema = z.object({
   check_in_date: z.string(),
@@ -2258,171 +2427,3 @@ export const publicTripTravelMakeTransactionSplitArgsSchema = z.object({
 });
 
 export const publicTripTravelMakeTransactionSplitReturnsSchema = jsonSchema;
-
-export const permissionsMembershipRoleAccessRowSchema = z.object({
-  can_delete: z.boolean(),
-  can_insert: z.boolean(),
-  can_select: z.boolean(),
-  can_update: z.boolean(),
-  id: z.number(),
-  role: permissionsMembershipRoleSchema,
-  security_id: z.string(),
-});
-
-export const permissionsMembershipRoleAccessInsertSchema = z.object({
-  can_delete: z.boolean().optional(),
-  can_insert: z.boolean().optional(),
-  can_select: z.boolean().optional(),
-  can_update: z.boolean().optional(),
-  id: z.never().optional(),
-  role: permissionsMembershipRoleSchema,
-  security_id: z.string(),
-});
-
-export const permissionsMembershipRoleAccessUpdateSchema = z.object({
-  can_delete: z.boolean().optional(),
-  can_insert: z.boolean().optional(),
-  can_select: z.boolean().optional(),
-  can_update: z.boolean().optional(),
-  id: z.never().optional(),
-  role: permissionsMembershipRoleSchema.optional(),
-  security_id: z.string().optional(),
-});
-
-export const permissionsMembershipRoleAccessRelationshipsSchema = z.tuple([
-  z.object({
-    foreignKeyName: z.literal("membership_role_access_security_id_fkey"),
-    columns: z.tuple([z.literal("security_id")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal("row_level_security"),
-    referencedColumns: z.tuple([z.literal("id")]),
-  }),
-]);
-
-export const permissionsRowLevelSecurityRowSchema = z.object({
-  authenticated_delete: permissionsRowLevelAccessSchema,
-  authenticated_insert: permissionsRowLevelAccessSchema,
-  authenticated_select: permissionsRowLevelAccessSchema,
-  authenticated_update: permissionsRowLevelAccessSchema,
-  id: z.string(),
-  inherited_fk: z.string().nullable(),
-  inherited_from: z.string().nullable(),
-  inherited_pk: z.string().nullable(),
-  membership_fk: z.string().nullable(),
-  membership_pk: z.string().nullable(),
-  membership_role_column: z.string().nullable(),
-  membership_table: z.string().nullable(),
-  membership_user_fk: z.string().nullable(),
-  owner_column: z.string().nullable(),
-  public_delete: permissionsRowLevelAccessSchema,
-  public_insert: permissionsRowLevelAccessSchema,
-  public_select: permissionsRowLevelAccessSchema,
-  public_update: permissionsRowLevelAccessSchema,
-  schema_name: z.string(),
-  table_name: z.string(),
-});
-
-export const permissionsRowLevelSecurityInsertSchema = z.object({
-  authenticated_delete: permissionsRowLevelAccessSchema.optional(),
-  authenticated_insert: permissionsRowLevelAccessSchema.optional(),
-  authenticated_select: permissionsRowLevelAccessSchema.optional(),
-  authenticated_update: permissionsRowLevelAccessSchema.optional(),
-  id: z.string().optional(),
-  inherited_fk: z.string().optional().nullable(),
-  inherited_from: z.string().optional().nullable(),
-  inherited_pk: z.string().optional().nullable(),
-  membership_fk: z.string().optional().nullable(),
-  membership_pk: z.string().optional().nullable(),
-  membership_role_column: z.string().optional().nullable(),
-  membership_table: z.string().optional().nullable(),
-  membership_user_fk: z.string().optional().nullable(),
-  owner_column: z.string().optional().nullable(),
-  public_delete: permissionsRowLevelAccessSchema.optional(),
-  public_insert: permissionsRowLevelAccessSchema.optional(),
-  public_select: permissionsRowLevelAccessSchema.optional(),
-  public_update: permissionsRowLevelAccessSchema.optional(),
-  schema_name: z.string().optional(),
-  table_name: z.string(),
-});
-
-export const permissionsRowLevelSecurityUpdateSchema = z.object({
-  authenticated_delete: permissionsRowLevelAccessSchema.optional(),
-  authenticated_insert: permissionsRowLevelAccessSchema.optional(),
-  authenticated_select: permissionsRowLevelAccessSchema.optional(),
-  authenticated_update: permissionsRowLevelAccessSchema.optional(),
-  id: z.string().optional(),
-  inherited_fk: z.string().optional().nullable(),
-  inherited_from: z.string().optional().nullable(),
-  inherited_pk: z.string().optional().nullable(),
-  membership_fk: z.string().optional().nullable(),
-  membership_pk: z.string().optional().nullable(),
-  membership_role_column: z.string().optional().nullable(),
-  membership_table: z.string().optional().nullable(),
-  membership_user_fk: z.string().optional().nullable(),
-  owner_column: z.string().optional().nullable(),
-  public_delete: permissionsRowLevelAccessSchema.optional(),
-  public_insert: permissionsRowLevelAccessSchema.optional(),
-  public_select: permissionsRowLevelAccessSchema.optional(),
-  public_update: permissionsRowLevelAccessSchema.optional(),
-  schema_name: z.string().optional(),
-  table_name: z.string().optional(),
-});
-
-export const permissionsRowLevelSecurityRelationshipsSchema = z.tuple([
-  z.object({
-    foreignKeyName: z.literal("row_level_security_inherited_from_fkey"),
-    columns: z.tuple([z.literal("inherited_from")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal("row_level_security"),
-    referencedColumns: z.tuple([z.literal("id")]),
-  }),
-]);
-
-export const permissionsCheckRecordAccessArgsSchema = z.object({
-  p_operation: z.string(),
-  p_record: jsonSchema,
-  p_schema_name: z.string(),
-  p_table_name: z.string(),
-});
-
-export const permissionsCheckRecordAccessReturnsSchema = z.boolean();
-
-export const permissionsCanDeleteRecordArgsSchema = z.object({
-  p_record: jsonSchema,
-  p_schema_name: z.string(),
-  p_table_name: z.string(),
-});
-
-export const permissionsCanDeleteRecordReturnsSchema = z.boolean();
-
-export const permissionsCanInsertRecordArgsSchema = z.object({
-  p_record: jsonSchema,
-  p_schema_name: z.string(),
-  p_table_name: z.string(),
-});
-
-export const permissionsCanInsertRecordReturnsSchema = z.boolean();
-
-export const permissionsCanReadRecordArgsSchema = z.object({
-  p_record: jsonSchema,
-  p_schema_name: z.string(),
-  p_table_name: z.string(),
-});
-
-export const permissionsCanReadRecordReturnsSchema = z.boolean();
-
-export const permissionsCanUpdateRecordArgsSchema = z.object({
-  p_record: jsonSchema,
-  p_schema_name: z.string(),
-  p_table_name: z.string(),
-});
-
-export const permissionsCanUpdateRecordReturnsSchema = z.boolean();
-
-export const permissionsVerifyCrudPermissionArgsSchema = z.object({
-  p_crud_access: permissionsCrudAccessSchema,
-  p_role: permissionsUserRoleSchema,
-  p_table: z.string(),
-});
-
-export const permissionsVerifyCrudPermissionReturnsSchema = z.boolean();

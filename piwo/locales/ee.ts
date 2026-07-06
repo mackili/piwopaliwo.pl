@@ -23,6 +23,9 @@ export default {
         beerCounter_description: "Jälgi oma kuldse vedela leiva tarbimist.",
         accountant: "BeerWise",
         accountant_description: "Jälgi ja jaga oma grupi kulutusi reisi ajal",
+        tripPlanner: "Reisiplaneerija",
+        tripPlanner_description:
+            "Planeeri oma järgmine seiklus koos PiwoPaliwo.pl-ga",
     },
     BeerCounter: {
         newBeer: "Lisa õlu",
@@ -162,7 +165,7 @@ export default {
         },
         roles: {
             admin: "Administraator",
-            member: "Liige",
+            editor: "Liige",
             viewer: "Vaataja",
         },
         delete: {
@@ -281,6 +284,7 @@ export default {
             selectTransaction: "Vali tehing",
             transaction: "Tehing",
         },
+        goToGroup: "Vaata gruppi",
     },
     submit: "Esita",
     as: "kui",
@@ -303,4 +307,5 @@ export default {
     description: "Kirjeldus",
     confirm: "Kinnita",
     minutes: "Minutid",
+    group: "Grupp",
 } as const;

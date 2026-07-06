@@ -17,7 +17,7 @@ export default function TripCostsSummary({
     const locale = useCurrentLocale();
     const t = useI18n();
     const plannedTotal =
-        data?.financials.reduce(
+        data?.financials?.reduce(
             (acc, cur) => acc + cur.total_in_trip_currency,
             0,
         ) || 0;
@@ -36,26 +36,26 @@ export default function TripCostsSummary({
                     bucket.status !==
                     Constants.public.Enums.trip_participant_status[1],
             )
-            .reduce((acc, cur) => acc + cur.count, 0) || 0;
+            ?.reduce((acc, cur) => acc + cur.count, 0) || 0;
 
     const committedTotal =
         data?.financials
-            .filter(
+            ?.filter(
                 (item) =>
                     item.status ===
                         Constants.public.Enums.transaction_status[2] ||
                     item.status ===
                         Constants.public.Enums.transaction_status[3],
             )
-            .reduce((acc, cur) => acc + cur.total_in_trip_currency, 0) || 0;
+            ?.reduce((acc, cur) => acc + cur.total_in_trip_currency, 0) || 0;
     const paidTotal =
         data?.financials
-            .filter(
+            ?.filter(
                 (item) =>
                     item.status ===
                     Constants.public.Enums.transaction_status[3],
             )
-            .reduce((acc, cur) => acc + cur.total_in_trip_currency, 0) || 0;
+            ?.reduce((acc, cur) => acc + cur.total_in_trip_currency, 0) || 0;
 
     return (
         <div className={className}>

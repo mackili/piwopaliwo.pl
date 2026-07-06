@@ -1,4 +1,4 @@
-export default {
+const translations = {
     settings: "Setting",
     logOut: "Log out",
     logIn: "Log in",
@@ -26,6 +26,8 @@ export default {
         accountant: "BeerWise",
         accountant_description:
             "Track and split your group's expenses during a trip",
+        tripPlanner: "Trip Planner",
+        tripPlanner_description: "Plan your next adventure with PiwoPaliwo.pl",
     },
     BeerCounter: {
         newBeer: "Add a Beer",
@@ -166,7 +168,7 @@ export default {
         },
         roles: {
             admin: "Admin",
-            member: "Member",
+            editor: "Member",
             viewer: "Viewer",
         },
         delete: {
@@ -227,6 +229,7 @@ export default {
                 ferry: "Ferry",
                 lift: "Lift",
                 car: "Car",
+                airplane: "Airplane",
             },
         },
         transactions: {
@@ -283,6 +286,7 @@ export default {
             selectTransaction: "Select Transaction",
             transaction: "Transaction",
         },
+        goToGroup: "Go to Group",
     },
     submit: "Submit",
     as: "as",
@@ -305,4 +309,16 @@ export default {
     description: "Description",
     confirm: "Confirm",
     minutes: "Minutes",
+    group: "Group",
 } as const;
+
+type FlattenObjectKeys<
+    T extends Record<string, unknown>,
+    Key = keyof T,
+> = Key extends string
+    ? T[Key] extends Record<string, unknown>
+        ? `${Key}.${FlattenObjectKeys<T[Key]>}`
+        : `${Key}`
+    : never;
+export type TranslationKey = FlattenObjectKeys<typeof translations>;
+export default translations;

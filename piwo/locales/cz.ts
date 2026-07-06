@@ -25,6 +25,9 @@ export default {
         accountant: "BeerWise",
         accountant_description:
             "Sledujte a rozdělujte výdaje vaší skupiny během výletu",
+        tripPlanner: "Plánovač výletů",
+        tripPlanner_description:
+            "Naplánujte si své další dobrodružství s PiwoPaliwo.pl",
     },
     BeerCounter: {
         newBeer: "Přidat pivo",
@@ -165,7 +168,7 @@ export default {
         },
         roles: {
             admin: "Administrátor",
-            member: "Člen",
+            editor: "Člen",
             viewer: "Pozorovatel",
         },
         delete: {
@@ -282,6 +285,7 @@ export default {
             selectTransaction: "Vyberte transakci",
             transaction: "Transakce",
         },
+        goToGroup: "Zobrazit skupinu",
     },
     submit: "Odeslat",
     as: "jako",
@@ -304,4 +308,5 @@ export default {
     description: "Popis",
     confirm: "Potvrdit",
     minutes: "Minuty",
+    group: "Skupina",
 } as const;

@@ -1,7 +1,6 @@
-import { fetchTripDetails } from "@/components/trip-planner/fetch";
-import { redirect } from "next/navigation";
 import TripBanner from "@/components/trip-planner/trip-banner";
-import { getCurrentLocale } from "@/locales/server";
+import TripBannerSuspense from "@/components/trip-planner/trip-banner-suspense";
+import { Suspense } from "react";
 export enum TRIP_PLANNER_TABS {
     OVERVIEW = "overview",
     TIMELINE = "timeline",
@@ -20,22 +19,17 @@ export default async function Layout({
 } & Readonly<{
     children: React.ReactNode;
 }>) {
-    const [{ tripSlug }, locale] = await Promise.all([
-        params,
-        getCurrentLocale(),
-    ]);
-    const [data] = await Promise.all([
-        fetchTripDetails({ tripSlug: tripSlug }),
-    ]);
-    const tripData = data.data;
-    if (!tripData) {
-        redirect(`/${locale}/apps/trip-planner`);
-    }
+    const [{ tripSlug }] = await Promise.all([params]);
     return (
         <div className="p-4 md:p-8 flex flex-col gap-8">
-            {tripData && (
+            {tripSlug && (
                 <>
-                    <TripBanner trip={tripData} className="col-span-full" />
+                    <Suspense fallback={<TripBannerSuspense />}>
+                        <TripBanner
+                            tripSlug={tripSlug}
+                            className="col-span-full"
+                        />
+                    </Suspense>
                     {children}
                 </>
             )}

@@ -182,7 +182,7 @@ export default function EditTripForm({
                         </>
                     ) : (
                         <>
-                            <PlusIcon /> {t("new")}
+                            <PlusIcon /> {t("TripPlanner.newTrip")}
                         </>
                     )}
                 </Button>
