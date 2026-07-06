@@ -1,5 +1,5 @@
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
-import { getCurrentLocale } from "@/locales/server";
+import { getCurrentLocale, getI18n } from "@/locales/server";
 import {
     fetchCurrentTripParticipant,
     fetchTripAccommodationSummary,
@@ -14,11 +14,13 @@ export default async function TripAccommodationOverview({
 }) {
     const [
         locale,
+        t,
         { data, error },
         { data: currentTripParticipant },
         { data: tripParticipantDetails },
     ] = await Promise.all([
         getCurrentLocale(),
+        getI18n(),
         fetchTripAccommodationSummary(tripId),
         fetchCurrentTripParticipant(tripId),
         fetchTripParticipantDetails(tripId, [
@@ -32,10 +34,10 @@ export default async function TripAccommodationOverview({
             <div className="flex flex-row flex-wrap justify-between gap-4">
                 <div className="space-y-2">
                     <p className="font-serif text-2xl font-bold">
-                        Where we sleep
+                        {t("TripPlanner.tabs.stay")}
                     </p>
                     <p className="text-muted-foreground text-sm">
-                        Bookings, accommodation, rooms, room-mate assignments.
+                        {t("TripPlanner.accommodation.tabDescription")}
                     </p>
                 </div>
                 <div className="flex flex-row flex-wrap gap-4"></div>

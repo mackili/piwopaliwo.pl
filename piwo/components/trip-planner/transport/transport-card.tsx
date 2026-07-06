@@ -11,7 +11,7 @@ import {
 import { Database, Tables, TablesInsert } from "@/database.types";
 import TransportTypeIcon from "../icon-factories";
 import DetailField from "@/components/ui/detail-field";
-import { useCurrentLocale } from "@/locales/client";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 import { permissionsReducer } from "../permissions";
 import UpsertTransport, { UpsertTransportVariant } from "./upsert-transport";
 import { createContext, useOptimistic, useReducer } from "react";
@@ -37,6 +37,7 @@ export default function TransportCard({
     size?: number;
     potentialParticipants: Tables<"v_trip_participant_details">[];
 }) {
+    const t = useI18n();
     const locale = useCurrentLocale();
     const [transportData, setTransportData] = useReducer(
         transportChangeReducer,
@@ -141,7 +142,7 @@ export default function TransportCard({
                     <div className="flex flex-row flex-wrap gap-8 ">
                         {optimisticTransportData?.estimated_departure && (
                             <DetailField
-                                detailName="Departure"
+                                detailName={t("TripPlanner.travel.departure")}
                                 detailValue={Intl.DateTimeFormat(locale, {
                                     dateStyle: "short",
                                     timeStyle: "short",
@@ -155,7 +156,7 @@ export default function TransportCard({
                         {optimisticTransportData?.estimated_arrival && (
                             <>
                                 <DetailField
-                                    detailName="Arrival"
+                                    detailName={t("TripPlanner.travel.arrival")}
                                     detailValue={Intl.DateTimeFormat(locale, {
                                         dateStyle: "short",
                                         timeStyle: "short",
@@ -166,7 +167,9 @@ export default function TransportCard({
                                     )}
                                 />
                                 <DetailField
-                                    detailName="Duration"
+                                    detailName={t(
+                                        "TripPlanner.travel.duration",
+                                    )}
                                     detailValue={new Intl.DurationFormat(
                                         locale,
                                         {
@@ -186,7 +189,7 @@ export default function TransportCard({
                         )}
                         {optimisticTransportData?.capacity && (
                             <DetailField
-                                detailName="Capacity"
+                                detailName={t("TripPlanner.travel.capacity")}
                                 detailValue={String(
                                     optimisticTransportData.capacity,
                                 )}
@@ -194,7 +197,9 @@ export default function TransportCard({
                         )}
                         {optimisticTransportData?.capacity && (
                             <DetailField
-                                detailName="Available Capacity"
+                                detailName={t(
+                                    "TripPlanner.travel.capacityAvailable",
+                                )}
                                 detailValue={String(
                                     optimisticTransportData.capacity -
                                         ((
@@ -207,7 +212,9 @@ export default function TransportCard({
                         )}
                         {optimisticTransportData?.trip_travel_assignments && (
                             <DetailField
-                                detailName="Assigned Participants"
+                                detailName={t(
+                                    "TripPlanner.travel.capacityUsed",
+                                )}
                                 detailValue={String(
                                     optimisticTransportData
                                         ?.trip_travel_assignments?.length,
@@ -216,7 +223,7 @@ export default function TransportCard({
                         )}
                         {optimisticTransportData?.status && (
                             <DetailField
-                                detailName="Status"
+                                detailName={t("TripPlanner.travel.status")}
                                 detailValue={
                                     <TripTransactionStatusPill
                                         status={optimisticTransportData.status}
@@ -227,7 +234,9 @@ export default function TransportCard({
                         {optimisticTransportData?.total_amount &&
                             optimisticTransportData?.currency_iso_code && (
                                 <DetailField
-                                    detailName="Total Amount"
+                                    detailName={t(
+                                        "TripPlanner.travel.totalAmount",
+                                    )}
                                     detailValue={Intl.NumberFormat(locale, {
                                         style: "currency",
                                         currency:

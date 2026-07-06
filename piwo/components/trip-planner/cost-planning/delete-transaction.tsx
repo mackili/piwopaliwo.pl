@@ -16,6 +16,7 @@ import { Trash2Icon } from "lucide-react";
 import { deleteTripTransaction } from "../fetch";
 import { Tables } from "@/database.types";
 import { TripFinanceDataAction, TripFinanceDataActionType } from "../reducers";
+import { useI18n } from "@/locales/client";
 
 export default function DeleteTransaction({
     transaction,
@@ -27,6 +28,7 @@ export default function DeleteTransaction({
     const [saveError, setSaveError] = useState<PostgrestError | null>();
     const [isPending, setPending] = useState<boolean>(false);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    const t = useI18n();
 
     const handleDelete = async () => {
         if (!transaction?.id) return;
@@ -52,8 +54,12 @@ export default function DeleteTransaction({
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="overflow-auto">
-                    <DialogTitle>Delete Transaction</DialogTitle>
-                    Are you sure you want to delete {transaction.description}?
+                    <DialogTitle>
+                        {t("TripPlanner.delete.deleteTransaction")}
+                    </DialogTitle>
+                    {t("TripPlanner.delete.deleteTransactionConfirmation", {
+                        transactionDescription: transaction.description,
+                    })}
                     <PostgrestErrorDisplay error={saveError} />
                     <DialogFooter>
                         <Button
@@ -65,7 +71,7 @@ export default function DeleteTransaction({
                                 <LoadingSpinner />
                             ) : (
                                 <>
-                                    <Trash2Icon /> Delete
+                                    <Trash2Icon /> {t("delete")}
                                 </>
                             )}
                         </Button>

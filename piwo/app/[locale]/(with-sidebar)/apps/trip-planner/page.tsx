@@ -9,9 +9,10 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { TablesInsert } from "@/database.types";
+import { getI18n } from "@/locales/server";
 
 export default async function Page() {
-    const data = await fetchTrips();
+    const [data, t] = await Promise.all([fetchTrips(), getI18n()]);
 
     return (
         <div className="grid grid-cols-1 gap-4 p-4">
@@ -24,7 +25,7 @@ export default async function Page() {
                             <CardAction>
                                 <EditTripForm
                                     displayMode="dialog"
-                                    title="New Trip"
+                                    title={t("TripPlanner.newTrip")}
                                     isEdit={false}
                                     trip={
                                         {

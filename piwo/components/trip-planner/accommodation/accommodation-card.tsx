@@ -6,7 +6,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { useCurrentLocale } from "@/locales/client";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 import UpsertAccommodationUnit from "./upsert-accommodation-unit";
 import { TripAccommodationSummaryView } from "../custom-schemas";
 import AccommodationUnitCard from "./accommodation-unit-card";
@@ -42,6 +42,7 @@ export default function TripAccommodationCard({
         action: AccommodationModificationChangeAction,
     ) => void;
 }) {
+    const t = useI18n();
     const locale = useCurrentLocale();
     const [totalCapacity, usedCapacity] = useMemo(
         () => [
@@ -129,7 +130,7 @@ export default function TripAccommodationCard({
                 <div className="w-full pb-4 flex flex-row flex-wrap gap-8 border-b border-muted">
                     {accommodationData?.status && (
                         <DetailField
-                            detailName="Status"
+                            detailName={t("TripPlanner.accommodation.status")}
                             detailValue={
                                 <TripTransactionStatusPill
                                     status={accommodationData.status}
@@ -139,7 +140,7 @@ export default function TripAccommodationCard({
                     )}
                     {accommodationData?.check_in_date && (
                         <DetailField
-                            detailName="Check-in"
+                            detailName={t("TripPlanner.accommodation.checkIn")}
                             detailValue={Intl.DateTimeFormat(locale).format(
                                 new Date(accommodationData.check_in_date),
                             )}
@@ -147,7 +148,7 @@ export default function TripAccommodationCard({
                     )}
                     {accommodationData?.check_out_date && (
                         <DetailField
-                            detailName="Check-out"
+                            detailName={t("TripPlanner.accommodation.checkOut")}
                             detailValue={Intl.DateTimeFormat(locale).format(
                                 new Date(accommodationData.check_out_date),
                             )}
@@ -155,28 +156,32 @@ export default function TripAccommodationCard({
                     )}
                     {accommodationData?.stay_duration_days && (
                         <DetailField
-                            detailName="Nights"
+                            detailName={t("TripPlanner.accommodation.nights")}
                             detailValue={String(
                                 accommodationData.stay_duration_days,
                             )}
                         />
                     )}
                     <DetailField
-                        detailName="Capacity"
+                        detailName={t("TripPlanner.accommodation.capacity")}
                         detailValue={String(totalCapacity)}
                     />
                     <DetailField
-                        detailName="Capacity Used"
+                        detailName={t("TripPlanner.accommodation.capacityUsed")}
                         detailValue={String(usedCapacity)}
                     />
                     <DetailField
-                        detailName="Capacity Available"
+                        detailName={t(
+                            "TripPlanner.accommodation.capacityAvailable",
+                        )}
                         detailValue={String(totalCapacity - usedCapacity)}
                     />
                     {accommodationData?.total_amount &&
                         accommodationData?.currency_iso_code && (
                             <DetailField
-                                detailName="Total Amount"
+                                detailName={t(
+                                    "TripPlanner.accommodation.totalAmount",
+                                )}
                                 detailValue={Intl.NumberFormat(locale, {
                                     style: "currency",
                                     currency:
@@ -187,7 +192,7 @@ export default function TripAccommodationCard({
                 </div>
                 <div className="pt-4 space-y-4 @container">
                     <div className="font-semibold">
-                        <p>Rooms</p>
+                        <p>{t("TripPlanner.accommodation.rooms")}</p>
                     </div>
                     <div className="grid @md:grid-cols-2 @2xl:grid-cols-3 @5xl:grid-cols-4 gap-2 min-h-32">
                         {accommodationData?.accommodation_units?.map(

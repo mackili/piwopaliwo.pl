@@ -5,7 +5,7 @@ import {
     TripTimelineResponseRow,
 } from "../fetch";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
-import { getCurrentLocale } from "@/locales/server";
+import { getCurrentLocale, getI18n } from "@/locales/server";
 import {
     TripTimelineItemIcon,
     TripTransactionStatusPill,
@@ -30,11 +30,12 @@ type TripTimelineAggregated = {
 };
 
 export default async function TripTimeline({ tripId }: { tripId: string }) {
-    const [locale, { data, error }, { data: currentTripParticipant }] =
+    const [locale, { data, error }, { data: currentTripParticipant }, t] =
         await Promise.all([
             getCurrentLocale(),
             fetchTripTimeline(tripId),
             fetchCurrentTripParticipant(tripId),
+            getI18n(),
         ]);
     const groupedData = data?.reduce(
         (acc: TripTimelineAggregated, current: TripTimelineResponseRow) => {
@@ -105,7 +106,7 @@ export default async function TripTimeline({ tripId }: { tripId: string }) {
                                     </div>
                                     <div>
                                         <div className="font-bold text-2xl flex flex-row gap-4 flex-wrap items-center">
-                                            <p>{`Day ${getTripDayNumber(new Date(day))}`}</p>
+                                            <p>{`${t("day")} ${getTripDayNumber(new Date(day))}`}</p>
                                             <p className="font-normal text-muted-foreground text-base">
                                                 (
                                                 {Intl.DateTimeFormat(
@@ -142,7 +143,7 @@ export default async function TripTimeline({ tripId }: { tripId: string }) {
     );
 }
 
-function TripTimelineItem({
+async function TripTimelineItem({
     item,
     locale,
     currentTripParticipantId,
@@ -151,6 +152,7 @@ function TripTimelineItem({
     locale: string;
     currentTripParticipantId?: string | null;
 }) {
+    const [t] = await Promise.all([getI18n()]);
     return (
         <div className="border-b pb-8 px-6 last:border-b-0 first:border-t pt-4 first:pt-8">
             <div className="flex gap-4 flex-row flex-wrap items-center">
@@ -173,9 +175,9 @@ function TripTimelineItem({
                 </div>
                 <div className="grow">
                     {item.record_type === "accommodation" ? (
-                        <h4>{`${item.timeType === TimelineItemTimeType.START ? "Check-In" : "Check-Out"} ${item.name}`}</h4>
+                        <h4>{`${item.timeType === TimelineItemTimeType.START ? t("TripPlanner.accommodation.checkIn") : t("TripPlanner.accommodation.checkOut")} ${item.name}`}</h4>
                     ) : (
-                        <h4>{`${item.timeType === TimelineItemTimeType.START ? "Departure" : "Arrival"} ${item.name}`}</h4>
+                        <h4>{`${item.timeType === TimelineItemTimeType.START ? t("TripPlanner.travel.departure") : t("TripPlanner.travel.arrival")} ${item.name}`}</h4>
                     )}
                     <p>{item.description}</p>
                 </div>

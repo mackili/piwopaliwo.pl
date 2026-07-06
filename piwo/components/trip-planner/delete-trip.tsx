@@ -16,7 +16,7 @@ import { Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Tables } from "@/database.types";
 import { deleteTrips } from "./fetch";
-import { useCurrentLocale } from "@/locales/client";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 
 export default function DeleteTrip({
     trip,
@@ -28,6 +28,7 @@ export default function DeleteTrip({
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const locale = useCurrentLocale();
     const router = useRouter();
+    const t = useI18n();
 
     const handleDelete = async () => {
         if (!trip?.id) return;
@@ -49,8 +50,12 @@ export default function DeleteTrip({
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="overflow-auto">
-                    <DialogTitle>Delete Trip</DialogTitle>
-                    Are you sure you want to delete {trip.name}?
+                    <DialogTitle>
+                        {t("TripPlanner.delete.deleteTrip")}
+                    </DialogTitle>
+                    {t("TripPlanner.delete.deleteTripConfirmation", {
+                        tripName: trip.name,
+                    })}
                     <PostgrestErrorDisplay error={saveError} />
                     <DialogFooter>
                         <Button
@@ -62,7 +67,7 @@ export default function DeleteTrip({
                                 <LoadingSpinner />
                             ) : (
                                 <>
-                                    <Trash2Icon /> Delete
+                                    <Trash2Icon /> {t("delete")}
                                 </>
                             )}
                         </Button>

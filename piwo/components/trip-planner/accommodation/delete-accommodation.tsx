@@ -19,6 +19,7 @@ import {
 import { Trash2Icon } from "lucide-react";
 import { deleteAccommodation } from "../fetch";
 import { TripAccommodationSummaryView } from "../custom-schemas";
+import { useI18n } from "@/locales/client";
 
 export default function DeleteAccommodation({
     accommodation,
@@ -27,6 +28,7 @@ export default function DeleteAccommodation({
     accommodation: TripAccommodationSummaryView;
     onSave: (action: AccommodationModificationChangeAction) => void;
 }) {
+    const t = useI18n();
     const [saveError, setSaveError] = useState<PostgrestError | null>();
     const [isPending, setPending] = useState<boolean>(false);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -54,8 +56,12 @@ export default function DeleteAccommodation({
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="overflow-auto">
-                    <DialogTitle>Delete Accommodation</DialogTitle>
-                    Are you sure you want to delete {accommodation.name}?
+                    <DialogTitle>
+                        {t("TripPlanner.delete.deleteAccommodation")}
+                    </DialogTitle>
+                    {t("TripPlanner.delete.deleteConfirmation", {
+                        name: accommodation.name,
+                    })}
                     <PostgrestErrorDisplay error={saveError} />
                     <DialogFooter>
                         <Button
@@ -67,7 +73,7 @@ export default function DeleteAccommodation({
                                 <LoadingSpinner />
                             ) : (
                                 <>
-                                    <Trash2Icon /> Delete
+                                    <Trash2Icon /> {t("delete")}
                                 </>
                             )}
                         </Button>

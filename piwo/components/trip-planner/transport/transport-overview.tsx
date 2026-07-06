@@ -4,7 +4,7 @@ import {
     fetchTripParticipantDetails,
     fetchTripTransportSummary,
 } from "../fetch";
-import { getCurrentLocale } from "@/locales/server";
+import { getI18n } from "@/locales/server";
 import TransportCard from "./transport-card";
 import { permissionsReducer } from "../permissions";
 import UpsertTransport from "./upsert-transport";
@@ -15,12 +15,12 @@ export default async function TransportOverview({
     tripId: string;
 }) {
     const [
-        locale,
+        t,
         { data, error },
         { data: currentTripParticipant },
         { data: potentialParticipants },
     ] = await Promise.all([
-        getCurrentLocale(),
+        getI18n(),
         fetchTripTransportSummary(tripId),
         fetchCurrentTripParticipant(tripId),
         fetchTripParticipantDetails(tripId, [
@@ -33,9 +33,11 @@ export default async function TransportOverview({
         <div className="space-y-4">
             <div className="flex flex-row flex-wrap justify-between gap-4">
                 <div className="space-y-2">
-                    <p className="font-serif text-2xl font-bold">Transport</p>
+                    <p className="font-serif text-2xl font-bold">
+                        {t("TripPlanner.tabs.transport")}
+                    </p>
                     <p className="text-muted-foreground text-sm">
-                        Getting there and around
+                        {t("TripPlanner.travel.tabDescription")}
                     </p>
                 </div>
                 <div className="flex flex-row flex-wrap gap-4"></div>

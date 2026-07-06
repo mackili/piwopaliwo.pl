@@ -12,13 +12,14 @@ import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import { TripFinancialsPerCategoryJson } from "@/components/trip-planner/custom-schemas";
 import { twMerge } from "tailwind-merge";
 import { ComponentProps, useMemo } from "react";
+import { useI18n } from "@/locales/client";
 
 const categories = [...Constants.public.Enums.trip_transaction_category].sort();
 
 const categoryChartConfig = categories.reduce(
     (config, category, index) => {
         config[category] = {
-            label: category.charAt(0).toUpperCase() + category.slice(1), // Capitalize the first letter
+            label: category.charAt(0).toLowerCase() + category.slice(1), // Capitalize the first letter
             color: `var(--chart-${(index % 5) + 1})`, // Use CSS variable for color
         };
         return config;
@@ -30,6 +31,7 @@ export default function EstimateByCategory({
     data,
     className,
 }: { data: TripFinancialsPerCategoryJson[] } & ComponentProps<"div">) {
+    const t = useI18n();
     const chartData = useMemo(
         () => [
             data.reduce<Record<string, number | string>>(
@@ -42,9 +44,28 @@ export default function EstimateByCategory({
         ],
         [data],
     );
+    const translatedConfig = () => {
+        const newConfig = {} as Record<
+            (typeof categories)[number],
+            { label: string; color: string }
+        >;
+        Object.keys(categoryChartConfig).forEach((key) => {
+            // @ts-expect-error translation inference
+            newConfig[key] = {
+                // @ts-expect-error translation inference
+                ...categoryChartConfig[key],
+                // @ts-expect-error translation inference
+                label: t(
+                    // @ts-expect-error translation inference
+                    `TripPlanner.transactions.categories.${categoryChartConfig[key].label}`,
+                ),
+            };
+        });
+        return newConfig satisfies ChartConfig;
+    };
     return (
         <ChartContainer
-            config={categoryChartConfig}
+            config={translatedConfig()}
             className={twMerge("h-12 w-full", className)}
         >
             <BarChart

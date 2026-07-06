@@ -21,6 +21,7 @@ import {
     upsertAccommodationAssignments,
 } from "../fetch";
 import { twMerge } from "tailwind-merge";
+import { useI18n } from "@/locales/client";
 
 export enum AccommodationUnitAssignmentModes {
     READ = "READ",
@@ -41,6 +42,7 @@ export function SetAccommodationUnitAssignment({
     ) => void;
     disabled?: boolean;
 }) {
+    const t = useI18n();
     const participants = useContext(TripParticipantsContext);
     const handleSelect = (
         value: Tables<"v_trip_participant_details"> | null,
@@ -64,12 +66,14 @@ export function SetAccommodationUnitAssignment({
             disabled={disabled}
         >
             <ComboboxInput
-                placeholder="Select a participant"
+                placeholder={t("TripPlanner.accommodation.selectAParticipant")}
                 className="border-dashed"
                 showClear
             />
             <ComboboxContent>
-                <ComboboxEmpty>No participants left to assign</ComboboxEmpty>
+                <ComboboxEmpty>
+                    {t("TripPlanner.accommodation.noParticipantsLeftToAssign")}
+                </ComboboxEmpty>
                 <ComboboxList>
                     {(participant) => (
                         <ComboboxItem

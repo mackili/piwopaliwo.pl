@@ -16,6 +16,7 @@ import { Trash2Icon } from "lucide-react";
 import { deleteTransport } from "../fetch";
 import { useRouter } from "next/navigation";
 import { Tables } from "@/database.types";
+import { useI18n } from "@/locales/client";
 
 export default function DeleteTransport({
     transport,
@@ -26,7 +27,7 @@ export default function DeleteTransport({
     const [isPending, setPending] = useState<boolean>(false);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const router = useRouter();
-
+    const t = useI18n();
     const handleDelete = async () => {
         if (!transport?.id) return;
         setPending(true);
@@ -47,8 +48,14 @@ export default function DeleteTransport({
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="overflow-auto">
-                    <DialogTitle>Delete Transport</DialogTitle>
-                    Are you sure you want to delete {transport.name}?
+                    <DialogTitle>
+                        {t("TripPlanner.delete.deleteGeneric", {
+                            name: t("TripPlanner.tabs.transport"),
+                        })}
+                    </DialogTitle>
+                    {t("TripPlanner.delete.deleteConfirmation", {
+                        name: transport.name,
+                    })}
                     <PostgrestErrorDisplay error={saveError} />
                     <DialogFooter>
                         <Button
@@ -60,7 +67,7 @@ export default function DeleteTransport({
                                 <LoadingSpinner />
                             ) : (
                                 <>
-                                    <Trash2Icon /> Delete
+                                    <Trash2Icon /> {t("delete")}
                                 </>
                             )}
                         </Button>

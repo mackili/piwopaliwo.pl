@@ -23,6 +23,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/locales/client";
 
 export enum LINK_ACTION_TYPE {
     LINK = "LINK",
@@ -60,6 +61,7 @@ export default function LinkTransaction({
             }[]
         >
     >();
+    const t = useI18n();
     const [error, setError] = useState<PostgrestError | null>();
     const [isPending, setPending] = useState<boolean>(false);
     const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -122,13 +124,18 @@ export default function LinkTransaction({
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle>
-                    {transactionId ? "Unlink" : "Link"} Transaction
+                    {transactionId
+                        ? t("TripPlanner.transactions.unlink")
+                        : t("TripPlanner.transactions.link")}{" "}
+                    {t("TripPlanner.transactions.transaction")}
                 </DialogTitle>
                 <PostgrestErrorDisplay error={error} />
 
                 {!transactionId && (
                     <>
-                        <Label>Select Transaction</Label>
+                        <Label>
+                            {t("TripPlanner.transactions.selectTransaction")}
+                        </Label>
                         <Select
                             onValueChange={(value) =>
                                 (newTransactionId.current = value)
@@ -158,11 +165,13 @@ export default function LinkTransaction({
                             <LoadingSpinner />
                         ) : transactionId ? (
                             <>
-                                <UnlinkIcon /> Confirm
+                                <UnlinkIcon /> {t("confirm")}
                             </>
                         ) : (
                             <>
-                                <SaveIcon /> Link Transaction
+                                <SaveIcon />{" "}
+                                {t("TripPlanner.transactions.link")}{" "}
+                                {t("TripPlanner.transactions.transaction")}
                             </>
                         )}
                     </Button>

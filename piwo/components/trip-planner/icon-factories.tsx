@@ -1,3 +1,4 @@
+"use client";
 import { Enums, Tables } from "@/database.types";
 import {
     ArchiveIcon,
@@ -29,6 +30,7 @@ import {
 import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 import { Badge } from "../ui/badge";
+import { useI18n } from "@/locales/client";
 export function TripIcon({ tripType }: { tripType: Tables<"trip">["type"] }) {
     switch (tripType) {
         case "caravaning":
@@ -138,6 +140,7 @@ export function TripTransactionStatusPill({
     ...props
 }: { status: Enums<"transaction_status"> } & ComponentProps<"div">) {
     let classString = "bg-gray-200 text-gray-600 border-gray-300";
+    const t = useI18n();
     switch (status) {
         case "idea":
             classString = "bg-blue-100 text-blue-600 border-blue-300";
@@ -160,7 +163,7 @@ export function TripTransactionStatusPill({
             className={twMerge("uppercase", classString, className)}
             {...props}
         >
-            {status}
+            {t(`TripPlanner.transactions.status.${status}`)}
         </Badge>
     );
 }

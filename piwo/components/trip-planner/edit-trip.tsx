@@ -30,6 +30,7 @@ import { upsertTrips } from "./fetch";
 import { toast } from "sonner";
 import PostgrestErrorDisplay from "../ui/postgrest-error-display";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/locales/client";
 
 const tripStatuses = Constants.public.Enums.trip_status.map((status) => ({
     value: status,
@@ -54,6 +55,7 @@ export default function EditTripForm({
     onClose?: () => void;
 } & ComponentProps<"div">) {
     const router = useRouter();
+    const t = useI18n();
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const form = useForm<z.infer<typeof publicTripInsertSchema>>({
         resolver: zodResolver(publicTripInsertSchema),
@@ -100,7 +102,7 @@ export default function EditTripForm({
             ) : (
                 <>
                     <SaveIcon />
-                    Save
+                    {t("Blog.save")}
                 </>
             )}
         </Button>
@@ -109,39 +111,43 @@ export default function EditTripForm({
         <Form {...form}>
             <form id="edit-trip-form" onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="space-y-4">
-                    <FormInput name="name" label="Trip Name" form={form} />
+                    <FormInput
+                        name="name"
+                        label={t("TripPlanner.tripAttributes.name")}
+                        form={form}
+                    />
                     <FormInput
                         name="description"
-                        label="Description"
+                        label={t("TripPlanner.tripAttributes.description")}
                         form={form}
                     />
                     <FormInput
                         name="start_date"
-                        label="Start Date"
+                        label={t("TripPlanner.tripAttributes.startDate")}
                         type="date"
                         form={form}
                     />
                     <FormInput
                         name="end_date"
-                        label="End Date"
+                        label={t("TripPlanner.tripAttributes.endDate")}
                         type="date"
                         form={form}
                     />
                     <FormInput
                         name="location"
-                        label="Main Location"
+                        label={t("TripPlanner.tripAttributes.mainLocation")}
                         form={form}
                     />
                     <FormInput
                         name="status"
-                        label="Trip Status"
+                        label={t("TripPlanner.tripAttributes.tripStatus")}
                         type="select"
                         form={form}
                         options={tripStatuses}
                     />
                     <FormInput
                         name="type"
-                        label="Trip Type"
+                        label={t("TripPlanner.tripAttributes.tripType")}
                         type="select"
                         form={form}
                         options={tripTypes}
@@ -172,11 +178,11 @@ export default function EditTripForm({
                     {isEdit ? (
                         <>
                             <Edit2Icon />
-                            Edit{" "}
+                            {t("edit")}
                         </>
                     ) : (
                         <>
-                            <PlusIcon /> New
+                            <PlusIcon /> {t("new")}
                         </>
                     )}
                 </Button>

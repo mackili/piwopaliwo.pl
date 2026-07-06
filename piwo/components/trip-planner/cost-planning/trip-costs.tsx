@@ -11,6 +11,7 @@ import TripCostsCard, { INITIAL_TRANSACTIONS_LIMIT } from "./trip-costs-card";
 import { TripFinanceDataActionType, tripFinanceDataReducer } from "../reducers";
 import TripCostsCardSkeleton from "./trip-costs-card-skeleton";
 import TripCostsSummarySkeleton from "./trip-costs-summary-skeleton";
+import { useI18n } from "@/locales/client";
 
 export const TripContext = createContext<Tables<"v_trip_details"> | null>(null);
 
@@ -20,6 +21,7 @@ export default function TripCosts({
     ...props
 }: { trip: Tables<"v_trip_details"> } & ComponentProps<"div">) {
     const tripId = trip?.id;
+    const t = useI18n();
     const [data, setData] = useReducer(tripFinanceDataReducer, {
         planned: {
             statistics: { data: null, error: null, isLoading: true },
@@ -62,21 +64,21 @@ export default function TripCosts({
                     <div className="flex flex-row flex-wrap justify-between gap-4">
                         <div className="space-y-2">
                             <p className="font-serif text-2xl font-bold">
-                                Costs
+                                {t("TripPlanner.tabs.costs")}
                             </p>
                             <p className="text-muted-foreground text-sm">
-                                Plan the budget, then track what actually got
-                                paid.
+                                {t("TripPlanner.transactions.tabDescription")}
                             </p>
                         </div>
                         <div className="flex flex-row flex-wrap gap-4">
                             <TabsList variant="line">
                                 <TabsTrigger value="planning">
-                                    <PiggyBankIcon /> Planning
+                                    <PiggyBankIcon />{" "}
+                                    {t("TripPlanner.transactions.planning")}
                                 </TabsTrigger>
                                 <TabsTrigger value="transactions" disabled>
                                     <BanknoteIcon />
-                                    Transactions
+                                    {t("TripPlanner.transactions.spending")}
                                 </TabsTrigger>
                             </TabsList>
                             <TripTransactionEdit

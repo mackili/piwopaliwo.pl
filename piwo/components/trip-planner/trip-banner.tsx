@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarDaysIcon, Dot, MapPinIcon } from "lucide-react";
-import { getCurrentLocale } from "@/locales/server";
+import { getCurrentLocale, getI18n } from "@/locales/server";
 import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 import { TripParticipantAvatars } from "./participant-management/participant-avatars";
@@ -33,17 +33,16 @@ export default async function TripBanner({
 }: {
     trip: Tables<"v_trip_details">;
 } & ComponentProps<"div">) {
-    const [locale, supabase] = await Promise.all([
+    const [locale, supabase, t] = await Promise.all([
         getCurrentLocale(),
         createClient(),
+        getI18n(),
     ]);
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    const currentUserGroupParticipant = user?.id
+    const { data: claims } = await supabase.auth.getClaims();
+    const currentUserGroupParticipant = claims?.claims?.sub
         ? getCurrentUserParticipant(
               trip.participants as ParticipantResponseJson[],
-              user.id,
+              claims.claims.sub,
           )
         : undefined;
     return (
@@ -86,7 +85,7 @@ export default async function TripBanner({
                                 <EditTripForm
                                     trip={trip as TablesInsert<"trip">}
                                     displayMode="dialog"
-                                    title="Edit Trip"
+                                    title={t("TripPlanner.editTrip")}
                                     className="max-sm:max-w-sm"
                                 />
                             )}

@@ -19,6 +19,7 @@ import {
 } from "../reducers";
 import { Trash2Icon } from "lucide-react";
 import { deleteTripAccommodationUnit } from "../fetch";
+import { useI18n } from "@/locales/client";
 
 export default function DeleteAccommodationUnit({
     accommodationUnit,
@@ -27,6 +28,7 @@ export default function DeleteAccommodationUnit({
     accommodationUnit: TripAccommodationUnitSummary;
     onSave: (action: AccommodationModificationChangeAction) => void;
 }) {
+    const t = useI18n();
     const [saveError, setSaveError] = useState<PostgrestError | null>();
     const [isPending, setPending] = useState<boolean>(false);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -54,8 +56,14 @@ export default function DeleteAccommodationUnit({
                 </Button>
             </DialogTrigger>
             <DialogContent className="overflow-auto">
-                <DialogTitle>Delete Accommodation Unit</DialogTitle>
-                Are you sure you want to delete {accommodationUnit.name}?
+                <DialogTitle>
+                    {t("TripPlanner.delete.deleteGeneric", {
+                        name: t("TripPlanner.accommodation.accommodationUnit"),
+                    })}
+                </DialogTitle>
+                {t("TripPlanner.delete.deleteConfirmation", {
+                    name: accommodationUnit.name,
+                })}
                 <PostgrestErrorDisplay error={saveError} />
                 <DialogFooter>
                     <Button
@@ -67,7 +75,7 @@ export default function DeleteAccommodationUnit({
                             <LoadingSpinner />
                         ) : (
                             <>
-                                <Trash2Icon /> Delete
+                                <Trash2Icon /> {t("delete")}
                             </>
                         )}
                     </Button>

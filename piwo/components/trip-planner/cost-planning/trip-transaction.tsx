@@ -1,7 +1,7 @@
 "use client";
 
 import { Tables } from "@/database.types";
-import { useCurrentLocale } from "@/locales/client";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 import { Edit2Icon } from "lucide-react";
 import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
@@ -27,6 +27,7 @@ export default function TripTransaction({
     onSuccess: (action: TripFinanceDataAction) => void;
     transaction: Tables<"trip_transaction">;
 } & ComponentProps<"div">) {
+    const t = useI18n();
     const locale = useCurrentLocale();
     return (
         <div className={twMerge("@container", className)} {...props}>
@@ -44,22 +45,34 @@ export default function TripTransaction({
                             />
                         </p>
                         <p className="font-light text-muted-foreground text-xs font-mono flex flex-row flex-wrap gap-2 text-ellipsis">
-                            <span>{transaction.category}</span>|
-                            <span>{transaction.calculation_type}</span>|
                             <span>
-                                {`~${Intl.NumberFormat(locale, {
-                                    style: "currency",
-                                    currency: transaction.currency_iso_code,
-                                }).format(
-                                    (transaction?.total_amount || 0) /
-                                        (
-                                            trip.participants as ParticipantResponseJson[]
-                                        ).filter(
-                                            (participant) =>
-                                                participant.status !==
-                                                "declined",
-                                        ).length,
-                                )}/person`}
+                                {t(
+                                    `TripPlanner.transactions.categories.${transaction.category}`,
+                                ).toLowerCase()}
+                            </span>
+                            |
+                            <span>
+                                {t(
+                                    `TripPlanner.transactions.calculationType.${transaction.calculation_type}`,
+                                ).toLowerCase()}
+                            </span>
+                            |
+                            <span>
+                                {t("perPersonValue", {
+                                    x: `~${Intl.NumberFormat(locale, {
+                                        style: "currency",
+                                        currency: transaction.currency_iso_code,
+                                    }).format(
+                                        (transaction?.total_amount || 0) /
+                                            (
+                                                trip.participants as ParticipantResponseJson[]
+                                            ).filter(
+                                                (participant) =>
+                                                    participant.status !==
+                                                    "declined",
+                                            ).length,
+                                    )}`,
+                                })}
                             </span>
                         </p>
                         <p className="font-light text-muted-foreground text-xs italic text-ellipsis h-[1.5em] ">

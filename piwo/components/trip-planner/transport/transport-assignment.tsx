@@ -16,6 +16,7 @@ import { deleteTravelAssignment, upsertTravelAssignment } from "../fetch";
 import { twMerge } from "tailwind-merge";
 import { TripParticipantsContext } from "../accommodation/accommodation-cards-overview";
 import { TravelAssignedParticipantContext } from "./transport-card";
+import { useI18n } from "@/locales/client";
 
 export enum TravelAssignmentModes {
     READ = "READ",
@@ -36,6 +37,7 @@ export function SetAccommodationUnitAssignment({
     ) => void;
     disabled?: boolean;
 }) {
+    const t = useI18n();
     const participants = useContext(TripParticipantsContext);
     const assignedParticipants = useContext(TravelAssignedParticipantContext);
     const handleSelect = (
@@ -66,12 +68,14 @@ export function SetAccommodationUnitAssignment({
             disabled={disabled}
         >
             <ComboboxInput
-                placeholder="Select a participant"
+                placeholder={t("TripPlanner.accommodation.selectAParticipant")}
                 className="border-dashed"
                 showClear
             />
             <ComboboxContent>
-                <ComboboxEmpty>No participants left to assign</ComboboxEmpty>
+                <ComboboxEmpty>
+                    {t("TripPlanner.accommodation.noParticipantsLeftToAssign")}
+                </ComboboxEmpty>
                 <ComboboxList>
                     {(participant) => (
                         <ComboboxItem

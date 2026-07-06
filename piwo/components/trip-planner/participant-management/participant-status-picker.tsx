@@ -19,22 +19,27 @@ import { twMerge } from "tailwind-merge";
 import { Constants, Enums } from "@/database.types";
 import { Button } from "@/components/ui/button";
 import { TripParticipantStatusIcon } from "./participant-avatars";
+import { useI18n } from "@/locales/client";
 
 const participantStatuses = Constants.public.Enums.trip_participant_status;
 
 export function TripParticipantStatusDisplay({
     status,
+    showTextValue = true,
 }: {
     status: Enums<"trip_participant_status">;
+    showTextValue?: boolean;
 }) {
+    const t = useI18n();
     return (
         <>
             <TripParticipantStatusIcon
                 status={status}
                 className="w-4 h-4 stroke-3"
                 isColorCoded
-            />{" "}
-            {status}
+            />
+            {showTextValue &&
+                ` ${t(`TripPlanner.participants.status.${status}`)}`}
         </>
     );
 }
@@ -43,9 +48,11 @@ export default function TripParticipantStatusPicker({
     participant,
     className,
     canEdit = false,
+    variant = "standard",
 }: {
     participant: ParticipantResponseJson;
     canEdit?: boolean;
+    variant?: "standard" | "small";
 } & ComponentProps<"select">) {
     const [status, setStatus] = useState<Enums<"trip_participant_status">>(
         participant.status,
@@ -74,7 +81,10 @@ export default function TripParticipantStatusPicker({
                 value={optimisticStatus}
             >
                 <SelectValue>
-                    <TripParticipantStatusDisplay status={optimisticStatus} />
+                    <TripParticipantStatusDisplay
+                        status={optimisticStatus}
+                        showTextValue={variant === "standard"}
+                    />
                 </SelectValue>
             </SelectTrigger>
             <SelectContent>

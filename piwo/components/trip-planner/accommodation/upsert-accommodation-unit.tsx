@@ -25,6 +25,7 @@ import {
     AccommodationModificationChangeAction,
     AccommodationModificationSplitChangeEventType,
 } from "../reducers";
+import { useI18n } from "@/locales/client";
 
 export enum UpsertAccommodationUnitVariant {
     CREATE = "CREATE",
@@ -42,6 +43,7 @@ export default function UpsertAccommodationUnit({
     accommodationUnit?: TripAccommodationUnitSummary;
     onSave: (action: AccommodationModificationChangeAction) => void;
 }) {
+    const t = useI18n();
     const [saveError, setSaveError] = useState<PostgrestError | null>();
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const form = useForm<z.infer<typeof publicAccommodationUnitInsertSchema>>({
@@ -101,9 +103,9 @@ export default function UpsertAccommodationUnit({
             <DialogContent className="overflow-auto">
                 <DialogTitle>
                     {variant === UpsertAccommodationUnitVariant.CREATE
-                        ? "Add"
-                        : "Edit"}{" "}
-                    Accommodation Unit
+                        ? t("add")
+                        : t("edit")}{" "}
+                    {t("TripPlanner.accommodation.accommodationUnit")}
                 </DialogTitle>
                 <Form {...form}>
                     <form
@@ -111,10 +113,14 @@ export default function UpsertAccommodationUnit({
                         id="edit-accommodation-unit-form"
                     >
                         <div className="space-y-4">
-                            <FormInput name="name" label="Name" form={form} />
+                            <FormInput
+                                name="name"
+                                label={t("TripPlanner.accommodation.name")}
+                                form={form}
+                            />
                             <FormInput
                                 name="capacity"
-                                label="Capacity"
+                                label={t("TripPlanner.accommodation.capacity")}
                                 form={form}
                                 type="number"
                                 step="0"
@@ -133,7 +139,7 @@ export default function UpsertAccommodationUnit({
                             <LoadingSpinner />
                         ) : (
                             <>
-                                <SaveIcon /> Save
+                                <SaveIcon /> {t("Blog.save")}
                             </>
                         )}
                     </Button>

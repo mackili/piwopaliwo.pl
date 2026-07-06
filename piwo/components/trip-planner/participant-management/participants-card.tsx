@@ -20,6 +20,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { getI18n } from "@/locales/server";
 
 export default async function TripParticipantsCard({
     trip,
@@ -28,14 +29,12 @@ export default async function TripParticipantsCard({
     trip: Tables<"v_trip_details">;
     variant?: "basic" | "expanded";
 }) {
-    const [supabase] = await Promise.all([createClient()]);
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    const currentUserParticipant = user?.id
+    const [supabase, t] = await Promise.all([createClient(), getI18n()]);
+    const { data } = await supabase.auth.getClaims();
+    const currentUserParticipant = data?.claims?.sub
         ? getCurrentUserParticipant(
               trip.participants as ParticipantResponseJson[],
-              user.id,
+              data.claims.sub,
           )
         : undefined;
     return (
@@ -46,10 +45,15 @@ export default async function TripParticipantsCard({
                         permissionsReducer({
                             tripParticipantRole: currentUserParticipant.role,
                             permission: "invite_participants",
-                        }) && <TripParticipantsInvite trip={trip} />}
+                        }) && (
+                            <TripParticipantsInvite
+                                trip={trip}
+                                showTextOnButton={variant === "expanded"}
+                            />
+                        )}
                 </CardAction>
                 <CardTitle className="flex flex-row gap-2 items-center">
-                    Participants{" "}
+                    {t("TripPlanner.tabs.participants")}
                     <Tooltip>
                         <TooltipTrigger>
                             <Badge className="bg-green-800">
@@ -61,7 +65,9 @@ export default async function TripParticipantsCard({
                                 }
                             </Badge>
                         </TooltipTrigger>
-                        <TooltipContent>Confirmed</TooltipContent>
+                        <TooltipContent>
+                            {t("TripPlanner.participants.status.confirmed")}
+                        </TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger>
@@ -77,7 +83,9 @@ export default async function TripParticipantsCard({
                                 }
                             </Badge>
                         </TooltipTrigger>
-                        <TooltipContent>Tentative</TooltipContent>
+                        <TooltipContent>
+                            {t("TripPlanner.participants.status.tentative")}
+                        </TooltipContent>
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger>
@@ -90,7 +98,9 @@ export default async function TripParticipantsCard({
                                 }
                             </Badge>
                         </TooltipTrigger>
-                        <TooltipContent>Declined</TooltipContent>
+                        <TooltipContent>
+                            {t("TripPlanner.participants.status.declined")}
+                        </TooltipContent>
                     </Tooltip>
                 </CardTitle>
             </CardHeader>
@@ -161,6 +171,11 @@ export default async function TripParticipantsCard({
                                                 permission:
                                                     "change_others_statuses",
                                             }))
+                                    }
+                                    variant={
+                                        variant === "expanded"
+                                            ? "standard"
+                                            : "small"
                                     }
                                 />
                             </div>

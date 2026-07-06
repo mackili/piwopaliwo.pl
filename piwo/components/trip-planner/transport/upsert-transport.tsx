@@ -23,6 +23,7 @@ import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { TransportChangeAction, TransportChangeEventType } from "../reducers";
 import { Constants, TablesInsert } from "@/database.types";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/locales/client";
 
 export enum UpsertTransportVariant {
     CREATE = "CREATE",
@@ -46,6 +47,7 @@ export default function UpsertTransport({
     const [saveError, setSaveError] = useState<PostgrestError | null>();
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const router = useRouter();
+    const t = useI18n();
     const form = useForm<z.infer<typeof publicTripTravelInsertSchema>>({
         resolver: zodResolver(publicTripTravelInsertSchema),
         defaultValues: { ...transport, trip_id: tripId },
@@ -93,8 +95,10 @@ export default function UpsertTransport({
             </DialogTrigger>
             <DialogContent className="overflow-y-auto overflow-x-hidden">
                 <DialogTitle>
-                    {variant === UpsertTransportVariant.CREATE ? "Add" : "Edit"}{" "}
-                    Transport
+                    {variant === UpsertTransportVariant.CREATE
+                        ? t("add")
+                        : t("edit")}{" "}
+                    {t("TripPlanner.tabs.transport")}
                 </DialogTitle>
                 <Form {...form}>
                     <form
@@ -104,55 +108,59 @@ export default function UpsertTransport({
                         <div className="space-y-4">
                             <FormInput
                                 name="origin"
-                                label="Origin"
+                                label={t("TripPlanner.travel.origin")}
                                 form={form}
                             />
                             <FormInput
                                 name="destination"
-                                label="Destination"
+                                label={t("TripPlanner.travel.destination")}
                                 form={form}
                             />
                             <FormInput
                                 name="mode_of_transport"
-                                label="Mode of Transport"
+                                label={t("TripPlanner.travel.modeOfTransport")}
                                 form={form}
                                 type="select"
-                                options={TRANSPORT_MODES.map((status) => ({
-                                    value: status,
+                                options={TRANSPORT_MODES.map((mode) => ({
+                                    value: mode,
+                                    label: t(`TripPlanner.travel.mode.${mode}`),
                                 }))}
                             />
                             <FormInput
                                 name="estimated_departure"
-                                label="Estimated Departure"
+                                label={t("TripPlanner.travel.departure")}
                                 form={form}
                                 type="date-time"
                             />
                             <FormInput
                                 name="duration"
-                                label="Duration (Minutes)"
+                                label={`${t("TripPlanner.travel.duration")} (${t("minutes")})`}
                                 form={form}
                                 type="number"
                                 step="0"
                             />
                             <FormInput
                                 name="capacity"
-                                label="Capacity"
+                                label={t("TripPlanner.travel.capacity")}
                                 form={form}
                                 type="number"
                                 step="0"
                             />
                             <FormInput
                                 name="status"
-                                label="Status"
+                                label={t("TripPlanner.travel.status")}
                                 form={form}
                                 type="select"
                                 options={TRANSPORT_STATUSES.map((status) => ({
                                     value: status,
+                                    label: t(
+                                        `TripPlanner.transactions.status.${status}`,
+                                    ),
                                 }))}
                             />
                             <FormInput
                                 name="description"
-                                label="Description"
+                                label={t("description")}
                                 form={form}
                                 type="text"
                             />
@@ -170,7 +178,7 @@ export default function UpsertTransport({
                             <LoadingSpinner />
                         ) : (
                             <>
-                                <SaveIcon /> Save
+                                <SaveIcon /> {t("Blog.save")}
                             </>
                         )}
                     </Button>

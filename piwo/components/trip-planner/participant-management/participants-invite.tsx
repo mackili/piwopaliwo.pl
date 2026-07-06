@@ -31,6 +31,7 @@ import LoadingSpinner from "@/components/ui/loading-spinner";
 import { toast } from "sonner";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/locales/client";
 
 const formObject = z.object({
     participants: z.array(publicTripParticipantInsertSchema),
@@ -98,9 +99,14 @@ function availableGroupMembersReducer(
 
 export default function TripParticipantsInvite({
     trip,
+    showTextOnButton = true,
     ...props
-}: { trip: Tables<"v_trip_details"> } & ComponentProps<"button">) {
+}: {
+    trip: Tables<"v_trip_details">;
+    showTextOnButton?: boolean;
+} & ComponentProps<"button">) {
     const router = useRouter();
+    const t = useI18n();
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [availableGroupMembers, setAvailableGroupMembers] = useReducer(
         availableGroupMembersReducer,
@@ -131,10 +137,15 @@ export default function TripParticipantsInvite({
                     )
                     .is("removed_at", null);
                 if (error) {
-                    toast("Failed to fetch group members", {
-                        description: <PostgrestErrorDisplay error={error} />,
-                        position: "bottom-center",
-                    });
+                    toast(
+                        t("TripPlanner.participants.failedToFetchGroupMembers"),
+                        {
+                            description: (
+                                <PostgrestErrorDisplay error={error} />
+                            ),
+                            position: "bottom-center",
+                        },
+                    );
                     setDialogOpen(false);
                     return;
                 }
@@ -163,13 +174,13 @@ export default function TripParticipantsInvite({
     async function handleSubmit(values: z.infer<typeof formObject>) {
         const { error } = await inviteParticipants(values.participants);
         if (error) {
-            toast("Failed to save to database", {
+            toast(t("failedToSaveToDatabase"), {
                 description: <PostgrestErrorDisplay error={error} />,
                 position: "bottom-center",
             });
             return;
         }
-        toast("Participants invited successfully", {
+        toast(t("TripPlanner.participants.participantsInvitedSuccessfully"), {
             position: "bottom-center",
         });
         form.reset();
@@ -181,11 +192,15 @@ export default function TripParticipantsInvite({
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
                 <Button variant="secondary" {...props}>
-                    <UserRoundPlusIcon /> Invite
+                    <UserRoundPlusIcon />
+                    {showTextOnButton &&
+                        ` ${t("TripPlanner.participants.invite")}`}
                 </Button>
             </DialogTrigger>
             <DialogContent>
-                <DialogTitle>Invite Group Members</DialogTitle>
+                <DialogTitle>
+                    {t("TripPlanner.participants.inviteGroupMembers")}
+                </DialogTitle>
                 <Form {...form}>
                     <form
                         id="edit-participants-form"
@@ -199,7 +214,7 @@ export default function TripParticipantsInvite({
                                             name={`participants.${index}.group_member_id`}
                                             form={form}
                                             type="select"
-                                            label="Group Member"
+                                            label={t("Accountant.addMember")}
                                             options={availableGroupMembers?.map(
                                                 (member) => ({
                                                     value: member.id,
@@ -229,7 +244,7 @@ export default function TripParticipantsInvite({
                                             name={`participants.${index}.role`}
                                             form={form}
                                             type="select"
-                                            label="Role"
+                                            label={t("role")}
                                             options={PARTICIPANT_ROLES.map(
                                                 (role) => ({
                                                     value: role,
@@ -247,7 +262,7 @@ export default function TripParticipantsInvite({
                                                 variant="outline"
                                                 size="icon"
                                                 onClick={() => remove(index)}
-                                                aria-label={`Remove participant ${index + 1}`}
+                                                aria-label={`${t("TripPlanner.participants.removeParticipant")} ${index + 1}`}
                                             >
                                                 <Trash2Icon />
                                             </Button>
@@ -278,7 +293,7 @@ export default function TripParticipantsInvite({
                         ) : (
                             <>
                                 <SaveIcon />
-                                Save
+                                {t("Blog.save")}
                             </>
                         )}
                     </Button>

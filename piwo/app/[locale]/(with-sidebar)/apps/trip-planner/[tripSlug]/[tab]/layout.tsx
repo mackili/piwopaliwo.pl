@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getCurrentLocale } from "@/locales/server";
+import { getCurrentLocale, getI18n } from "@/locales/server";
 import {
     ActivityIcon,
     BanknoteIcon,
@@ -29,9 +29,10 @@ export default async function Layout({
 } & Readonly<{
     children: React.ReactNode;
 }>) {
-    const [{ tripSlug, tab }, locale] = await Promise.all([
+    const [{ tripSlug, tab }, locale, t] = await Promise.all([
         params,
         getCurrentLocale(),
+        getI18n(),
     ]);
     const hrefFactory = (tab: TRIP_PLANNER_TABS) => {
         return `/${locale}/apps/trip-planner/${tripSlug}/${tab}`;
@@ -49,7 +50,7 @@ export default async function Layout({
                 >
                     <TabsTrigger value="overview">
                         <HomeIcon />
-                        Overview
+                        {t("TripPlanner.tabs.overview")}
                     </TabsTrigger>
                 </Link>
                 <Link
@@ -59,7 +60,7 @@ export default async function Layout({
                 >
                     <TabsTrigger value="timeline">
                         <CalendarIcon />
-                        Timeline
+                        {t("TripPlanner.tabs.timeline")}
                     </TabsTrigger>
                 </Link>
                 <Link
@@ -70,7 +71,7 @@ export default async function Layout({
                 >
                     <TabsTrigger value="feed" disabled>
                         <ActivityIcon />
-                        Feed
+                        {t("TripPlanner.tabs.feed")}
                     </TabsTrigger>
                 </Link>
                 <Link
@@ -81,7 +82,7 @@ export default async function Layout({
                 >
                     <TabsTrigger value="costs">
                         <BanknoteIcon />
-                        Costs
+                        {t("TripPlanner.tabs.costs")}
                     </TabsTrigger>
                 </Link>
                 <Link
@@ -92,7 +93,7 @@ export default async function Layout({
                 >
                     <TabsTrigger value="accommodation">
                         <BedIcon />
-                        Stay
+                        {t("TripPlanner.tabs.stay")}
                     </TabsTrigger>
                 </Link>
                 <Link
@@ -102,7 +103,7 @@ export default async function Layout({
                 >
                     <TabsTrigger value="transport">
                         <PlaneIcon />
-                        Transport
+                        {t("TripPlanner.tabs.transport")}
                     </TabsTrigger>
                 </Link>
                 <Link
@@ -112,7 +113,7 @@ export default async function Layout({
                 >
                     <TabsTrigger value="participants">
                         <UsersRoundIcon />
-                        Participants
+                        {t("TripPlanner.tabs.participants")}
                     </TabsTrigger>
                 </Link>
             </TabsList>

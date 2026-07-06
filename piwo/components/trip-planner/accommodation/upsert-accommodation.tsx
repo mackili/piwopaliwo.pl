@@ -27,6 +27,7 @@ import {
 import { Constants } from "@/database.types";
 import { TripAccommodationSummaryView } from "../custom-schemas";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/locales/client";
 
 export enum UpsertAccommodationVariant {
     CREATE = "CREATE",
@@ -49,6 +50,7 @@ export default function UpsertAccommodation({
     const [saveError, setSaveError] = useState<PostgrestError | null>();
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const router = useRouter();
+    const t = useI18n();
     const form = useForm<z.infer<typeof publicAccommodationInsertSchema>>({
         resolver: zodResolver(publicAccommodationInsertSchema),
         defaultValues: {
@@ -105,9 +107,9 @@ export default function UpsertAccommodation({
             <DialogContent className="overflow-y-auto overflow-x-hidden">
                 <DialogTitle>
                     {variant === UpsertAccommodationVariant.CREATE
-                        ? "Add"
-                        : "Edit"}{" "}
-                    Accommodation
+                        ? t("add")
+                        : t("edit")}{" "}
+                    {t("TripPlanner.tabs.stay")}
                 </DialogTitle>
                 <Form {...form}>
                     <form
@@ -115,31 +117,40 @@ export default function UpsertAccommodation({
                         id="edit-accommodation-unit-form"
                     >
                         <div className="space-y-4">
-                            <FormInput name="name" label="Name" form={form} />
+                            <FormInput
+                                name="name"
+                                label={t("TripPlanner.accommodation.name")}
+                                form={form}
+                            />
                             <FormInput
                                 name="status"
-                                label="Status"
+                                label={t("TripPlanner.accommodation.status")}
                                 form={form}
                                 type="select"
                                 options={ACCOMMODATION_STATUSES.map(
-                                    (status) => ({ value: status }),
+                                    (status) => ({
+                                        value: status,
+                                        label: t(
+                                            `TripPlanner.transactions.status.${status}`,
+                                        ),
+                                    }),
                                 )}
                             />
                             <FormInput
                                 name="check_in_date"
-                                label="Check-In"
+                                label={t("TripPlanner.accommodation.checkIn")}
                                 form={form}
                                 type="date-time"
                             />
                             <FormInput
                                 name="check_out_date"
-                                label="Check-Out"
+                                label={t("TripPlanner.accommodation.checkOut")}
                                 form={form}
                                 type="date-time"
                             />
                             <FormInput
                                 name="description"
-                                label="Description"
+                                label={t("description")}
                                 form={form}
                                 type="text"
                             />
@@ -157,7 +168,7 @@ export default function UpsertAccommodation({
                             <LoadingSpinner />
                         ) : (
                             <>
-                                <SaveIcon /> Save
+                                <SaveIcon /> {t("Blog.save")}
                             </>
                         )}
                     </Button>

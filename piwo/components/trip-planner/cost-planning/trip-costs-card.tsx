@@ -22,6 +22,7 @@ import {
     TripPlannedTransactionsResult,
 } from "../reducers";
 import { TripContext } from "./trip-costs";
+import { useI18n } from "@/locales/client";
 
 export const INITIAL_TRANSACTIONS_LIMIT = 10 as const;
 
@@ -38,6 +39,7 @@ export default function TripCostsCard({
     setTripFinanceData: (action: TripFinanceDataAction) => void;
     mode?: "planned" | "actual";
 } & ComponentProps<"div">) {
+    const t = useI18n();
     const [isLoading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<null | PostgrestError>(
         null,
@@ -68,10 +70,13 @@ export default function TripCostsCard({
     return (
         <Card className={twMerge("pb-0", className)} {...props}>
             <CardHeader>
-                <CardTitle>Trip Costs</CardTitle>
+                <CardTitle>{t("TripPlanner.transactions.tripCosts")}</CardTitle>
                 <CardAction>
                     <p>
-                        Showing {data?.data?.length || 0} of {data?.count} costs
+                        {t("showingXofY", {
+                            x: data?.data?.length || 0,
+                            y: data?.count || 0,
+                        })}
                     </p>
                 </CardAction>
             </CardHeader>
@@ -98,7 +103,7 @@ export default function TripCostsCard({
                             type="button"
                             onClick={handleFetchMore}
                         >
-                            Fetch More
+                            {t("fetchMore")}
                         </Button>
                     )}
                 </CardFooter>

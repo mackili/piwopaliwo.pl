@@ -28,7 +28,7 @@ import { toast } from "sonner";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { VariantProps } from "class-variance-authority";
 import { GroupCurrency } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
-import { useCurrentLocale } from "@/locales/client";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 import {
     countPotentialParticipants,
     getTripLength,
@@ -109,6 +109,7 @@ export default function TripTransactionEdit({
     onSuccess?: (action: TripFinanceDataAction) => void;
 } & ComponentProps<"button"> &
     VariantProps<typeof buttonVariants>) {
+    const t = useI18n();
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [availableCurrencies, setAvailableCurrencies] = useState<
         GroupCurrency[]
@@ -157,13 +158,13 @@ export default function TripTransactionEdit({
     async function handleSubmit(values: z.infer<typeof formObject>) {
         const { data, error } = await upsertTripTransaction(values);
         if (error) {
-            toast("Failed to save to transaction", {
+            toast(t("TripPlanner.transactions.edit.failedToSaveTransaction"), {
                 description: <PostgrestErrorDisplay error={error} />,
                 position: "bottom-center",
             });
             return;
         }
-        toast("Transaction saved successfully", {
+        toast(t("TripPlanner.transactions.edit.transactionSavedSuccessfully"), {
             position: "bottom-center",
         });
         if (onSuccess) {
@@ -182,13 +183,16 @@ export default function TripTransactionEdit({
                     <Button variant="default" {...props}>
                         {buttonContent || (
                             <>
-                                <PlusIcon /> Plan cost
+                                <PlusIcon />{" "}
+                                {t("TripPlanner.transactions.edit.planCost")}
                             </>
                         )}
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="overflow-auto">
-                    <DialogTitle>Plan Trip Cost</DialogTitle>
+                    <DialogTitle>
+                        {t("TripPlanner.transactions.edit.planTripCost")}
+                    </DialogTitle>
                     <Form {...form}>
                         <form
                             id="edit-participants-form"
@@ -197,7 +201,9 @@ export default function TripTransactionEdit({
                             <div className="space-y-4">
                                 <FormInput
                                     name="description"
-                                    label="Plan Description"
+                                    label={t(
+                                        "TripPlanner.transactions.edit.planDescription",
+                                    )}
                                     form={form}
                                 />
                                 <div className="flex flex-row gap-2">
@@ -205,7 +211,9 @@ export default function TripTransactionEdit({
                                         name="amount"
                                         form={form}
                                         type="number"
-                                        label="Amount"
+                                        label={t(
+                                            "TripPlanner.transactions.edit.amount",
+                                        )}
                                         step="0.01"
                                         placeholder="0.00"
                                         className="grow"
@@ -214,7 +222,9 @@ export default function TripTransactionEdit({
                                         name="currency_iso_code"
                                         form={form}
                                         type="select"
-                                        label="Currency"
+                                        label={t(
+                                            "TripPlanner.transactions.edit.currency",
+                                        )}
                                         options={availableCurrencies.map(
                                             (currency) => ({
                                                 value: currency.iso,
@@ -223,7 +233,11 @@ export default function TripTransactionEdit({
                                     />
                                 </div>
                                 <FormItem id="total_amount">
-                                    <FormLabel>Total Amount</FormLabel>
+                                    <FormLabel>
+                                        {t(
+                                            "TripPlanner.transactions.edit.totalAmount",
+                                        )}
+                                    </FormLabel>
                                     <p>
                                         <TripTransactionTotalAmount
                                             trip={trip}
@@ -244,19 +258,31 @@ export default function TripTransactionEdit({
                                     name="calculation_type"
                                     form={form}
                                     type="select"
-                                    label="Calculation Type"
+                                    label={t(
+                                        "TripPlanner.transactions.edit.calculationType",
+                                    )}
                                     options={TRANSACTION_CALCULATION_METHODS.map(
-                                        (type) => ({ value: type }),
+                                        (type) => ({
+                                            value: type,
+                                            label: t(
+                                                `TripPlanner.transactions.calculationType.${type}`,
+                                            ),
+                                        }),
                                     )}
                                 />
                                 <FormInput
                                     name="category"
                                     form={form}
                                     type="select"
-                                    label="Category"
+                                    label={t(
+                                        "TripPlanner.transactions.edit.category",
+                                    )}
                                     options={TRANSACTION_CATEGORIES.map(
                                         (category) => ({
                                             value: category,
+                                            label: t(
+                                                `TripPlanner.transactions.categories.${category}`,
+                                            ),
                                         }),
                                     )}
                                 />
@@ -264,10 +290,15 @@ export default function TripTransactionEdit({
                                     name="status"
                                     form={form}
                                     type="select"
-                                    label="Status"
+                                    label={t(
+                                        "TripPlanner.transactions.edit.status",
+                                    )}
                                     options={TRANSACTION_STATUSES.map(
                                         (status) => ({
                                             value: status,
+                                            label: t(
+                                                `TripPlanner.transactions.status.${status}`,
+                                            ),
                                         }),
                                     )}
                                 />
@@ -275,7 +306,9 @@ export default function TripTransactionEdit({
                                     name="notes"
                                     form={form}
                                     type="text"
-                                    label="Notes"
+                                    label={t(
+                                        "TripPlanner.transactions.edit.notes",
+                                    )}
                                 />
                             </div>
                         </form>
@@ -292,7 +325,7 @@ export default function TripTransactionEdit({
                             ) : (
                                 <>
                                     <SaveIcon />
-                                    Save
+                                    {t("Blog.save")}
                                 </>
                             )}
                         </Button>

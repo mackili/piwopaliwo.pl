@@ -6,7 +6,7 @@ import TripStatistic from "../trip-statistic";
 import { Constants } from "@/database.types";
 import EstimateByCategory from "../charts/expenses-per-category";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCurrentLocale } from "@/locales/client";
+import { useCurrentLocale, useI18n } from "@/locales/client";
 
 export default function TripCostsSummary({
     data,
@@ -15,7 +15,7 @@ export default function TripCostsSummary({
     data: TripPlannedFinanceStatisticsResponse | null;
 } & ComponentProps<"div">) {
     const locale = useCurrentLocale();
-
+    const t = useI18n();
     const plannedTotal =
         data?.financials.reduce(
             (acc, cur) => acc + cur.total_in_trip_currency,
@@ -62,41 +62,55 @@ export default function TripCostsSummary({
             {data && data?.trip_currency && (
                 <>
                     <TripStatistic
-                        title="Planned Total"
+                        title={t(
+                            "TripPlanner.transactions.statistics.plannedTotal",
+                        )}
                         value={Intl.NumberFormat(locale, {
                             style: "currency",
                             currency: data.trip_currency,
                         }).format(plannedTotal)}
                     />
                     <TripStatistic
-                        title="Committed Total"
+                        title={t(
+                            "TripPlanner.transactions.statistics.committedTotal",
+                        )}
                         value={Intl.NumberFormat(locale, {
                             style: "currency",
                             currency: data.trip_currency,
                         }).format(committedTotal)}
                     />
                     <TripStatistic
-                        title="Already Paid"
+                        title={t(
+                            "TripPlanner.transactions.statistics.alreadyPaid",
+                        )}
                         value={Intl.NumberFormat(locale, {
                             style: "currency",
                             currency: data.trip_currency,
                         }).format(paidTotal)}
                     />
                     <TripStatistic
-                        title="Per Person AVG"
+                        title={t(
+                            "TripPlanner.transactions.statistics.perPersonAvg",
+                        )}
                         value={Intl.NumberFormat(locale, {
                             style: "currency",
                             currency: data.trip_currency,
                         }).format(plannedTotal / confirmedParticipants)}
-                        description="Only Committed Participants"
+                        description={t(
+                            "TripPlanner.transactions.statistics.onlyCommittedParticipants",
+                        )}
                     />
                     <TripStatistic
-                        title="Per Person AVG"
+                        title={t(
+                            "TripPlanner.transactions.statistics.perPersonAvg",
+                        )}
                         value={Intl.NumberFormat(locale, {
                             style: "currency",
                             currency: data.trip_currency,
                         }).format(plannedTotal / potentialParticipants)}
-                        description="All Potential Participants"
+                        description={t(
+                            "TripPlanner.transactions.statistics.allPotentialParticipants",
+                        )}
                     />
                 </>
             )}
@@ -104,7 +118,9 @@ export default function TripCostsSummary({
                 <Card className="col-span-full">
                     <CardHeader>
                         <CardTitle className="text-muted-foreground text-xs font-medium uppercase">
-                            Planned costs per category
+                            {t(
+                                "TripPlanner.transactions.statistics.plannedCostsPerCategory",
+                            )}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="text-primary font-serif uppercase font-bold text-lg h-20 overflow-x-hidden text-ellipsis whitespace-nowrap w-full">
