@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { UserSchema, User } from "./types";
 import { useI18n } from "@/locales/client";
 
-export default function SignUpPage() {
+export default function SignUpPage({ returnUrl }: { returnUrl?: string }) {
     const t = useI18n();
     const signUpForm = useForm<User>({
         resolver: zodResolver(UserSchema),
@@ -26,11 +26,14 @@ export default function SignUpPage() {
             password: "",
         },
     });
+    const onSubmit = (data: User) => {
+        signup(data, returnUrl);
+    };
     return (
         <Form {...signUpForm}>
             <form
                 className="flex gap-4 flex-col w-full flex-nowrap"
-                onSubmit={signUpForm.handleSubmit(signup)}
+                onSubmit={signUpForm.handleSubmit(onSubmit)}
             >
                 <FormField
                     control={signUpForm.control}
