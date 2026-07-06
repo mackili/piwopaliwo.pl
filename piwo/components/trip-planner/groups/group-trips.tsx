@@ -38,10 +38,10 @@ export default async function GroupTrips() {
                         }}
                         className="bg-cover bg-center absolute inset-0 opacity-40"
                     ></div>
-                    <CardHeader className="z-10">
-                        <CardTitle>{`${t("group")}: ${group.name}`}</CardTitle>
-                        <CardAction>
-                            <ButtonGroup>
+                    <CardHeader className="z-10 flex flex-wrap justify-between flex-col-reverse sm:flex-row gap-4">
+                        <CardTitle className="text-nowrap text-ellipsis">{`${t("group")}: ${group.name}`}</CardTitle>
+                        <CardAction className="overflow-x-auto max-w-full">
+                            <ButtonGroup className="flex-nowrap">
                                 <GroupDetailsLink
                                     groupId={group.id}
                                     variant="secondary"

@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import PostgrestErrorDisplay from "../ui/postgrest-error-display";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/locales/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const tripStatuses = Constants.public.Enums.trip_status.map((status) => ({
     value: status,
@@ -56,6 +57,7 @@ export default function EditTripForm({
 } & ComponentProps<"div">) {
     const router = useRouter();
     const t = useI18n();
+    const isMobile = useIsMobile();
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const form = useForm<z.infer<typeof publicTripInsertSchema>>({
         resolver: zodResolver(publicTripInsertSchema),
@@ -182,7 +184,7 @@ export default function EditTripForm({
                         </>
                     ) : (
                         <>
-                            <PlusIcon /> {t("TripPlanner.newTrip")}
+                            <PlusIcon /> {!isMobile && t("TripPlanner.newTrip")}
                         </>
                     )}
                 </Button>

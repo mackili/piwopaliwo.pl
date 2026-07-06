@@ -5,6 +5,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useCurrentLocale, useI18n } from "@/locales/client";
 import { VariantProps } from "class-variance-authority";
 import { Users2Icon } from "lucide-react";
@@ -16,8 +17,9 @@ export default function GroupDetailsLink({
     ...props
 }: { groupId: string } & VariantProps<typeof buttonVariants>) {
     const locale = useCurrentLocale();
+    const isMobile = useIsMobile();
     const t = useI18n();
-    return size === "icon" ? (
+    return size === "icon" || isMobile ? (
         <Tooltip>
             <TooltipTrigger asChild>
                 <Button {...props} asChild type="button" size={size}>
