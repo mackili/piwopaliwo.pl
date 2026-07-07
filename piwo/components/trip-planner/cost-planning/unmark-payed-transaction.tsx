@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -12,8 +11,8 @@ import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useState } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
-import { Trash2Icon } from "lucide-react";
-import { deleteTripTransaction } from "../fetch";
+import { BanknoteXIcon, Trash2Icon } from "lucide-react";
+import { deleteTransactionsTripLedgers, deleteTripTransaction } from "../fetch";
 import { Tables } from "@/database.types";
 import { TripFinanceDataAction, TripFinanceDataActionType } from "../reducers";
 import { useI18n } from "@/locales/client";
@@ -23,7 +22,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export default function DeleteTransaction({
+export default function UnmarkedPayedTransaction({
     transaction,
     onSuccess,
 }: {
@@ -35,16 +34,18 @@ export default function DeleteTransaction({
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const t = useI18n();
 
-    const handleDelete = async () => {
+    const handleUnmarkPaid = async () => {
         if (!transaction?.id) return;
         setPending(true);
-        const { error } = await deleteTripTransaction(transaction.id);
+        const { data, error } = await deleteTransactionsTripLedgers([
+            transaction.id,
+        ]);
         setSaveError(error);
         if (!error) {
             if (onSuccess)
                 onSuccess({
-                    type: TripFinanceDataActionType.DELETE_PLANNED,
-                    payload: [transaction.id],
+                    type: TripFinanceDataActionType.UPDATE_PLANNED,
+                    payload: data,
                 });
             setDialogOpen(false);
         }
@@ -61,31 +62,34 @@ export default function DeleteTransaction({
                                 type="button"
                                 size="icon"
                             >
-                                <Trash2Icon />
+                                <BanknoteXIcon />
                             </Button>
                         </TooltipTrigger>
                     </DialogTrigger>
-                    <TooltipContent>{t("delete")}</TooltipContent>
+                    <TooltipContent>
+                        {t("TripPlanner.unmarkPaid.unmarkPaid")}
+                    </TooltipContent>
                 </Tooltip>
                 <DialogContent className="overflow-auto">
                     <DialogTitle>
-                        {t("TripPlanner.delete.deleteTransaction")}
+                        {t("TripPlanner.unmarkPaid.unmarkPaid")}
                     </DialogTitle>
-                    {t("TripPlanner.delete.deleteTransactionConfirmation", {
-                        transactionDescription: transaction.description,
+                    {t("TripPlanner.unmarkPaid.unmarkPaidConfirmation", {
+                        name: transaction.description,
                     })}
                     <PostgrestErrorDisplay error={saveError} />
                     <DialogFooter>
                         <Button
                             type="button"
-                            onClick={handleDelete}
+                            onClick={handleUnmarkPaid}
                             disabled={isPending}
                         >
                             {isPending ? (
                                 <LoadingSpinner />
                             ) : (
                                 <>
-                                    <Trash2Icon /> {t("delete")}
+                                    <BanknoteXIcon />
+                                    {t("TripPlanner.unmarkPaid.unmarkPaid")}
                                 </>
                             )}
                         </Button>

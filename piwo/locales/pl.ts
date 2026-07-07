@@ -175,6 +175,10 @@ const translations = {
             editor: "Edytor",
             viewer: "Obserwator",
         },
+        unmarkPaid: {
+            unmarkPaid: "Odznacz jako zapłacone",
+            unmarkPaidConfirmation: "Odznacz {name} jako zapłacone",
+        },
         delete: {
             deleteTrip: "Usuń wyjazd",
             deleteTripConfirmation: "Czy na pewno chcesz usunąć {tripName}?",
@@ -241,6 +245,8 @@ const translations = {
                 "Zaplanuj budżet, a następnie śledź, co faktycznie zostało opłacone.",
             planning: "Planowanie",
             spending: "Wydatki",
+            plannedAmount: "Zaplanowana kwota",
+            totalPaidAmount: "Całkowita zapłacona kwota",
             tripCosts: "Koszty wyjazdu",
             status: {
                 idea: "Pomysł",
@@ -265,7 +271,7 @@ const translations = {
             statistics: {
                 plannedTotal: "Suma planowana",
                 committedTotal: "Suma potwierdzona",
-                alreadyPaid: "Już opłacone",
+                alreadyPaid: "Już zapłacone",
                 perPersonAvg: "Średnia na osobę",
                 onlyCommittedParticipants: "Tylko potwierdzeni uczestnicy",
                 allPotentialParticipants: "Wszyscy potencjalni uczestnicy",

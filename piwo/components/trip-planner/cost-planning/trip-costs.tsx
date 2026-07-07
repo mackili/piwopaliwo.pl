@@ -1,12 +1,20 @@
 "use client";
-import { ComponentProps, createContext, useEffect, useReducer } from "react";
+import {
+    ComponentProps,
+    createContext,
+    useEffect,
+    useReducer,
+    useState,
+} from "react";
 import { twMerge } from "tailwind-merge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BanknoteIcon, PiggyBankIcon } from "lucide-react";
 import TripTransactionEdit from "./edit-transaction";
 import { Tables } from "@/database.types";
 import { fetchPlannedFinanceStatistics, fetchTripTransactions } from "../fetch";
-import TripCostsSummary from "./trip-costs-summary";
+import TripCostsSummary, {
+    TripBudgetByCategoryChart,
+} from "./trip-costs-summary";
 import TripCostsCard, { INITIAL_TRANSACTIONS_LIMIT } from "./trip-costs-card";
 import { TripFinanceDataActionType, tripFinanceDataReducer } from "../reducers";
 import TripCostsCardSkeleton from "./trip-costs-card-skeleton";
@@ -22,6 +30,9 @@ export default function TripCosts({
 }: { trip: Tables<"v_trip_details"> } & ComponentProps<"div">) {
     const tripId = trip?.id;
     const t = useI18n();
+    const [selectedTab, setSelectedTab] = useState<"planning" | "spending">(
+        "planning",
+    );
     const [data, setData] = useReducer(tripFinanceDataReducer, {
         planned: {
             statistics: { data: null, error: null, isLoading: true },
@@ -60,7 +71,7 @@ export default function TripCosts({
     return (
         <div>
             <TripContext value={trip}>
-                <Tabs defaultValue="planning" className="gap-4">
+                <Tabs value={selectedTab} className="gap-4">
                     <div className="flex flex-row flex-wrap justify-between gap-4">
                         <div className="space-y-2">
                             <p className="font-serif text-2xl font-bold">
@@ -72,11 +83,18 @@ export default function TripCosts({
                         </div>
                         <div className="flex flex-row flex-wrap gap-4">
                             <TabsList variant="line">
-                                <TabsTrigger value="planning">
-                                    <PiggyBankIcon />{" "}
+                                <TabsTrigger
+                                    value="planning"
+                                    onClick={() => setSelectedTab("planning")}
+                                >
+                                    <PiggyBankIcon />
                                     {t("TripPlanner.transactions.planning")}
                                 </TabsTrigger>
-                                <TabsTrigger value="transactions" disabled>
+                                <TabsTrigger
+                                    disabled
+                                    value="spending"
+                                    onClick={() => setSelectedTab("spending")}
+                                >
                                     <BanknoteIcon />
                                     {t("TripPlanner.transactions.spending")}
                                 </TabsTrigger>
@@ -96,17 +114,24 @@ export default function TripCosts({
                     >
                         {trip?.id && (
                             <>
-                                <div className="grow-8 col-span-full lg:col-span-8">
+                                <TabsContent
+                                    value="planning"
+                                    className="grow-8 col-span-full lg:col-span-8"
+                                >
                                     <div className="grid max-[350px]:grid-cols-1 grid-cols-2 md:grid-cols-4 gap-4 @container">
                                         {data.planned.statistics.isLoading ? (
-                                            <TripCostsSummarySkeleton />
+                                            <TripCostsCardSkeleton />
                                         ) : (
-                                            <TripCostsSummary
-                                                data={
-                                                    data.planned.statistics.data
-                                                }
-                                                className="col-span-full @max-[370px]:grid-cols-1 grid-cols-2 @lg:grid-cols-3 grid gap-4"
-                                            />
+                                            data?.planned?.statistics?.data
+                                                ?.financials_by_category && (
+                                                <TripBudgetByCategoryChart
+                                                    data={
+                                                        data.planned.statistics
+                                                            .data
+                                                            .financials_by_category
+                                                    }
+                                                />
+                                            )
                                         )}
                                         {data.planned.transactions.isLoading ? (
                                             <TripCostsCardSkeleton />
@@ -119,12 +144,45 @@ export default function TripCosts({
                                             />
                                         )}
                                     </div>
-                                </div>
-                                <div className="grow-4 gap-4 col-span-full lg:col-span-4">
+                                </TabsContent>
+                                <TabsContent
+                                    value="spending"
+                                    className="grow-8 col-span-full lg:col-span-8"
+                                ></TabsContent>
+                                <TabsContent
+                                    value="planning"
+                                    className="grow-4 gap-4 col-span-full lg:col-span-4 @container"
+                                >
                                     <div>
-                                        {/* <TripParticipantsCard trip={trip} /> */}
+                                        {data.planned.statistics.isLoading ? (
+                                            <TripCostsSummarySkeleton />
+                                        ) : (
+                                            <TripCostsSummary
+                                                data={
+                                                    data.planned.statistics.data
+                                                }
+                                                className="col-span-full @max-[370px]:grid-cols-1 grid-cols-2 @lg:grid-cols-3 grid gap-4"
+                                            />
+                                        )}
                                     </div>
-                                </div>
+                                </TabsContent>
+                                <TabsContent
+                                    value="spending"
+                                    className="grow-4 gap-4 col-span-full lg:col-span-4 @container"
+                                >
+                                    <div>
+                                        {data.planned.statistics.isLoading ? (
+                                            <TripCostsSummarySkeleton />
+                                        ) : (
+                                            <TripCostsSummary
+                                                data={
+                                                    data.planned.statistics.data
+                                                }
+                                                className="col-span-full @max-[370px]:grid-cols-1 grid-cols-2 @lg:grid-cols-3 grid gap-4"
+                                            />
+                                        )}
+                                    </div>
+                                </TabsContent>
                             </>
                         )}
                     </div>

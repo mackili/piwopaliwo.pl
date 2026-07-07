@@ -15,6 +15,7 @@ import { TablesInsert } from "@/database.types";
 import { getI18n } from "@/locales/server";
 import { createClient } from "@/utils/supabase/server";
 import GroupDetailsLink from "./group-details-link";
+import { GroupCurrency } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
 
 export default async function GroupTrips() {
     const [{ data, error }, t, supabase] = await Promise.all([
@@ -61,6 +62,13 @@ export default async function GroupTrips() {
                                             trip={
                                                 {
                                                     group_id: group.id,
+                                                    currency_iso_code: (
+                                                        (group?.currencies ||
+                                                            []) as GroupCurrency[]
+                                                    )?.find(
+                                                        (currency) =>
+                                                            currency.primary,
+                                                    )?.iso,
                                                 } as TablesInsert<"trip">
                                             }
                                         />

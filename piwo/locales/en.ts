@@ -171,6 +171,10 @@ const translations = {
             editor: "Member",
             viewer: "Viewer",
         },
+        unmarkPaid: {
+            unmarkPaid: "Unmark as paid",
+            unmarkPaidConfirmation: "Unmark {name} as paid",
+        },
         delete: {
             deleteTrip: "Delete trip",
             deleteTripConfirmation:
@@ -236,6 +240,8 @@ const translations = {
             planning: "Planning",
             spending: "Spending",
             tripCosts: "Trip Costs",
+            plannedAmount: "Planned Amount",
+            totalPaidAmount: "Total Paid Amount",
             tabDescription:
                 "Plan the budget, then track what actually got paid.",
             status: {

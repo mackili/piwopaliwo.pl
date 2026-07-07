@@ -32,18 +32,15 @@ export default function EstimateByCategory({
     className,
 }: { data: TripFinancialsPerCategoryJson[] } & ComponentProps<"div">) {
     const t = useI18n();
-    const chartData = useMemo(
-        () => [
-            data.reduce<Record<string, number | string>>(
-                (acc, d) => ({
-                    ...acc,
-                    [d.category]: d.total_in_trip_currency,
-                }),
-                {},
-            ),
-        ],
-        [data],
-    );
+    const chartData = [
+        data.reduce<Record<string, number | string>>(
+            (acc, d) => ({
+                ...acc,
+                [d.category]: d.total_in_trip_currency,
+            }),
+            {},
+        ),
+    ];
     const translatedConfig = () => {
         const newConfig = {} as Record<
             (typeof categories)[number],

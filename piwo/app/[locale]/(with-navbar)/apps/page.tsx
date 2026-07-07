@@ -36,7 +36,7 @@ export default async function Page({
                     app?.link && app?.status === "active" ? (
                         <Link
                             key={app.id}
-                            href={`/${locale}/apps/${app.link}`}
+                            href={`/${locale}/${app.link}`}
                             className="cursor-pointer"
                         >
                             <Card>

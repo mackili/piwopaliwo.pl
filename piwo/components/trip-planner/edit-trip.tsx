@@ -32,6 +32,7 @@ import PostgrestErrorDisplay from "../ui/postgrest-error-display";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/locales/client";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { GroupCurrency } from "@/app/[locale]/(with-sidebar)/apps/accountant/types";
 
 const tripStatuses = Constants.public.Enums.trip_status.map((status) => ({
     value: status,
