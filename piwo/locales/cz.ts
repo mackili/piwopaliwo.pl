@@ -171,6 +171,10 @@ export default {
             editor: "Člen",
             viewer: "Pozorovatel",
         },
+        unmarkPaid: {
+            unmarkPaid: "Zrušit označení jako zaplaceno",
+            unmarkPaidConfirmation: "Zrušit označení {name} jako zaplaceno",
+        },
         delete: {
             deleteTrip: "Smazat výlet",
             deleteTripConfirmation: "Opravdu chcete smazat {tripName}?",
@@ -237,6 +241,8 @@ export default {
             planning: "Plánování",
             spending: "Výdaje",
             tripCosts: "Náklady na výlet",
+            plannedAmount: "Plánovaná částka",
+            totalPaidAmount: "Celková zaplacená částka",
             status: {
                 idea: "Nápad",
                 quoted: "Nacenění",

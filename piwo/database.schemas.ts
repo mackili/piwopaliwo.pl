@@ -1374,6 +1374,77 @@ export const publicTripFeedItemRelationshipsSchema = z.tuple([
   }),
 ]);
 
+export const publicTripLedgerRowSchema = z.object({
+  amount: z.number(),
+  created_at: z.string(),
+  created_by: z.string().nullable(),
+  id: z.string(),
+  last_modified_at: z.string().nullable(),
+  last_modified_by: z.string().nullable(),
+  paid_by_id: z.string(),
+  trip_transaction_id: z.string(),
+});
+
+export const publicTripLedgerInsertSchema = z.object({
+  amount: z.number(),
+  created_at: z.string().optional(),
+  created_by: z.string().optional().nullable(),
+  id: z.string().optional(),
+  last_modified_at: z.string().optional().nullable(),
+  last_modified_by: z.string().optional().nullable(),
+  paid_by_id: z.string(),
+  trip_transaction_id: z.string(),
+});
+
+export const publicTripLedgerUpdateSchema = z.object({
+  amount: z.number().optional(),
+  created_at: z.string().optional(),
+  created_by: z.string().optional().nullable(),
+  id: z.string().optional(),
+  last_modified_at: z.string().optional().nullable(),
+  last_modified_by: z.string().optional().nullable(),
+  paid_by_id: z.string().optional(),
+  trip_transaction_id: z.string().optional(),
+});
+
+export const publicTripLedgerRelationshipsSchema = z.tuple([
+  z.object({
+    foreignKeyName: z.literal("trip_ledger_paid_by_id_fkey"),
+    columns: z.tuple([z.literal("paid_by_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("trip_participant"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_ledger_paid_by_id_fkey"),
+    columns: z.tuple([z.literal("paid_by_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("v_trip_participant_details"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_ledger_trip_transaction_id_fkey"),
+    columns: z.tuple([z.literal("trip_transaction_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("trip_transaction"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_ledger_trip_transaction_id_fkey"),
+    columns: z.tuple([z.literal("trip_transaction_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("v_trip_accommodation_summary"),
+    referencedColumns: z.tuple([z.literal("trip_transaction_id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("trip_ledger_trip_transaction_id_fkey"),
+    columns: z.tuple([z.literal("trip_transaction_id")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("v_trip_travel_summary"),
+    referencedColumns: z.tuple([z.literal("trip_transaction_id")]),
+  }),
+]);
+
 export const publicTripParticipantRowSchema = z.object({
   created_at: z.string().nullable(),
   created_by: z.string().nullable(),
@@ -1499,6 +1570,7 @@ export const publicTripTransactionRowSchema = z.object({
   split_type: publicAccTransactionSplitTypeSchema,
   status: publicTransactionStatusSchema,
   total_amount: z.number().nullable(),
+  total_paid_amount: z.number().nullable(),
   transaction_split: jsonSchema,
   trip_id: z.string(),
 });
@@ -1521,6 +1593,7 @@ export const publicTripTransactionInsertSchema = z.object({
   split_type: publicAccTransactionSplitTypeSchema.optional(),
   status: publicTransactionStatusSchema.optional(),
   total_amount: z.number().optional().nullable(),
+  total_paid_amount: z.number().optional().nullable(),
   transaction_split: jsonSchema.optional(),
   trip_id: z.string(),
 });
@@ -1543,6 +1616,7 @@ export const publicTripTransactionUpdateSchema = z.object({
   split_type: publicAccTransactionSplitTypeSchema.optional(),
   status: publicTransactionStatusSchema.optional(),
   total_amount: z.number().optional().nullable(),
+  total_paid_amount: z.number().optional().nullable(),
   transaction_split: jsonSchema.optional(),
   trip_id: z.string().optional(),
 });
@@ -2392,6 +2466,12 @@ export const publicDbSetAuditMechanismArgsSchema = z.object({
 });
 
 export const publicDbSetAuditMechanismReturnsSchema = z.undefined();
+
+export const publicRecomputeTripTransactionStatusArgsSchema = z.object({
+  p_trip_transaction_id: z.string(),
+});
+
+export const publicRecomputeTripTransactionStatusReturnsSchema = z.undefined();
 
 export const publicSendNotificationArgsSchema = z.object({
   p_details: jsonSchema,

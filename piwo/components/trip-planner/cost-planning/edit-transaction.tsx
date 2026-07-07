@@ -36,6 +36,11 @@ import {
     TripFinanceDataAction,
     TripFinanceDataActionType,
 } from "../reducers";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const formObject = publicTripTransactionInsertSchema.extend({
     transaction_split: z.array(TripTransactionSplitSchema),
@@ -179,16 +184,25 @@ export default function TripTransactionEdit({
     return (
         trip?.id && (
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                    <Button variant="default" {...props}>
-                        {buttonContent || (
-                            <>
-                                <PlusIcon />{" "}
-                                {t("TripPlanner.transactions.edit.planCost")}
-                            </>
-                        )}
-                    </Button>
-                </DialogTrigger>
+                <Tooltip>
+                    <DialogTrigger asChild>
+                        <TooltipTrigger asChild>
+                            <Button variant="default" {...props}>
+                                {buttonContent || (
+                                    <>
+                                        <PlusIcon />{" "}
+                                        {t(
+                                            "TripPlanner.transactions.edit.planCost",
+                                        )}
+                                    </>
+                                )}
+                            </Button>
+                        </TooltipTrigger>
+                    </DialogTrigger>
+                    <TooltipContent>
+                        {t("TripPlanner.transactions.edit.planCost")}
+                    </TooltipContent>
+                </Tooltip>
                 <DialogContent className="overflow-auto">
                     <DialogTitle>
                         {t("TripPlanner.transactions.edit.planTripCost")}

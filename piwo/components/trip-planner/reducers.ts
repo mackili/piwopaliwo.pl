@@ -575,6 +575,60 @@ function tripFinanceDataReducer(
     action: TripFinanceDataAction,
 ) {
     const newState = { ...state };
+    const updateStatistics = (
+        category: Enums<"trip_transaction_category">,
+        status: Enums<"transaction_status">,
+        amount: number,
+        registry: "planned" | "actual",
+    ) => {
+        switch (registry) {
+            case "planned":
+                if (!newState.planned.statistics.data?.financials) return;
+                const oldStatusIndex =
+                    newState.planned.statistics.data.financials.findIndex(
+                        (item) => item.status === status,
+                    );
+                if (oldStatusIndex !== -1) {
+                    const oldStatusTotal =
+                        newState.planned.statistics.data.financials[
+                            oldStatusIndex
+                        ].total_in_trip_currency;
+                    newState.planned.statistics.data.financials[oldStatusIndex][
+                        "total_in_trip_currency"
+                    ] = oldStatusTotal + amount;
+                } else {
+                    newState.planned.statistics.data.financials.push({
+                        status: status,
+                        total_in_trip_currency: amount,
+                    });
+                }
+
+                const oldCategoryIndex =
+                    newState.planned.statistics.data.financials_by_category.findIndex(
+                        (item) => item.category === category,
+                    );
+                if (oldCategoryIndex !== -1) {
+                    const oldCategoryTotal =
+                        newState.planned.statistics.data.financials_by_category[
+                            oldCategoryIndex
+                        ].total_in_trip_currency;
+                    newState.planned.statistics.data.financials_by_category[
+                        oldCategoryIndex
+                    ]["total_in_trip_currency"] = oldCategoryTotal + amount;
+                } else {
+                    newState.planned.statistics.data.financials_by_category.push(
+                        {
+                            category: category,
+                            total_in_trip_currency: amount,
+                        },
+                    );
+                }
+                break;
+
+            default:
+                break;
+        }
+    };
     switch (action.type) {
         case TripFinanceDataActionType.FETCH_PLANNED_STATISTICS:
             newState.planned.statistics = action.payload;
@@ -593,6 +647,14 @@ function tripFinanceDataReducer(
                 if (oldTransactionIdsSet.has(transaction.id)) {
                     return;
                 }
+                updateStatistics(
+                    transaction.category,
+                    transaction.status,
+                    (transaction.status === "paid"
+                        ? transaction.total_paid_amount
+                        : transaction.total_amount) || 0,
+                    "planned",
+                );
                 oldArray.push(transaction);
             });
             newState.planned.transactions.data = oldArray;
@@ -603,18 +665,52 @@ function tripFinanceDataReducer(
                 const indexOfTransaction = (
                     state.planned.transactions.data || []
                 ).findIndex((t) => t.id === transaction.id);
+                let amountChange = 0;
                 if (indexOfTransaction === -1) {
+                    amountChange =
+                        (transaction?.status === "paid"
+                            ? transaction.total_paid_amount
+                            : transaction.total_amount) || 0;
                     newArray.push(transaction);
                 } else {
+                    const oldTransactionStatus =
+                        newArray[indexOfTransaction].status;
+                    amountChange =
+                        ((transaction?.status === "paid"
+                            ? transaction.total_paid_amount
+                            : transaction.total_amount) || 0) -
+                        ((oldTransactionStatus === "paid"
+                            ? newArray[indexOfTransaction].total_paid_amount
+                            : newArray[indexOfTransaction].total_amount) || 0);
                     newArray[indexOfTransaction] = transaction;
                 }
-                console.log(indexOfTransaction);
+
+                updateStatistics(
+                    transaction.category,
+                    transaction.status,
+                    amountChange,
+                    "planned",
+                );
             });
             newState.planned.transactions.data = newArray;
-            console.log(newArray);
             break;
         case TripFinanceDataActionType.DELETE_PLANNED:
             const deletedIdSet = new Set(action.payload);
+            const deletedTransactions = (
+                state.planned.transactions.data || []
+            ).filter((transaction) => deletedIdSet.has(transaction.id));
+            deletedTransactions.forEach((transaction) => {
+                const amount =
+                    (transaction.status === "paid"
+                        ? transaction.total_paid_amount
+                        : transaction.total_amount) || 0;
+                updateStatistics(
+                    transaction.category,
+                    transaction.status,
+                    -amount,
+                    "planned",
+                );
+            });
             newState.planned.transactions.data = [
                 ...(state.planned.transactions.data || []),
             ].filter((transaction) => !deletedIdSet.has(transaction.id));

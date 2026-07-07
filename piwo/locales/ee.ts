@@ -168,6 +168,10 @@ export default {
             editor: "Liige",
             viewer: "Vaataja",
         },
+        unmarkPaid: {
+            unmarkPaid: "Tühista makstuks märkimine",
+            unmarkPaidConfirmation: "Tühista {name} makstuks märkimine",
+        },
         delete: {
             deleteTrip: "Kustuta reis",
             deleteTripConfirmation:
@@ -236,6 +240,8 @@ export default {
             planning: "Planeerimine",
             spending: "Kulutused",
             tripCosts: "Reisi kulud",
+            plannedAmount: "Planeeritud summa",
+            totalPaidAmount: "Kokku makstud summa",
             status: {
                 idea: "Idee",
                 quoted: "Hinnastatud",

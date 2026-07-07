@@ -15,6 +15,12 @@ import {
     TripTransactionStatusPill,
 } from "../icon-factories";
 import { TripFinanceDataAction } from "../reducers";
+import UnmarkedPayedTransaction from "./unmark-payed-transaction";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function TripTransaction({
     trip,
@@ -81,33 +87,50 @@ export default function TripTransaction({
                     </div>
                 </div>
                 <div className="flex gap-2 flex-col items-end @max-md:flex-row @max-md:justify-between @max-md:items-center-safe">
-                    <p className="font-semibold">
-                        {Intl.NumberFormat(locale, {
-                            style: "currency",
-                            currency: transaction?.currency_iso_code,
-                        }).format(transaction?.total_amount || 0)}
-                    </p>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <p className="font-semibold">
+                                {Intl.NumberFormat(locale, {
+                                    style: "currency",
+                                    currency: transaction?.currency_iso_code,
+                                }).format(
+                                    (transaction?.status === "paid"
+                                        ? transaction?.total_paid_amount
+                                        : transaction?.total_amount) || 0,
+                                )}
+                            </p>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            {transaction?.status === "paid"
+                                ? t("TripPlanner.transactions.totalPaidAmount")
+                                : t("TripPlanner.transactions.plannedAmount")}
+                        </TooltipContent>
+                    </Tooltip>
                     <ButtonGroup>
-                        {transaction.status !== "paid" && (
-                            <TripTransactionEdit
-                                trip={trip}
-                                transaction={transaction}
-                                variant="secondary"
-                                size="icon"
-                                buttonContent={<Edit2Icon />}
-                                onSuccess={onSuccess}
-                            />
-                        )}
                         {permissionsReducer({
                             tripParticipantRole: "admin",
                             permission: "plan_budget",
-                        }) &&
-                            transaction.status !== "paid" && (
+                        }) && transaction?.status === "paid" ? (
+                            <UnmarkedPayedTransaction
+                                transaction={transaction}
+                                onSuccess={onSuccess}
+                            />
+                        ) : (
+                            <>
+                                <TripTransactionEdit
+                                    trip={trip}
+                                    transaction={transaction}
+                                    variant="secondary"
+                                    size="icon"
+                                    buttonContent={<Edit2Icon />}
+                                    onSuccess={onSuccess}
+                                />
                                 <DeleteTransaction
                                     transaction={transaction}
                                     onSuccess={onSuccess}
                                 />
-                            )}
+                            </>
+                        )}
                     </ButtonGroup>
                 </div>
             </div>

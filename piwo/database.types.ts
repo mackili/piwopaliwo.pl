@@ -1207,6 +1207,75 @@ export type Database = {
           },
         ]
       }
+      trip_ledger: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          id: string
+          last_modified_at: string | null
+          last_modified_by: string | null
+          paid_by_id: string
+          trip_transaction_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          paid_by_id: string
+          trip_transaction_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_modified_at?: string | null
+          last_modified_by?: string | null
+          paid_by_id?: string
+          trip_transaction_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_ledger_paid_by_id_fkey"
+            columns: ["paid_by_id"]
+            isOneToOne: false
+            referencedRelation: "trip_participant"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_ledger_paid_by_id_fkey"
+            columns: ["paid_by_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_participant_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_ledger_trip_transaction_id_fkey"
+            columns: ["trip_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "trip_transaction"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_ledger_trip_transaction_id_fkey"
+            columns: ["trip_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_accommodation_summary"
+            referencedColumns: ["trip_transaction_id"]
+          },
+          {
+            foreignKeyName: "trip_ledger_trip_transaction_id_fkey"
+            columns: ["trip_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "v_trip_travel_summary"
+            referencedColumns: ["trip_transaction_id"]
+          },
+        ]
+      }
       trip_participant: {
         Row: {
           created_at: string | null
@@ -1331,6 +1400,7 @@ export type Database = {
           split_type: Database["public"]["Enums"]["acc_transaction_split_type"]
           status: Database["public"]["Enums"]["transaction_status"]
           total_amount: number | null
+          total_paid_amount: number | null
           transaction_split: Json
           trip_id: string
         }
@@ -1352,6 +1422,7 @@ export type Database = {
           split_type?: Database["public"]["Enums"]["acc_transaction_split_type"]
           status?: Database["public"]["Enums"]["transaction_status"]
           total_amount?: number | null
+          total_paid_amount?: number | null
           transaction_split?: Json
           trip_id: string
         }
@@ -1373,6 +1444,7 @@ export type Database = {
           split_type?: Database["public"]["Enums"]["acc_transaction_split_type"]
           status?: Database["public"]["Enums"]["transaction_status"]
           total_amount?: number | null
+          total_paid_amount?: number | null
           transaction_split?: Json
           trip_id?: string
         }
@@ -2210,6 +2282,10 @@ export type Database = {
       }
       db_set_audit_mechanism: {
         Args: { p_schema: string; p_table: string }
+        Returns: undefined
+      }
+      recompute_trip_transaction_status: {
+        Args: { p_trip_transaction_id: string }
         Returns: undefined
       }
       send_notification: {

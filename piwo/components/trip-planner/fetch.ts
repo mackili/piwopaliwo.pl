@@ -137,10 +137,19 @@ async function upsertTripTransaction(
     transaction: TablesInsert<"trip_transaction">,
 ) {
     const supabase = await createClient();
-    return await supabase
+    const upsertResult = await supabase
         .from("trip_transaction")
         .upsert(transaction, { onConflict: "id" })
-        .select()
+        .select("id")
+        .single();
+    if (upsertResult.error) {
+        return upsertResult;
+    }
+    return await supabase
+        .from("trip_transaction")
+        .select("*")
+        .eq("id", upsertResult.data.id)
+        .limit(1)
         .single();
 }
 
@@ -421,8 +430,27 @@ async function deleteTrips(tripIds: string[]) {
 
 async function upsertGroup(group: TablesInsert<"group">) {
     const supabase = await createClient();
-    const result = await supabase.from("group").upsert(group).select().single();
+    const result = await supabase
+        .from("group")
+        .upsert(group, { onConflict: "id" })
+        .select()
+        .single();
     return result;
+}
+
+async function deleteTransactionsTripLedgers(transactionIds: string[]) {
+    const supabase = await createClient();
+    const deleteResponse = await supabase
+        .from("trip_ledger")
+        .delete()
+        .in("trip_transaction_id", transactionIds);
+    if (deleteResponse?.error) {
+        return deleteResponse;
+    }
+    return await supabase
+        .from("trip_transaction")
+        .select("*")
+        .in("id", transactionIds);
 }
 
 export {
@@ -456,4 +484,5 @@ export {
     fetchTripTimeline,
     deleteTrips,
     upsertGroup,
+    deleteTransactionsTripLedgers,
 };

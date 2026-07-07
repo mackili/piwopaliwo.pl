@@ -3,10 +3,11 @@
 import { ComponentProps } from "react";
 import { TripPlannedFinanceStatisticsResponse } from "../fetch";
 import TripStatistic from "../trip-statistic";
-import { Constants } from "@/database.types";
+import { Constants, Enums } from "@/database.types";
 import EstimateByCategory from "../charts/expenses-per-category";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCurrentLocale, useI18n } from "@/locales/client";
+import { twMerge } from "tailwind-merge";
 
 export default function TripCostsSummary({
     data,
@@ -114,22 +115,33 @@ export default function TripCostsSummary({
                     />
                 </>
             )}
-            {data?.financials_by_category && (
-                <Card className="col-span-full">
-                    <CardHeader>
-                        <CardTitle className="text-muted-foreground text-xs font-medium uppercase">
-                            {t(
-                                "TripPlanner.transactions.statistics.plannedCostsPerCategory",
-                            )}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-primary font-serif uppercase font-bold text-lg h-20 overflow-x-hidden text-ellipsis whitespace-nowrap w-full">
-                        <EstimateByCategory
-                            data={data.financials_by_category}
-                        />
-                    </CardContent>
-                </Card>
-            )}
         </div>
+    );
+}
+
+export function TripBudgetByCategoryChart({
+    data,
+    className,
+    ...props
+}: {
+    data: {
+        category: Enums<"trip_transaction_category">;
+        total_in_trip_currency: number;
+    }[];
+} & ComponentProps<"div">) {
+    const t = useI18n();
+    return (
+        <Card className={twMerge("col-span-full", className)} {...props}>
+            <CardHeader>
+                <CardTitle className="text-muted-foreground text-xs font-medium uppercase">
+                    {t(
+                        "TripPlanner.transactions.statistics.plannedCostsPerCategory",
+                    )}
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="text-primary font-serif uppercase font-bold text-lg h-20 overflow-x-hidden text-ellipsis whitespace-nowrap w-full">
+                <EstimateByCategory data={data} />
+            </CardContent>
+        </Card>
     );
 }
