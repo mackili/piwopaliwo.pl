@@ -38,12 +38,12 @@ export async function TripStatistics({
                     description={`${(trip.participants as ParticipantResponseJson[]).filter((participant) => participant.status === "invited" || participant.status === "tentative").length} pending`}
                 />
             )}
-            <TripStatistic title="Spent" value="TBA" />
+            {/* <TripStatistic title="Spent" value="TBA" />
             <TripStatistic
                 title="Next up"
                 value="Train Warszawa - Giżycko"
                 description="12 Jul · 08:30"
-            />
+            /> */}
         </>
     );
 }

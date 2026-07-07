@@ -14,6 +14,7 @@ import { ParticipantRow } from "../transport/transport-assignment";
 import { Tables } from "@/database.types";
 import { TripAccommodationUnitSummary } from "../custom-schemas";
 import { getTripLength } from "../reducers";
+import FormattedDateText from "@/components/ui/formatted-date-text";
 
 enum TimelineItemTimeType {
     START = "start",
@@ -94,14 +95,18 @@ export default async function TripTimeline({ tripId }: { tripId: string }) {
                                 <div className="flex flex-row flex-wrap gap-8 items-center">
                                     <div className="flex flex-col gap items-center justify-center">
                                         <h6 className="text-muted-foreground font-medium text-sm p-0 m-0">
-                                            {Intl.DateTimeFormat(locale, {
-                                                weekday: "short",
-                                            }).format(new Date(day))}
+                                            <FormattedDateText
+                                                locale={locale}
+                                                date={new Date(day)}
+                                                format={{ weekday: "short" }}
+                                            />
                                         </h6>
                                         <h5 className="font-serif font-extrabold text-2xl p-0 m-0">
-                                            {Intl.DateTimeFormat(locale, {
-                                                day: "2-digit",
-                                            }).format(new Date(day))}
+                                            <FormattedDateText
+                                                locale={locale}
+                                                date={new Date(day)}
+                                                format={{ day: "2-digit" }}
+                                            />
                                         </h5>
                                     </div>
                                     <div>
@@ -109,9 +114,10 @@ export default async function TripTimeline({ tripId }: { tripId: string }) {
                                             <p>{`${t("day")} ${getTripDayNumber(new Date(day))}`}</p>
                                             <p className="font-normal text-muted-foreground text-base">
                                                 (
-                                                {Intl.DateTimeFormat(
-                                                    locale,
-                                                ).format(new Date(day))}
+                                                <FormattedDateText
+                                                    locale={locale}
+                                                    date={new Date(day)}
+                                                />
                                                 )
                                             </p>
                                         </div>
@@ -157,10 +163,15 @@ async function TripTimelineItem({
         <div className="border-b pb-8 px-6 last:border-b-0 first:border-t pt-4 first:pt-8">
             <div className="flex gap-4 flex-row flex-wrap items-center">
                 <div className="font-mono col-span-1">
-                    {item?.start_date &&
-                        Intl.DateTimeFormat(locale, {
-                            timeStyle: "short",
-                        }).format(new Date(item.eventDate))}
+                    {item?.start_date && (
+                        <FormattedDateText
+                            locale={locale}
+                            date={new Date(item.eventDate)}
+                            format={{
+                                timeStyle: "short",
+                            }}
+                        />
+                    )}
                 </div>
                 <div className="flex justify-center items-center rounded-full aspect-square w-10 h-10 border-2 border-secondary bg-accent/10 col-span-1">
                     {item.record_type && item.type && (
