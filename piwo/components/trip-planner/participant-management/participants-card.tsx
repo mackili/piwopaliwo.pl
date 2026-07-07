@@ -21,6 +21,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { getI18n } from "@/locales/server";
+import Printer from "@/components/ui/printer";
 
 export default async function TripParticipantsCard({
     trip,
@@ -38,15 +39,17 @@ export default async function TripParticipantsCard({
           )
         : undefined;
     return (
-        <Card>
+        <Card id={`participants-${trip.id}`}>
             <CardHeader>
-                <CardAction>
+                <CardAction className="gap-1 flex flex-row flex-wrap print:hidden">
+                    <Printer targetId={`participants-${trip.id}`} />
                     {currentUserParticipant &&
                         permissionsReducer({
                             tripParticipantRole: currentUserParticipant.role,
                             permission: "invite_participants",
                         }) && (
                             <TripParticipantsInvite
+                                variant="outline"
                                 trip={trip}
                                 showTextOnButton={variant === "expanded"}
                             />

@@ -21,6 +21,7 @@ import { TripParticipantsContext } from "../accommodation/accommodation-cards-ov
 import TransportAssignment from "./transport-assignment";
 import LinkTransaction from "../cost-planning/link-transaction";
 import { TripTransactionStatusPill } from "../icon-factories";
+import Printer from "@/components/ui/printer";
 
 export const TravelAssignedParticipantContext = createContext<string[]>([]);
 
@@ -71,7 +72,7 @@ export default function TransportCard({
 
     return (
         <TripParticipantsContext value={potentialParticipants}>
-            <Card>
+            <Card id={`transport-${transport.id}`}>
                 <CardHeader>
                     <CardTitle className="flex flex-row gap-4">
                         <div
@@ -91,7 +92,8 @@ export default function TransportCard({
                             )}
                         </div>
                     </CardTitle>
-                    <CardAction className="gap-1 flex flex-row flex-wrap">
+                    <CardAction className="gap-1 flex flex-row flex-wrap print:hidden">
+                        <Printer targetId={`transport-${transport.id}`} />
                         {currentParticipantRole &&
                             permissionsReducer({
                                 tripParticipantRole: currentParticipantRole,

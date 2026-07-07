@@ -1,9 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    fetchCurrentTripParticipant,
-    fetchTripTimeline,
-    TripTimelineResponseRow,
-} from "../fetch";
+    Card,
+    CardAction,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { fetchTripTimeline, TripTimelineResponseRow } from "../fetch";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { getCurrentLocale, getI18n } from "@/locales/server";
 import {
@@ -15,6 +17,12 @@ import { Tables } from "@/database.types";
 import { TripAccommodationUnitSummary } from "../custom-schemas";
 import { getTripLength } from "../reducers";
 import FormattedDateText from "@/components/ui/formatted-date-text";
+import {
+    UserHighlightContextProvider,
+    UserHighlightToggle,
+} from "./user-highlight-provider";
+import { TripTimelineParticipantRow } from "./trip-timeline-participant-row";
+import Printer from "@/components/ui/printer";
 
 enum TimelineItemTimeType {
     START = "start",
@@ -31,13 +39,11 @@ type TripTimelineAggregated = {
 };
 
 export default async function TripTimeline({ tripId }: { tripId: string }) {
-    const [locale, { data, error }, { data: currentTripParticipant }, t] =
-        await Promise.all([
-            getCurrentLocale(),
-            fetchTripTimeline(tripId),
-            fetchCurrentTripParticipant(tripId),
-            getI18n(),
-        ]);
+    const [locale, { data, error }, t] = await Promise.all([
+        getCurrentLocale(),
+        fetchTripTimeline(tripId),
+        getI18n(),
+    ]);
     const groupedData = data?.reduce(
         (acc: TripTimelineAggregated, current: TripTimelineResponseRow) => {
             if (!current.start_date) return acc;
@@ -86,65 +92,77 @@ export default async function TripTimeline({ tripId }: { tripId: string }) {
             : undefined;
     return (
         <div className="flex flex-col gap-8">
-            <PostgrestErrorDisplay error={error} />
-            {groupedData &&
-                Object.keys(groupedData).map((day, index) => (
-                    <Card key={index}>
-                        <CardHeader>
-                            <CardTitle>
-                                <div className="flex flex-row flex-wrap gap-8 items-center">
-                                    <div className="flex flex-col gap items-center justify-center">
-                                        <h6 className="text-muted-foreground font-medium text-sm p-0 m-0">
-                                            <FormattedDateText
-                                                locale={locale}
-                                                date={new Date(day)}
-                                                format={{ weekday: "short" }}
-                                            />
-                                        </h6>
-                                        <h5 className="font-serif font-extrabold text-2xl p-0 m-0">
-                                            <FormattedDateText
-                                                locale={locale}
-                                                date={new Date(day)}
-                                                format={{ day: "2-digit" }}
-                                            />
-                                        </h5>
-                                    </div>
-                                    <div>
-                                        <div className="font-bold text-2xl flex flex-row gap-4 flex-wrap items-center">
-                                            <p>{`${t("day")} ${getTripDayNumber(new Date(day))}`}</p>
-                                            <p className="font-normal text-muted-foreground text-base">
-                                                (
+            <UserHighlightContextProvider>
+                <UserHighlightToggle
+                    label={t("TripPlanner.timeline.highlightYourActivities")}
+                />
+                <PostgrestErrorDisplay error={error} />
+                {groupedData &&
+                    Object.keys(groupedData).map((day, index) => (
+                        <Card
+                            key={index}
+                            id={`trip-timeline-${new Date(day).toISOString()}-${index}`}
+                        >
+                            <CardHeader>
+                                <CardTitle>
+                                    <div className="flex flex-row flex-wrap gap-8 items-center">
+                                        <div className="flex flex-col gap items-center justify-center">
+                                            <h6 className="text-muted-foreground font-medium text-sm p-0 m-0">
                                                 <FormattedDateText
                                                     locale={locale}
                                                     date={new Date(day)}
+                                                    format={{
+                                                        weekday: "short",
+                                                    }}
                                                 />
-                                                )
-                                            </p>
+                                            </h6>
+                                            <h5 className="font-serif font-extrabold text-2xl p-0 m-0">
+                                                <FormattedDateText
+                                                    locale={locale}
+                                                    date={new Date(day)}
+                                                    format={{ day: "2-digit" }}
+                                                />
+                                            </h5>
+                                        </div>
+                                        <div>
+                                            <div className="font-bold text-2xl flex flex-row gap-4 flex-wrap items-center">
+                                                <p>{`${t("day")} ${getTripDayNumber(new Date(day))}`}</p>
+                                                <p className="font-normal text-muted-foreground text-base">
+                                                    (
+                                                    <FormattedDateText
+                                                        locale={locale}
+                                                        date={new Date(day)}
+                                                    />
+                                                    )
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4 px-0">
-                            {groupedData[day]
-                                ?.sort(
-                                    (a, b) =>
-                                        new Date(a.eventDate).getTime() -
-                                        new Date(b.eventDate).getTime(),
-                                )
-                                ?.map((item, index) => (
-                                    <TripTimelineItem
-                                        key={index}
-                                        item={item}
-                                        locale={locale}
-                                        currentTripParticipantId={
-                                            currentTripParticipant?.id
-                                        }
+                                </CardTitle>
+                                <CardAction>
+                                    <Printer
+                                        targetId={`trip-timeline-${new Date(day).toISOString()}-${index}`}
                                     />
-                                ))}
-                        </CardContent>
-                    </Card>
-                ))}
+                                </CardAction>
+                            </CardHeader>
+                            <CardContent className="space-y-4 px-0">
+                                {groupedData[day]
+                                    ?.sort(
+                                        (a, b) =>
+                                            new Date(a.eventDate).getTime() -
+                                            new Date(b.eventDate).getTime(),
+                                    )
+                                    ?.map((item, index) => (
+                                        <TripTimelineItem
+                                            key={index}
+                                            item={item}
+                                            locale={locale}
+                                        />
+                                    ))}
+                            </CardContent>
+                        </Card>
+                    ))}
+            </UserHighlightContextProvider>
         </div>
     );
 }
@@ -152,11 +170,9 @@ export default async function TripTimeline({ tripId }: { tripId: string }) {
 async function TripTimelineItem({
     item,
     locale,
-    currentTripParticipantId,
 }: {
     item: TripTimelineAggregatedRow;
     locale: string;
-    currentTripParticipantId?: string | null;
 }) {
     const [t] = await Promise.all([getI18n()]);
     return (
@@ -210,15 +226,9 @@ async function TripTimelineItem({
                                     ),
                                 )
                                 ?.map((detail, index) => (
-                                    <ParticipantRow
-                                        participant={detail}
+                                    <TripTimelineParticipantRow
                                         key={index}
-                                        className={
-                                            detail?.id ===
-                                            currentTripParticipantId
-                                                ? "outline-1 outline-offset-4 outline-accent rounded-xl"
-                                                : ""
-                                        }
+                                        detail={detail}
                                     />
                                 ))}
                         {item.record_type === "accommodation" &&
@@ -233,15 +243,9 @@ async function TripTimelineItem({
                                         ),
                                     )
                                     .map((assignment, index) => (
-                                        <ParticipantRow
+                                        <TripTimelineParticipantRow
                                             key={index}
-                                            participant={assignment}
-                                            className={
-                                                assignment?.id ===
-                                                currentTripParticipantId
-                                                    ? "outline-1 outline-offset-4 outline-accent rounded-xl"
-                                                    : ""
-                                            }
+                                            detail={assignment}
                                         />
                                     ));
                             })}
