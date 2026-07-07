@@ -225,6 +225,11 @@ export default function TripTransactionEdit({
                                         label={t(
                                             "TripPlanner.transactions.edit.currency",
                                         )}
+                                        defaultValue={
+                                            availableCurrencies.find(
+                                                (currency) => currency.primary,
+                                            )?.iso
+                                        }
                                         options={availableCurrencies.map(
                                             (currency) => ({
                                                 value: currency.iso,
