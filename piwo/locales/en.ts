@@ -142,6 +142,9 @@ const translations = {
     TripPlanner: {
         newTrip: "New trip",
         editTrip: "Edit trip",
+        timeline: {
+            highlightYourActivities: "Highlight your Activities",
+        },
         tripAttributes: {
             name: "Trip name",
             description: "Description",

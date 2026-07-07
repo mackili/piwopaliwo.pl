@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { ComponentProps, useEffect, useReducer, useState } from "react";
 import { SaveIcon, Trash2Icon, UserRoundPlusIcon } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import PostgrestErrorDisplay from "@/components/ui/postgrest-error-display";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/locales/client";
+import { VariantProps } from "class-variance-authority";
 
 const formObject = z.object({
     participants: z.array(publicTripParticipantInsertSchema),
@@ -100,11 +101,13 @@ function availableGroupMembersReducer(
 export default function TripParticipantsInvite({
     trip,
     showTextOnButton = true,
+    variant = "secondary",
     ...props
 }: {
     trip: Tables<"v_trip_details">;
     showTextOnButton?: boolean;
-} & ComponentProps<"button">) {
+} & ComponentProps<"button"> &
+    VariantProps<typeof buttonVariants>) {
     const router = useRouter();
     const t = useI18n();
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -191,7 +194,7 @@ export default function TripParticipantsInvite({
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-                <Button variant="secondary" {...props}>
+                <Button variant={variant} {...props}>
                     <UserRoundPlusIcon />
                     {showTextOnButton &&
                         ` ${t("TripPlanner.participants.invite")}`}

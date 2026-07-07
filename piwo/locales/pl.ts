@@ -154,6 +154,9 @@ const translations = {
             tripStatus: "Status wyjazdu",
             tripType: "Typ wyjzadu",
         },
+        timeline: {
+            highlightYourActivities: "Pokaż moje aktywności",
+        },
         participants: {
             failedToSave: "Nie udało się zapisać do bazy danych",
             participantsInvitedSuccessfully:

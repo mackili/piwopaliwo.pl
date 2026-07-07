@@ -39,7 +39,7 @@ export default function AccommodationUnitCard({
                         {`(${accommodationUnit.assigned_participants}/${accommodationUnit.capacity})`}
                     </span>
                 </CardTitle>
-                <CardAction className="flex gap-1 flex-wrap flex-row">
+                <CardAction className="flex gap-1 flex-wrap flex-row print:hidden">
                     {accommodationUnit?.accommodation_id &&
                         permissionsReducer({
                             tripParticipantRole: currentParticipantRole,

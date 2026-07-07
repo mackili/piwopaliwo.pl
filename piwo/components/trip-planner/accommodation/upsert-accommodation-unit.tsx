@@ -80,7 +80,7 @@ export default function UpsertAccommodationUnit({
     };
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild className="print:hidden">
                 {variant === UpsertAccommodationUnitVariant.CREATE ? (
                     <Button
                         variant="outline"

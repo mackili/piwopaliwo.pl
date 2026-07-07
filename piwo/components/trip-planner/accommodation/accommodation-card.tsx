@@ -27,6 +27,7 @@ import DetailField from "@/components/ui/detail-field";
 import LinkTransaction from "../cost-planning/link-transaction";
 import { TripTransactionStatusPill } from "../icon-factories";
 import FormattedDateText from "@/components/ui/formatted-date-text";
+import Printer from "@/components/ui/printer";
 
 export default function TripAccommodationCard({
     accommodationData,
@@ -80,12 +81,15 @@ export default function TripAccommodationCard({
         }
     };
     return (
-        <Card>
+        <Card id={`accommodation-${accommodationData.id}`}>
             <CardHeader>
                 <CardTitle>
                     <p>{accommodationData.name}</p>
                 </CardTitle>
-                <CardAction className="gap-1 flex flex-row flex-wrap">
+                <CardAction className="gap-1 flex flex-row flex-wrap print:hidden">
+                    <Printer
+                        targetId={`accommodation-${accommodationData.id}`}
+                    />
                     {accommodationData &&
                         accommodationData?.trip_id &&
                         currentTripParticipant?.role &&
