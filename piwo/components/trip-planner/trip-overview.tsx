@@ -17,7 +17,7 @@ export default function TripOverview({
             {trip && (
                 <>
                     <div className="grow-8 col-span-full lg:col-span-8">
-                        <div className="grid max-[350px]:grid-cols-1 grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="grid max-[350px]:grid-cols-1 grid-cols-2 gap-4">
                             <TripStatistics trip={trip} />
                         </div>
                     </div>

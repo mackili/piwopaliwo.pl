@@ -26,6 +26,7 @@ import DeleteAccommodation from "./delete-accommodation";
 import DetailField from "@/components/ui/detail-field";
 import LinkTransaction from "../cost-planning/link-transaction";
 import { TripTransactionStatusPill } from "../icon-factories";
+import FormattedDateText from "@/components/ui/formatted-date-text";
 
 export default function TripAccommodationCard({
     accommodationData,
@@ -141,17 +142,39 @@ export default function TripAccommodationCard({
                     {accommodationData?.check_in_date && (
                         <DetailField
                             detailName={t("TripPlanner.accommodation.checkIn")}
-                            detailValue={Intl.DateTimeFormat(locale).format(
-                                new Date(accommodationData.check_in_date),
-                            )}
+                            detailValue={
+                                <FormattedDateText
+                                    locale={locale}
+                                    date={
+                                        new Date(
+                                            accommodationData.check_in_date,
+                                        )
+                                    }
+                                    format={{
+                                        dateStyle: "short",
+                                        timeStyle: "short",
+                                    }}
+                                />
+                            }
                         />
                     )}
                     {accommodationData?.check_out_date && (
                         <DetailField
                             detailName={t("TripPlanner.accommodation.checkOut")}
-                            detailValue={Intl.DateTimeFormat(locale).format(
-                                new Date(accommodationData.check_out_date),
-                            )}
+                            detailValue={
+                                <FormattedDateText
+                                    locale={locale}
+                                    date={
+                                        new Date(
+                                            accommodationData.check_out_date,
+                                        )
+                                    }
+                                    format={{
+                                        dateStyle: "short",
+                                        timeStyle: "short",
+                                    }}
+                                />
+                            }
                         />
                     )}
                     {accommodationData?.stay_duration_days && (

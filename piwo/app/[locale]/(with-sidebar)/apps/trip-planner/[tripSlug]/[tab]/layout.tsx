@@ -41,7 +41,7 @@ export default async function Layout({
         <Tabs value={tab} className="w-full ">
             <TabsList
                 variant="line"
-                className="flex gap-4 w-full flex-nowrap mb-4 justify-between overflow-x-scroll overflow-y-hidden"
+                className="flex gap-4 w-full flex-nowrap mb-4 justify-between overflow-x-auto overflow-y-hidden"
             >
                 <Link
                     href={hrefFactory(TRIP_PLANNER_TABS.OVERVIEW)}

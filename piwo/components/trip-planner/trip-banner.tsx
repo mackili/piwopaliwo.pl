@@ -1,4 +1,4 @@
-import { Tables, TablesInsert } from "@/database.types";
+import { TablesInsert } from "@/database.types";
 import {
     Card,
     CardAction,
@@ -23,8 +23,10 @@ import { getTripLength } from "./reducers";
 import DeleteTrip from "./delete-trip";
 import PostgrestErrorDisplay from "../ui/postgrest-error-display";
 import GroupDetailsLink from "./groups/group-details-link";
+import FormattedDateText from "../ui/formatted-date-text";
 
 export function getFormattedDates(start: string, end: string, locale: string) {
+    "use client";
     return `${new Intl.DateTimeFormat(locale).format(new Date(start))} - ${new Intl.DateTimeFormat(locale).format(new Date(end))}`;
 }
 
@@ -76,11 +78,15 @@ export default async function TripBanner({
                                     className="text-secondary"
                                 >
                                     <CalendarDaysIcon />
-                                    {getFormattedDates(
-                                        trip.start_date,
-                                        trip.end_date,
-                                        locale,
-                                    )}
+                                    <FormattedDateText
+                                        locale={locale}
+                                        date={new Date(trip.start_date)}
+                                    />{" "}
+                                    -{" "}
+                                    <FormattedDateText
+                                        locale={locale}
+                                        date={new Date(trip.end_date)}
+                                    />
                                     <Dot />
                                     {`${getTripLength({ startdate: new Date(trip?.start_date) || "", endDate: new Date(trip?.end_date || "") })} days`}
                                 </Badge>
