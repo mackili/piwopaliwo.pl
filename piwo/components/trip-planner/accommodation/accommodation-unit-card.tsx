@@ -46,7 +46,7 @@ export default function AccommodationUnitCard({
                             permission: "modify_accommodation",
                         }) && (
                             <UpsertAccommodationUnit
-                                key={accommodationUnit.id}
+                                key={`upsert-${accommodationUnit.id}`}
                                 accommodationId={
                                     accommodationUnit.accommodation_id
                                 }
