@@ -44,6 +44,7 @@ export default function UpsertAccommodationUnit({
     onSave: (action: AccommodationModificationChangeAction) => void;
 }) {
     const t = useI18n();
+    console.log(accommodationUnit);
     const [saveError, setSaveError] = useState<PostgrestError | null>();
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const form = useForm<z.infer<typeof publicAccommodationUnitInsertSchema>>({
@@ -53,15 +54,17 @@ export default function UpsertAccommodationUnit({
                 accommodationUnit?.accommodation_id || accommodationId,
             name: accommodationUnit?.name || "",
             capacity: accommodationUnit?.capacity,
-            id: accommodationUnit?.accommodation_id,
+            id: accommodationUnit?.id,
         },
     });
 
     const handleSubmit = async (
         formData: z.infer<typeof publicAccommodationUnitInsertSchema>,
     ) => {
+        console.log(formData);
         const { data, error } = await upsertTripAccommodationUnit(formData);
         setSaveError(error);
+        console.log(data, error);
         if (data) {
             if (variant === UpsertAccommodationUnitVariant.CREATE) {
                 onSave({
@@ -110,7 +113,7 @@ export default function UpsertAccommodationUnit({
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(handleSubmit)}
-                        id="edit-accommodation-unit-form"
+                        id={`edit-accommodation-unit-form-${accommodationUnit?.id || "new"}`}
                     >
                         <div className="space-y-4">
                             <FormInput
@@ -132,7 +135,7 @@ export default function UpsertAccommodationUnit({
                 <DialogFooter>
                     <Button
                         type="submit"
-                        form="edit-accommodation-unit-form"
+                        form={`edit-accommodation-unit-form-${accommodationUnit?.id || "new"}`}
                         disabled={form.formState.isSubmitting}
                     >
                         {form.formState.isSubmitting ? (
